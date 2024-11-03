@@ -37,6 +37,9 @@ function App() {
         />
       </div>
       {renderPower()}
+      <div>
+        {renderStation()}
+      </div>
     </section>
     </div>
   )

@@ -1,6 +1,6 @@
 import requests
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz  # Import pytz for timezone conversions
 
 def getSwellPower(id):
@@ -10,7 +10,6 @@ def getSwellPower(id):
 
     if response.status_code == 200:
         # Split data by lines
-        print(response.text)
         lines = response.text.strip().splitlines()
 
         # Initialize containers for datetime and energy values
@@ -19,6 +18,12 @@ def getSwellPower(id):
 
         # Define the timezone for Hawaii
         hawaii_tz = pytz.timezone("Pacific/Honolulu")
+
+        # Get the current time in Hawaii
+        current_hawaii_time = datetime.now(hawaii_tz)
+
+        # Calculate the cutoff time for two days ago
+        cutoff_time = current_hawaii_time - timedelta(days=2)
 
         # Iterate over lines to find datetimes and energy values
         for line in lines:
@@ -35,12 +40,14 @@ def getSwellPower(id):
                 # Convert to Hawaii time
                 dt_hawaii = dt_utc.astimezone(hawaii_tz)
                 
-                # Format the datetime in 12-hour format
-                formatted_hawaii_time = dt_hawaii.strftime("%Y-%m-%d %I:%M %p")
-                
-                # Initialize list for this datetime in Hawaii time format
-                data_dict[formatted_hawaii_time] = []  # Ensure it's initialized to a list
-                current_datetime = formatted_hawaii_time  # Update current_datetime to the new one
+                # Check if the datetime in Hawaii is within the last two days
+                if dt_hawaii >= cutoff_time:
+                    # Format the datetime in 12-hour format
+                    formatted_hawaii_time = dt_hawaii.strftime("%Y-%m-%d %I:%M %p")
+
+                    # Initialize list for this datetime in Hawaii time format
+                    data_dict[formatted_hawaii_time] = []  # Ensure it's initialized to a list
+                    current_datetime = formatted_hawaii_time  # Update current_datetime to the new one
 
             elif current_datetime and len(parts) >= 3:  # Data line with energy value
                 try:
@@ -59,7 +66,6 @@ def getSwellPower(id):
                 max_energy = max(energies)
                 output_data.append({"dataTime": dt_hawaii, "value": max_energy})
 
-        
         # Convert to JSON
         json_output = json.dumps(output_data, indent=4)
         return json_output
