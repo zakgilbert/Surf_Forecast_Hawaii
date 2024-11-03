@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import StationInput from './components/StationInput.js'
 import Power from "./components/Power.js";
+import PowerGraph from "./components/PowerGraph.js"
 
 function App() {
   const [stationId, setStationId] = useState("");
@@ -35,7 +36,7 @@ function App() {
           onChange = {handleChange}
         />
       </div>
-      {renderPower()}
+      {renderStation()}
     </section>
     </div>
   )

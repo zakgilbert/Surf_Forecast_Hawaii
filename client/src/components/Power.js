@@ -7,7 +7,7 @@ const Power = ({id}) => {
     
     useEffect(() => {
         fetch(`/power/${id}`).then(
-            res => res.text()
+            res => res.json()
         ).then(
             data => {
                setData(data) 

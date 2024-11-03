@@ -12,7 +12,7 @@ const StationInput = ({ id }) => {
         ).then(
             data => {
                 setData(data)
-              //      console.log(data)
+                console.log(data)
             }
         )
     }, [id])
