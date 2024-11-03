@@ -36,7 +36,7 @@ function App() {
           onChange = {handleChange}
         />
       </div>
-      {renderStation()}
+      {renderPower()}
     </section>
     </div>
   )

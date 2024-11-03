@@ -42,6 +42,7 @@ def getReport(id):
                                   int(row[cols.index('DD')]), 
                                   int(row[cols.index('hh')]),
                                   int(row[cols.index('mm')]))
+            
             d_to_hawaii_time = hawaii_12_hour(d)
             del row[:5]
             row.insert(0, d_to_hawaii_time)
