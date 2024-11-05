@@ -18,6 +18,7 @@ const StationInput = ({ id }) => {
     }, [id])
 
     return (((data.cols !== undefined) && (data.rows !== undefined)) ? (
+        <div style={{ maxHeight: '400px', overflowY: 'auto' }}> {/* Adjust height as needed */}
         <Table celled>
             <Table.Header>
                 <Table.Row>
@@ -45,6 +46,7 @@ const StationInput = ({ id }) => {
                 }
             </Table.Body>
         </Table>
+        </div>
     ) : (<></>))
 }
 export default StationInput

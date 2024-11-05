@@ -68,6 +68,7 @@ def getSwellPower(id):
 
         # Convert to JSON
         json_output = json.dumps(output_data, indent=4)
+        print(json_output)
         return json_output
     else:
         return [f'Error: {response.status_code}']

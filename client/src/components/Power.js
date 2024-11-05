@@ -24,12 +24,12 @@ const Power = ({id}) => {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis 
                         dataKey="dataTime" 
-                        tickFormatter={(timeStr) => moment(timeStr, 'YYYY-MM-DD hh:mm A').format('MMM D, YYYY h:mm A')} // Format for x-axis
-                        
+                        tickFormatter={(timeStr) => 
+                            moment(timeStr, 'YYYY-MM-DD hh:mm A').format('MMM D, h:mm A')} // Format for x-axis
                     />
-                     <YAxis>
-                        <Label value="Energy Value  (m * m)/Hz" angle={-90} position="Inside" offset={40} />
-                    </YAxis>
+                     <YAxis
+                     label={{ value: 'Energy Value', angle: -90, position: 'insideLeft' }} 
+                     />
                     <Tooltip 
                         formatter={(value, name, props) => {
                             const dateTime = moment(props.payload.dataTime, 'YYYY-MM-DD hh:mm A'); // Specify format
@@ -37,7 +37,7 @@ const Power = ({id}) => {
                                 console.error('Invalid date:', props.payload.dataTime);
                                 return ['Invalid value', 'Invalid date'];
                             }
-                            return [value, `Value: ${value}`, dateTime.format('MMM D, YYYY h:mm A')]; // Return formatted value and dateTime
+                            return [`Value: ${value}`]; // Return formatted value and dateTime
                         }}
                         labelFormatter={(label) => {
                             const dateTime = moment(label, 'YYYY-MM-DD hh:mm A'); // Specify format
@@ -49,7 +49,7 @@ const Power = ({id}) => {
                         }} 
                     />
                     <Legend />
-                    <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
+                    <Line type="natural" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
                 </LineChart>
             </ResponsiveContainer>
         </Container>
