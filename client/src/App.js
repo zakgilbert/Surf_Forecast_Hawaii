@@ -1,17 +1,18 @@
-import React, { useState, useEffect, Container } from "react";
+import React, { useState, useEffectntainer } from "react";
 import StationInput from "./components/StationInput.js";
 import Power from "./components/Power.js";
 import PowerGraph from "./components/PowerGraph.js";
 import {
-  GridRow,
-  GridColumn,
+  Segment,
+  SegmentGroup,
   Grid,
-  Image,
-  Card,
-  CardGroup,
-  CardContent,
-  CardHeader,
-  CardDescription,
+  Divider,
+  GridColumn,
+  GridRow,
+  Header,
+  Icon,
+  Search,
+  Button,
 } from "semantic-ui-react";
 
 function App() {
@@ -47,19 +48,28 @@ function App() {
             onChange={handleChange}
           />
         </div>
-        <div>
-        <Grid columns={2} divided>
-          <GridRow>
-            <GridColumn>
-              {renderStation()}
-            </GridColumn>
-            <GridColumn>
-              {renderPower()}
-            </GridColumn>
-          </GridRow>
-        </Grid>
-        </div>
       </section>
+      <SegmentGroup>
+        <Segment>Top</Segment>
+        <SegmentGroup>
+          <Segment>Nested Top</Segment>
+          <Segment>Nested Middle</Segment>
+          <Segment>Nested Bottom</Segment>
+        </SegmentGroup>
+        <SegmentGroup horizontal>
+          <Segment placeholder>
+            <Grid columns={2} stackable textAlign="center">
+              <Divider vertical></Divider>
+
+              <GridRow verticalAlign="middle">
+                <GridColumn>{renderPower()}</GridColumn>
+                <GridColumn>{renderStation()}</GridColumn>
+              </GridRow>
+            </Grid>
+          </Segment>
+        </SegmentGroup>
+        <Segment>Bottom</Segment>
+      </SegmentGroup>
     </div>
   );
 }
