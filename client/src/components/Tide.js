@@ -2,12 +2,23 @@ import React, {useState, useEffect} from "react";
 import { Container, Header, Button, Icon, Menu, Popup, Table, TableCell } from 'semantic-ui-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Label } from 'recharts';
 import moment from 'moment'; // Import moment.js for date formatting
-const Tide = ({id}) => {
 
-    const data = { "predictions" : [
-        {"t":"2024-11-06 06:18", "v":"2.147", "type":"H"},{"t":"2024-11-06 21:56", "v":"0.186", "type":"L"},{"t":"2024-11-07 07:21", "v":"2.095", "type":"H"},{"t":"2024-11-07 16:46", "v":"0.441", "type":"L"},{"t":"2024-11-07 18:47", "v":"0.527", "type":"H"},{"t":"2024-11-07 22:54", "v":"0.328", "type":"L"}
-        ]}
-    console.log(data)
+const Tide = ({id, beginDate, endDate, timeZone}) => {
+
+    const [data, setData] = useState([{}])
+
+    useEffect(() => {
+        fetch(`/tide/${id}/${beginDate}/${endDate}/${timeZone}`)
+        .then(
+            res => res.json()
+        ).then(
+            data => {
+                setData(data)
+                console.log(data)
+            }
+        )
+    },[id, beginDate, endDate, timeZone])
+
         
 
     return (((data !== undefined) ) ? (
