@@ -50,7 +50,7 @@ function App() {
       return <Power id={item.station}/>;
     }
     if(item.tag === "tide") {
-      return <Tide id={item.station} beginDate={20241106} endDate={20241108} timeZone={'LST'}/>;
+      return <Tide id={item.station} beginDate={20241106} endDate={20241109} timeZone={'LST'}/>;
     }
     return <></>;
   };
@@ -85,7 +85,7 @@ function App() {
 
   return (
     <div>
-      <Container>
+      <Container fluid>
         <Sidebar
           as={Menu}
           animation="push"
@@ -121,7 +121,7 @@ function App() {
             <Segment>Top</Segment>
             <SegmentGroup horizontal>
               <Segment placeholder fluid>
-                <Grid container stackable columns={2}>
+                <Grid container stackable columns={1}>
                   {renderData.map((item) => (
                     <GridColumn key={item.id}>
                       <Card fluid>

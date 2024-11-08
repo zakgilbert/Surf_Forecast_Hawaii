@@ -11,5 +11,3 @@ def getTide(station_id, begin_date, end_date, time_zone):
     data = response.json()
     return jsonify(data)
 
-
-#getTide('20241106','20241107', '1611683', 'LST')
