@@ -19,7 +19,7 @@ const Power = ({id}) => {
     return (((data !== undefined) ) ? (
         <Container textAlign="center">
             <Header as="h2" color="blue">Swell Power</Header>
-            <ResponsiveContainer width="100%" height={400}>
+            <ResponsiveContainer width="100%" height={200}>
                 <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis 

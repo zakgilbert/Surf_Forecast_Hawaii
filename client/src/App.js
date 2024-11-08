@@ -93,7 +93,6 @@ function App() {
           inverted
           vertical
           visible
-          width="wide"
         >
           <section className="garamond">
             <div className="navy georgia ma0 grow">
@@ -116,16 +115,18 @@ function App() {
             </List>
           </section>
         </Sidebar>
-        <SidebarPusher >
-          <SegmentGroup>
+        <div>
+        <Container style={{width: '80%'}}>
+        <SidebarPusher fluid>
+          <SegmentGroup fluid container>
             <Segment>Top</Segment>
-            <SegmentGroup horizontal>
+            <SegmentGroup horizontal fluid >
               <Segment placeholder fluid>
-                <Grid container stackable columns={1}>
+                <Grid stackable columns={2}>
                   {renderData.map((item) => (
-                    <GridColumn key={item.id}>
+                    <GridColumn key={item.id} textAlign="center" fluid>
                       <Card fluid>
-                        <CardContent>
+                        <CardContent fluid>
                         <CardHeader>
                           {item.station}
                         </CardHeader>
@@ -142,6 +143,9 @@ function App() {
             <Segment>Bottom</Segment>
           </SegmentGroup>
         </SidebarPusher>
+
+        </Container>
+        </div>
       </Container>
     </div>
   );

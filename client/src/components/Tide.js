@@ -24,7 +24,7 @@ const Tide = ({id, beginDate, endDate, timeZone}) => {
     return (((data !== undefined) ) ? (
         <Container textAlign="center">
             <Header as="h2" color="blue">Tide</Header>
-            <ResponsiveContainer width="100%" height={400}>
+            <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={data.predictions} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis 
