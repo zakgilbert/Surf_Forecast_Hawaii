@@ -22,25 +22,54 @@ import {
   Container,
   List,
   ListItem,
+  Card,
+  CardContent,
+  CardHeader,
+  CardDescription,
 } from "semantic-ui-react";
 
 function App() {
-  const [stationId, setStationId, currentContent, setCurrentContent] =
-    useState("");
+  const [stationId, setStationId] = useState("");
+  const [renderData, setRenderData] = useState([]);
+
   const contentData = [
-    { name: "North West", station: "51101", id: 0 },
-    { name: "Hanalei", station: "51208", id: 1 },
+    { name: "North West", station: "51101", id: 0, tag: "buoy" },
+    { name: "Hanalei", station: "51208", id: 1, tag: "buoy" },
+    { name: "Hanalei", station: "1611683", id: 2, tag: "tide" },
+    { name: "North West", station: "51101", id: 3, tag: "power" },
+    { name: "Hanalei", station: "51208", id: 4, tag: "power" },
   ];
-  let render_data = [];
+
+  const handleGridCall = (item) => {
+    console.log("in handle grid call");
+    console.log(item.station);
+    if (item.tag === "buoy") {
+      return <StationInput id={item.station} />;
+    }
+    if (item.tag === "power") {
+      return <Power id={item.station} />;
+    }
+    if (item.tag === "tide") {
+      return (
+        <Tide
+          id={item.station}
+          beginDate={20241106}
+          endDate={20241109}
+          timeZone={"LST"}
+        />
+      );
+    }
+    return <></>;
+  };
+
   const handleChange = (e) => {
     setStationId(e.target.value);
   };
   const handleItemClick = (item) => {
-    console.log(`You clicked on ${item.name}`);
-    contentData.push(item.station)
-    // Perform any action here (navigate, update state, etc.)
+    setRenderData((prevData) => [...prevData, item]);
   };
   function renderStation() {
+    console.log("in renderStation");
     if (stationId.length === 5) {
       return <StationInput id={stationId} />;
     }
@@ -63,7 +92,7 @@ function App() {
 
   return (
     <div>
-      <Container>
+      <Container fluid>
         <Sidebar
           as={Menu}
           animation="push"
@@ -71,7 +100,6 @@ function App() {
           inverted
           vertical
           visible
-          width="wide"
         >
           <section className="garamond">
             <div className="navy georgia ma0 grow">
@@ -87,33 +115,41 @@ function App() {
             </div>
             <List link>
               {contentData.map((data) => (
-                <ListItem key={data.id} onClick={()=> handleItemClick(data)}>
+                <ListItem key={data.id} onClick={() => handleItemClick(data)}>
                   {data.name}
                 </ListItem>
               ))}
             </List>
           </section>
         </Sidebar>
-        <SidebarPusher>
-          <SegmentGroup>
-            <Segment>Top</Segment>
-            <SegmentGroup horizontal>
-              <Segment placeholder>
-                <Grid columns={2} stackable textAlign="center">
-                  <Divider vertical></Divider>
-                  <GridRow verticalAlign="middle">
-                    <GridColumn>{renderTide()}</GridColumn>
-                    <GridColumn>{renderPower()}</GridColumn>
-                  </GridRow>
-                </Grid>
-              </Segment>
-            </SegmentGroup>
-            <SegmentGroup>
-              <Segment>{renderStation()}</Segment>
-            </SegmentGroup>
-            <Segment>Bottom</Segment>
-          </SegmentGroup>
-        </SidebarPusher>
+        <div>
+          <Container style={{ width: "80%" }}>
+            <SidebarPusher fluid>
+              <SegmentGroup fluid container>
+                <Segment>Top</Segment>
+                <SegmentGroup horizontal fluid>
+                  <Segment placeholder fluid>
+                    <Grid stackable columns={2}>
+                      {renderData.map((item) => (
+                        <GridColumn key={item.id} textAlign="center" fluid>
+                          <Card fluid>
+                            <CardContent fluid>
+                              <CardHeader>{item.station}</CardHeader>
+                              <CardDescription>
+                                {handleGridCall(item)}
+                              </CardDescription>
+                            </CardContent>
+                          </Card>
+                        </GridColumn>
+                      ))}
+                    </Grid>
+                  </Segment>
+                </SegmentGroup>
+                <Segment>Bottom</Segment>
+              </SegmentGroup>
+            </SidebarPusher>
+          </Container>
+        </div>
       </Container>
     </div>
   );

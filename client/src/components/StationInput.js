@@ -39,7 +39,7 @@ const StationInput = ({ id }) => {
                         <Table.Row key={row}>
                             {
                                 row.map((val) =>
-                                    <TableCell key={val}>{val}</TableCell>)
+                                    <TableCell key={val} style={{padding: '5px'}}>{val}</TableCell>)
                             }
                         </Table.Row>
                     )

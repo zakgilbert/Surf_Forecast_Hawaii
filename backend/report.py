@@ -2,16 +2,14 @@ import requests
 import pandas as pd
 from BuoyReading import *
 from util import *
-import datetime
+from datetime import datetime, timedelta
 
 def getReport(id):
-
     url = f'https://www.ndbc.noaa.gov/data/realtime2/{id}.spec'  # Replace with the URL of the file you want to download
 
     response = requests.get(url)
-
     toolTips = [
-        "Curent Time",
+        "Current Time",
         "Wave Height",
         "Swell Height",
         "Swell Period",
@@ -24,43 +22,49 @@ def getReport(id):
         "Mean Wave Direction"
     ]
 
-    if response.status_code == 200:
-        reports = response.text.splitlines()
-        cols = reports[0].split()
-        rows = []
-        columns = []
-        del reports[:2]
-        for report in reports:
-            row = report.split()
-            
-            row[cols.index('WVHT')] = meters_feet(row[cols.index('WVHT')])
-            row[cols.index('SwH')] = meters_feet(row[cols.index('SwH')])
-            row[cols.index('WWH')] = meters_feet(row[cols.index('WWH')])
+    if response.status_code != 200:
+        return [f'Error: {response.status_code}']
 
-            d = datetime.datetime(int(row[cols.index('#YY')]),
-                                  int(row[cols.index('MM')]), 
-                                  int(row[cols.index('DD')]), 
-                                  int(row[cols.index('hh')]),
-                                  int(row[cols.index('mm')]))
-            
-            d_to_hawaii_time = hawaii_12_hour(d)
+    reports = response.text.splitlines()
+    cols = reports[0].split()
+    rows = []
+    columns = []
+    del reports[:2]
+
+    # Define the time window of interest (last 48 hours)
+    cutoff_time = datetime.utcnow() - timedelta(days=2)
+
+    for report in reports:
+        row = report.split()
+
+        # Convert heights to feet
+        row[cols.index('WVHT')] = meters_feet(row[cols.index('WVHT')])
+        row[cols.index('SwH')] = meters_feet(row[cols.index('SwH')])
+        row[cols.index('WWH')] = meters_feet(row[cols.index('WWH')])
+
+        # Parse the date and time of the report
+        report_time = datetime(
+            int(row[cols.index('#YY')]),
+            int(row[cols.index('MM')]), 
+            int(row[cols.index('DD')]), 
+            int(row[cols.index('hh')]),
+            int(row[cols.index('mm')])
+        )
+
+        # Filter rows based on the cutoff time
+        if report_time >= cutoff_time:
+            d_to_hawaii_time = hawaii_12_hour(report_time)
             del row[:5]
             row.insert(0, d_to_hawaii_time)
             rows.append(row)
 
-        del cols[:5]
-        cols.insert(0, 'Time')
+    del cols[:5]
+    cols.insert(0, 'Time')
 
-        for col, toolTip in zip(cols, toolTips):
-            c = {
-                'value': col,
-                'toolTip': toolTip
-            }
-            columns.append(c)
-        return {
-            "cols": columns,
-            "rows": rows
-        }
+    for col, toolTip in zip(cols, toolTips):
+        columns.append({'value': col, 'toolTip': toolTip})
 
-    else:
-        return [f'Error: {response.status_code}']
+    return {
+        "cols": columns,
+        "rows": rows
+    }
