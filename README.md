@@ -4,8 +4,13 @@ A surf report web application
 ## Running Project
 
 With two terminals
-- cd backend
-- python3 server.py
-
-- cd client
-- npm run start
+- Terminal 1
+    ```
+    cd backend 
+    Python3 server.py
+    ```
+- Terminal 2
+  ```
+  cd client
+  npm run start
+  ```
