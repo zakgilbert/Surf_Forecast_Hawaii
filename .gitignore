@@ -36,3 +36,67 @@ typings/
 
 # Yarn Integrity file
 .yarn-integrity
+
+# Node.js / React.js specific
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+build/
+dist/
+coverage/
+
+# React development build output
+public/build/
+public/static/
+*.env
+
+# Logs
+*.log
+*.log.*
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Python specific
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+venv.bak/
+ENV/
+env.bak/
+*.egg-info/
+*.egg
+
+# Virtual environment
+venv/
+
+# Python dependency directories
+.pip/
+__pypackages__/
+
+# JetBrains / PyCharm IDE files
+.idea/
+
+# VS Code settings
+.vscode/
+
+# Flask / Django specific (if using these frameworks)
+instance/
+.pytest_cache/
+coverage/
+
+# Other editor or IDE specific files
+.vscode/
+*.swp
+
+# PyCharm, Sublime Text, etc. IDEs
+.idea/
+*.sublime-workspace
+*.sublime-project
+
