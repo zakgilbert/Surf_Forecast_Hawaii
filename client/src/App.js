@@ -1,9 +1,9 @@
-import React, { useState, useEffectntainer } from "react";
+import React, { useState, useEffect } from "react";
 import StationInput from "./components/StationInput.js";
 import Power from "./components/Power.js";
 import PowerGraph from "./components/PowerGraph.js";
 import Tide from "./components/Tide.js";
-
+import { CONTENT_DATA } from "./constants.js";
 import {
   Segment,
   SegmentGroup,
@@ -26,19 +26,12 @@ import {
   CardContent,
   CardHeader,
   CardDescription,
+  CardMeta,
 } from "semantic-ui-react";
 
 function App() {
   const [stationId, setStationId] = useState("");
   const [renderData, setRenderData] = useState([]);
-
-  const contentData = [
-    { name: "North West", station: "51101", id: 0, tag: "buoy" },
-    { name: "Hanalei", station: "51208", id: 1, tag: "buoy" },
-    { name: "Hanalei", station: "1611683", id: 2, tag: "tide" },
-    { name: "North West", station: "51101", id: 3, tag: "power" },
-    { name: "Hanalei", station: "51208", id: 4, tag: "power" },
-  ];
 
   const handleGridCall = (item) => {
     console.log("in handle grid call");
@@ -114,7 +107,7 @@ function App() {
               />
             </div>
             <List link>
-              {contentData.map((data) => (
+              {CONTENT_DATA.map((data) => (
                 <ListItem key={data.id} onClick={() => handleItemClick(data)}>
                   {data.name}
                 </ListItem>
@@ -134,7 +127,8 @@ function App() {
                         <GridColumn key={item.id} textAlign="center" fluid>
                           <Card fluid>
                             <CardContent fluid>
-                              <CardHeader>{item.station}</CardHeader>
+                              <CardHeader>{item.header}</CardHeader>
+                              <CardMeta>{item.meta}</CardMeta>
                               <CardDescription>
                                 {handleGridCall(item)}
                               </CardDescription>

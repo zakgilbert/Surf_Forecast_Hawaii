@@ -21,6 +21,7 @@ import {
   Label,
 } from "recharts";
 import moment from "moment"; // Import moment.js for date formatting
+import { CHART_HEIGHT } from "../constants";
 
 const Power = ({ id }) => {
   const [data, setData] = useState([{}]);
@@ -36,10 +37,7 @@ const Power = ({ id }) => {
 
   return data !== undefined ? (
     <Container textAlign="center">
-      <Header as="h2" color="blue">
-        Swell Power
-      </Header>
-      <ResponsiveContainer width="100%" height={360}>
+      <ResponsiveContainer width="100%" height={CHART_HEIGHT}>
         <LineChart
           data={data}
           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
