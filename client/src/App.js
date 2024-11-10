@@ -4,6 +4,8 @@ import Power from "./components/Power.js";
 import PowerGraph from "./components/PowerGraph.js";
 import Tide from "./components/Tide.js";
 import { CONTENT_DATA } from "./constants.js";
+import { getTideBeginAndEndDates } from "./utility.js";
+
 import {
   Segment,
   SegmentGroup,
@@ -17,7 +19,6 @@ import {
   Button,
   Sidebar,
   Menu,
-  Link,
   SidebarPusher,
   Container,
   List,
@@ -43,11 +44,12 @@ function App() {
       return <Power id={item.station} />;
     }
     if (item.tag === "tide") {
+      const beginAndEndDates = getTideBeginAndEndDates();
       return (
         <Tide
           id={item.station}
-          beginDate={20241106}
-          endDate={20241109}
+          beginDate={beginAndEndDates.beginDate}
+          endDate={beginAndEndDates.endDate}
           timeZone={"LST"}
         />
       );
@@ -81,7 +83,13 @@ function App() {
     }
     return <></>;
   }
-  function renderForecast() {}
+  const groupedData = CONTENT_DATA.reduce((acc, item) => {
+    if (!acc[item.tag]) {
+      acc[item.tag] = [];
+    }
+    acc[item.tag].push(item);
+    return acc;
+  }, {});
 
   return (
     <div>
@@ -93,6 +101,7 @@ function App() {
           inverted
           vertical
           visible
+          direction="left"
         >
           <section className="garamond">
             <div className="navy georgia ma0 grow">
@@ -106,13 +115,34 @@ function App() {
                 onChange={handleChange}
               />
             </div>
-            <List link>
-              {CONTENT_DATA.map((data) => (
-                <ListItem key={data.id} onClick={() => handleItemClick(data)}>
-                  {data.name}
-                </ListItem>
+            <div>
+              {Object.keys(groupedData).map((tag) => (
+                <div
+                  key={tag}
+                  style={{
+                    textAlign: "left",
+                    color: "white",
+                    marginTop: "20px",
+                    marginBottom: "5px",
+                    marginLeft: "10px",
+                  }}
+                >
+                  <h3>{tag.charAt(0).toUpperCase() + tag.slice(1)}</h3>
+                  <List link direction="left">
+                    {groupedData[tag].map((data) => (
+                      <List.Item key={data.id}>
+                        <a
+                          onClick={() => handleItemClick(data)}
+                          style={{ display: "block", textAlign: "left" }} // Make <a> block and align text to the left
+                        >
+                          {data.name}
+                        </a>
+                      </List.Item>
+                    ))}
+                  </List>
+                </div>
               ))}
-            </List>
+            </div>
           </section>
         </Sidebar>
         <div>
