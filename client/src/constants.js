@@ -281,4 +281,12 @@ export const CONTENT_DATA = [
     header: "",
     meta: "",
   },
+  {
+    name: "Pacific",
+    station: "0",
+    id: 35,
+    tag: "wave-model",
+    header: "",
+    meta: "",
+  },
 ];

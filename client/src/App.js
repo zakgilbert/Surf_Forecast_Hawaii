@@ -4,6 +4,7 @@ import Power from "./components/Power.js";
 import Tide from "./components/Tide.js";
 import Forecast from "./components/Forecast.js";
 import MarineForecast from "./components/MarineForecast.js";
+import AnimatedWaveModel from "./components/AnimatedWaveModel.js";
 import { CONTENT_DATA } from "./constants.js";
 import { getTideBeginAndEndDates } from "./utility.js";
 
@@ -61,7 +62,14 @@ function App() {
     if (item.tag === "marine-forecast") {
       return <MarineForecast id={item.station} />;
     }
+    if (item.tag === "wave-model") {
+      return <AnimatedWaveModel/>;
+    }
     return <></>;
+  };
+
+  const clearGrid = () => {
+    setRenderData([]);
   };
 
   const handleChange = (e) => {
@@ -97,7 +105,6 @@ function App() {
     acc[item.tag].push(item);
     return acc;
   }, {});
-
   return (
     <div>
       <Container fluid>
@@ -140,7 +147,7 @@ function App() {
                       <List.Item key={data.id}>
                         <a
                           onClick={() => handleItemClick(data)}
-                          style={{ display: "block", textAlign: "left" }} // Make <a> block and align text to the left
+                          style={{ display: "block", textAlign: "left" }}
                         >
                           {data.name}
                         </a>
@@ -152,33 +159,50 @@ function App() {
             </div>
           </section>
         </Sidebar>
-        <div>
-          <Container style={{ width: "80%" }}>
-            <SidebarPusher fluid>
-              <SegmentGroup fluid container>
-                <SegmentGroup horizontal fluid>
-                  <Segment placeholder fluid>
-                    <Grid stackable columns={2}>
-                      {renderData.map((item) => (
-                        <GridColumn key={item.id} textAlign="center" fluid>
-                          <Card fluid>
-                            <CardContent fluid>
-                              <CardHeader>{item.header}</CardHeader>
-                              <CardMeta>{item.meta}</CardMeta>
-                              <CardDescription>
-                                {handleGridCall(item)}
-                              </CardDescription>
-                            </CardContent>
-                          </Card>
-                        </GridColumn>
-                      ))}
-                    </Grid>
-                  </Segment>
+
+        {/* Conditional rendering for the Refresh button and grid */}
+        {renderData.length > 0 && (
+          <div>
+            <Button
+              onClick={clearGrid}
+              color="red"
+              style={{
+                position: "absolute",
+                top: "10px",
+                right: "10px",
+                zIndex: 1,
+              }}
+            >
+              Refresh
+            </Button>
+            <Container style={{ width: "80%" }}>
+              <SidebarPusher fluid>
+                <SegmentGroup fluid container>
+                  <SegmentGroup horizontal fluid>
+                    <Divider></Divider>
+                    <Segment placeholder fluid>
+                      <Grid stackable columns={2}>
+                        {renderData.map((item) => (
+                          <GridColumn key={item.id} textAlign="center" fluid>
+                            <Card fluid>
+                              <CardContent fluid>
+                                <CardHeader>{item.header}</CardHeader>
+                                <CardMeta>{item.meta}</CardMeta>
+                                <CardDescription>
+                                  {handleGridCall(item)}
+                                </CardDescription>
+                              </CardContent>
+                            </Card>
+                          </GridColumn>
+                        ))}
+                      </Grid>
+                    </Segment>
+                  </SegmentGroup>
                 </SegmentGroup>
-              </SegmentGroup>
-            </SidebarPusher>
-          </Container>
-        </div>
+              </SidebarPusher>
+            </Container>
+          </div>
+        )}
       </Container>
     </div>
   );
