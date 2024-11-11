@@ -3,6 +3,7 @@ import StationInput from "./components/StationInput.js";
 import Power from "./components/Power.js";
 import Tide from "./components/Tide.js";
 import Forecast from "./components/Forecast.js";
+import MarineForecast from "./components/MarineForecast.js";
 import { CONTENT_DATA } from "./constants.js";
 import { getTideBeginAndEndDates } from "./utility.js";
 
@@ -56,6 +57,9 @@ function App() {
     }
     if (item.tag === "forecast") {
       return <Forecast id={item.station} />;
+    }
+    if (item.tag === "marine-forecast") {
+      return <MarineForecast id={item.station} />;
     }
     return <></>;
   };
@@ -152,7 +156,6 @@ function App() {
           <Container style={{ width: "80%" }}>
             <SidebarPusher fluid>
               <SegmentGroup fluid container>
-                <Segment>Top</Segment>
                 <SegmentGroup horizontal fluid>
                   <Segment placeholder fluid>
                     <Grid stackable columns={2}>
@@ -172,7 +175,6 @@ function App() {
                     </Grid>
                   </Segment>
                 </SegmentGroup>
-                <Segment>Bottom</Segment>
               </SegmentGroup>
             </SidebarPusher>
           </Container>

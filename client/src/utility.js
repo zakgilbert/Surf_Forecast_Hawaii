@@ -11,7 +11,7 @@ export const getTideBeginAndEndDates = () => {
 
   // Add 3 days to the current date
   const endDate = getFormattedDate(
-    new Date(today.setDate(today.getDate() + 1))
+    new Date(today.setDate(today.getDate() + 2))
   );
   return {
     beginDate: beginDate,

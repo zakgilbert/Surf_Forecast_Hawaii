@@ -1,10 +1,11 @@
+
 import React, { useState, useEffect } from "react";
 
-const Forecast = ({ id }) => {
+const MarineForecast = ({ id }) => {
   const [data, setData] = useState({}); // Initialize as an object instead of array
 
   useEffect(() => {
-    fetch(`/forecast/${id}`)
+    fetch(`/marine-forecast`)
       .then((res) => res.json())
       .then((data) => {
         setData(data); // Set the whole response data as the state
@@ -12,7 +13,7 @@ const Forecast = ({ id }) => {
       });
   }, [id]);
 
-  return data.forecast ? ( // Check if forecast is present
+  return data[id] ? ( // Check if forecast is present
     <div
       style={{
         maxHeight: "400px",
@@ -22,11 +23,11 @@ const Forecast = ({ id }) => {
         textAlign: "left",
       }}
     >
-      <pre>{data.forecast}</pre> {/* Display the forecast */}
+      <pre>{data[id]}</pre> {/* Display the forecast */}
     </div>
   ) : (
     <></> // Render nothing if there's no forecast
   );
 };
 
-export default Forecast;
+export default MarineForecast;

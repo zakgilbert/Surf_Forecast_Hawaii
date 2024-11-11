@@ -3,6 +3,7 @@ from report import *
 from power import *
 from forecast import *
 from tide import *
+from marine_forecast import *
 
 app = Flask(__name__)
 
@@ -16,9 +17,11 @@ def power(id):
 
 @app.route('/forecast/<string:id>')
 def forecast(id):
-    fore = getForecast(id)
-    print(fore)
-    return fore
+    return getForecast(id)
+
+@app.route('/marine-forecast')
+def marineForecast():
+    return get_marine_forecast()
 
 @app.route('/tide/<string:id>/<string:begin_date>/<string:end_date>/<string:time_zone>')
 def tide(id, begin_date,end_date,time_zone):

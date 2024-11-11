@@ -86,6 +86,7 @@ const Tide = ({ id, beginDate, endDate, timeZone }) => {
             type="natural"
             dataKey="v"
             stroke="#8884d8"
+            strokeWidth={2}
             activeDot={{ r: 8 }}
           />
         </LineChart>

@@ -1,4 +1,3 @@
-import json
 import requests
 
 def split_forecast_to_objects(text):
@@ -52,8 +51,3 @@ def getForecast(id):
         return {"forecast": forecast_objects[id]}
     else:
         return {"error": f"Invalid id {id}. Valid range is from 0 to {len(forecast_objects) - 1}."}
-
-
-
-print(getForecast(1))
-# Example usage: Get the forecast for segment 2 (id = 1)
