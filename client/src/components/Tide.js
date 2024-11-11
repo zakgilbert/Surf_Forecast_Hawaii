@@ -21,7 +21,7 @@ import {
   Label,
 } from "recharts";
 import moment from "moment"; // Import moment.js for date formatting
-import { CHART_HEIGHT } from "../constants";
+import { CHART_HEIGHT_NUM } from "../constants";
 
 const Tide = ({ id, beginDate, endDate, timeZone }) => {
   const [data, setData] = useState([{}]);
@@ -45,7 +45,7 @@ const Tide = ({ id, beginDate, endDate, timeZone }) => {
   
   return data !== undefined ? (
     <Container textAlign="center">
-      <ResponsiveContainer width="100%" height={CHART_HEIGHT}>
+      <ResponsiveContainer width="100%" height={CHART_HEIGHT_NUM}>
         <LineChart
           data={data.predictions}
           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}

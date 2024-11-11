@@ -63,7 +63,7 @@ function App() {
       return <MarineForecast id={item.station} />;
     }
     if (item.tag === "wave-model") {
-      return <AnimatedWaveModel/>;
+      return <AnimatedWaveModel id={item.station}/>;
     }
     return <></>;
   };

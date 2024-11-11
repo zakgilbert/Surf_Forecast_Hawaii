@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+import "../App.css"; // Import the CSS file
 
-const AnimatedWaveModel = () => {
+const AnimatedWaveModel = ({id}) => {
   const [images, setImages] = useState([]); // To store the fetched images
   const [loading, setLoading] = useState(true); // To track loading state
   const [currentIndex, setCurrentIndex] = useState(0); // To track current image index
@@ -8,12 +9,10 @@ const AnimatedWaveModel = () => {
   const [intervalId, setIntervalId] = useState(null); // To store the interval ID for controlling animation speed
 
   useEffect(() => {
-    // Fetch images once when the component mounts
     const fetchImages = async () => {
       try {
-        const response = await fetch("/wave-model");
+        const response = await fetch(`/wave-model/${id}`);
         const data = await response.json();
-
         if (data.images) {
           setImages(data.images);
           setLoading(false); // Mark loading as false once images are fetched
@@ -22,68 +21,43 @@ const AnimatedWaveModel = () => {
         console.error("Error fetching wave model images:", error);
       }
     };
-
     fetchImages();
 
-    // Cleanup function to reset state when the component unmounts
     return () => {
-      if (intervalId) {
-        clearInterval(intervalId); // Clear the interval when the component is unmounted
-      }
+      if (intervalId) clearInterval(intervalId);
     };
   }, []);
 
-  // Function to start the animation
-  const startAnimation = () => {
-    const id = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length); // Loop through images
-    }, 500); // Adjust the delay to control the speed of the animation
-    setIntervalId(id);
-    setIsPlaying(true);
-  };
-
-  // Function to pause the animation
-  const pauseAnimation = () => {
-    clearInterval(intervalId); // Clear the interval
-    setIsPlaying(false);
-  };
-
-  // Function to go to the next image
-  const nextImage = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-  };
-
-  // Function to go to the previous image
-  const prevImage = () => {
-    setCurrentIndex(
-      (prevIndex) => (prevIndex - 1 + images.length) % images.length
-    );
-  };
-
-  useEffect(() => {
-    if (isPlaying && images.length > 0) {
-      startAnimation(); // Start animation when the component mounts and if it's playing
+  // Function to start and pause the animation
+  const toggleAnimation = () => {
+    if (isPlaying) {
+      clearInterval(intervalId);
+      setIsPlaying(false);
+    } else {
+      const id = setInterval(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+      }, 500);
+      setIntervalId(id);
+      setIsPlaying(true);
     }
+  };
 
-    // Clean up and stop the animation when it is paused
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-    };
-  }, [isPlaying, images.length]); // Restart animation whenever `isPlaying` changes
+  // Go to the next and previous images
+  const nextImage = () => setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+  const prevImage = () => setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
 
   return (
-    <div
-      style={{
-        position: "relative",
-        width: "100%",
-        height: "440px",
-      }}
-    >
-      {loading && <p>Loading images...</p>}{" "}
-      {/* Show a loading message while images are loading */}
-      {images.length > 0 && (
+    <div style={{ position: "relative", width: "100%", height: "645px" }}>
+      {loading && (
+        <div className="loading-container">
+          <p className="loading-text">Wave Model Loading...</p>
+          <div className="spinner">
+            <div className="double-bounce1"></div>
+            <div className="double-bounce2"></div>
+          </div>
+        </div>
+      )}
+      {!loading && images.length > 0 && (
         <img
           src={`data:image/png;base64,${images[currentIndex]}`}
           alt="Wave Model"
@@ -96,13 +70,10 @@ const AnimatedWaveModel = () => {
           }}
         />
       )}
-      {/* Controls */}
       <div style={{ position: "absolute", top: "10px", left: "10px" }}>
         <button onClick={prevImage}>Previous</button>
         <button onClick={nextImage}>Next</button>
-        <button onClick={isPlaying ? pauseAnimation : startAnimation}>
-          {isPlaying ? "Pause" : "Play"}
-        </button>
+        <button onClick={toggleAnimation}>{isPlaying ? "Pause" : "Play"}</button>
       </div>
     </div>
   );

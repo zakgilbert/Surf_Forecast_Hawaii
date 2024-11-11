@@ -1,4 +1,5 @@
-export const CHART_HEIGHT = 400;
+export const CHART_HEIGHT_STR = "600px";
+export const CHART_HEIGHT_NUM= 600;
 export const TIDE_CHART_DAYS = 2;
 export const CONTENT_DATA = [
   {
@@ -282,11 +283,55 @@ export const CONTENT_DATA = [
     meta: "",
   },
   {
-    name: "Pacific",
-    station: "0",
+    name: "Pacific Ocean",
+    station: "pac",
     id: 35,
     tag: "wave-model",
     header: "",
     meta: "",
   },
+  {
+    name: "North Pacific",
+    station: "npac",
+    id: 36,
+    tag: "wave-model",
+    header: "",
+    meta: "",
+  },
+  {
+    name: "South Pacific",
+    station: "spac",
+    id: 37,
+    tag: "wave-model",
+    header: "",
+    meta: "",
+  },
+  {
+    name: "Indian Ocean",
+    station: "indi",
+    id: 38,
+    tag: "wave-model",
+    header: "",
+    meta: "",
+  },
+  {
+    name: "North Atlantic",
+    station: "natla",
+    id: 39,
+    tag: "wave-model",
+    header: "",
+    meta: "",
+  },
+  {
+    name: "South Atlantic",
+    station: "satla",
+    id: 40,
+    tag: "wave-model",
+    header: "",
+    meta: "",
+  }
+
+
+
+
 ];

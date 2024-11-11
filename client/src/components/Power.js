@@ -11,7 +11,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import moment from "moment"; // Import moment.js for date formatting
-import { CHART_HEIGHT } from "../constants";
+import { CHART_HEIGHT_NUM } from "../constants";
 
 const Power = ({ id }) => {
   const [data, setData] = useState([{}]);
@@ -64,7 +64,7 @@ const Power = ({ id }) => {
   return data !== undefined ? (
     <Container textAlign="center">
       {/* Main Chart */}
-      <ResponsiveContainer width="100%" height={CHART_HEIGHT}>
+      <ResponsiveContainer width="100%" height={CHART_HEIGHT_NUM}>
         <LineChart
           data={data}
           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}

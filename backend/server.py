@@ -29,18 +29,17 @@ def marineForecast():
 def tide(id, begin_date,end_date,time_zone):
     return getTide(id, begin_date,end_date,time_zone)
 
-@app.route('/wave-model')
-def waveModel():
+@app.route('/wave-model/<string:id>')
+def waveModel(id):
     images = []
     # Loop over hours from 0 to 180 in 6-hour increments
     for hr in range(0, 186, 6):
-        image_base64 = getWaveModel(hr)
+        image_base64 = getWaveModel(id, hr)
         
         if image_base64:  # Only append if the image was fetched successfully
             images.append(image_base64)
         
         # Optionally, you can add a delay between requests (e.g., 1 second)
-        time.sleep(0.5)
     return jsonify({'images': images})
 
 if __name__ == "__main__":

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { CHART_HEIGHT_STR } from "../constants";
+
 
 const Forecast = ({ id }) => {
   const [data, setData] = useState({}); // Initialize as an object instead of array
@@ -15,7 +17,7 @@ const Forecast = ({ id }) => {
   return data.forecast ? ( // Check if forecast is present
     <div
       style={{
-        maxHeight: "600px",
+        maxHeight: CHART_HEIGHT_STR,
         overflowY: "scroll",
         border: "1px solid #ccc",
         padding: "10px",
