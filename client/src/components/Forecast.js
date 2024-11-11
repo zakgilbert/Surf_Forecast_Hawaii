@@ -15,11 +15,12 @@ const Forecast = ({ id }) => {
   return data.forecast ? ( // Check if forecast is present
     <div
       style={{
-        maxHeight: "400px",
+        maxHeight: "600px",
         overflowY: "scroll",
         border: "1px solid #ccc",
         padding: "10px",
         textAlign: "left",
+        height: "700px"
       }}
     >
       <pre>{data.forecast}</pre> {/* Display the forecast */}

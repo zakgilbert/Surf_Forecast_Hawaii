@@ -40,7 +40,7 @@ def waveModel():
             images.append(image_base64)
         
         # Optionally, you can add a delay between requests (e.g., 1 second)
-        time.sleep(1)
+        time.sleep(0.5)
     return jsonify({'images': images})
 
 if __name__ == "__main__":
