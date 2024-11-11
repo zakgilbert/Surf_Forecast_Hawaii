@@ -105,4 +105,55 @@ export const CONTENT_DATA = [
     header: "Tide Predictions at 1612668",
     meta: "Haleiwa, Waialua Bay, HI",
   },
+  {
+    name: "Overview",
+    station: "0",
+    id: 13,
+    tag: "forecast",
+    header: "Forecast",
+    meta: "Kauai, HI",
+  },
+  {
+    name: "Kauai",
+    station: "1",
+    id: 14,
+    tag: "forecast",
+    header: "Forecast",
+    meta: "Kauai, HI",
+  },
+  {
+    name: "O'ahu",
+    station: "2",
+    id: 15,
+    tag: "forecast",
+    header: "Forecast",
+    meta: "O'ahu, HI",
+  },
+  {
+    name: "Maui",
+    station: "3",
+    id: 16,
+    tag: "forecast",
+    header: "Forecast",
+    meta: "Maui, HI",
+  },
+  {
+    name: "Big Island Windward and Southeast",
+    station: "4",
+    id: 17,
+    tag: "forecast",
+    header: "Forecast",
+    meta: "Hawaii, HI",
+  },
+  {
+    name: "Big Island Leeward",
+    station: "5",
+    id: 18,
+    tag: "forecast",
+    header: "Forecast",
+    meta: "Hawaii, HI",
+  }
+
+
+
 ];

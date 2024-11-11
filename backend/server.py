@@ -14,9 +14,11 @@ def report(id):
 def power(id):
     return getSwellPower(id)
 
-@app.route('/forecast')
-def forecast():
-    return getForecast()
+@app.route('/forecast/<string:id>')
+def forecast(id):
+    fore = getForecast(id)
+    print(fore)
+    return fore
 
 @app.route('/tide/<string:id>/<string:begin_date>/<string:end_date>/<string:time_zone>')
 def tide(id, begin_date,end_date,time_zone):

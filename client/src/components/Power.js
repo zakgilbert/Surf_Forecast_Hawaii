@@ -29,15 +29,27 @@ const Power = ({ id }) => {
     if (active && payload && payload.length) {
       const selectedPoint = payload[0].payload; // The selected data point from the chart
       return (
-        <div style={{ backgroundColor: "#fff", padding: "10px", border: "1px solid #ddd" }}>
+        <div
+          style={{
+            backgroundColor: "#fff",
+            padding: "20px", // Increased padding
+            border: "2px solid #ddd", // Make border slightly thicker
+            borderRadius: "8px", // Add rounded corners for better visual appeal
+            fontSize: "16px", // Increase font size
+            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", // Add a subtle shadow for better visibility
+            width: "300px", // Increase width of the tooltip container
+          }}
+        >
           <p>{moment(label).format("MMM D, YYYY h:mm A")}</p>
-          <p><strong>Energy Value: </strong>{selectedPoint.value}</p>
+          <p>
+            <strong>Energy Value: </strong>{selectedPoint.value}
+          </p>
 
           {/* Render the line chart inside the tooltip */}
-          <ResponsiveContainer width={200} height={100}>
+          <ResponsiveContainer width="100%" height={150}> {/* Increase height */}
             <LineChart data={selectedPoint.values}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="frequency" label={{ value: "Frequency(Hz)", dy: 12  }} />
+              <XAxis dataKey="frequency" label={{ value: "Frequency (Hz)", dy: 12 }} />
               <YAxis label={{ value: "Energy", angle: -90 }} />
               <Line type="monotone" dataKey="energy" stroke="#82ca9d" dot={false} />
             </LineChart>

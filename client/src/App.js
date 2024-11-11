@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import StationInput from "./components/StationInput.js";
 import Power from "./components/Power.js";
-import PowerGraph from "./components/PowerGraph.js";
 import Tide from "./components/Tide.js";
+import Forecast from "./components/Forecast.js";
 import { CONTENT_DATA } from "./constants.js";
 import { getTideBeginAndEndDates } from "./utility.js";
 
@@ -53,6 +53,9 @@ function App() {
           timeZone={"LST"}
         />
       );
+    }
+    if (item.tag === "forecast") {
+      return <Forecast id={item.station} />;
     }
     return <></>;
   };
