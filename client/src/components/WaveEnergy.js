@@ -1,6 +1,6 @@
-
 import React, { useState, useEffect } from "react";
-import { Container } from "semantic-ui-react";
+import { Container , Table} from "semantic-ui-react";
+import moment from "moment"; // Import moment.js for date formatting
 import {
   LineChart,
   Line,
@@ -25,6 +25,46 @@ const WaveEnergy = ({ id }) => {
       });
   }, [id]);
 
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      const selectedPoint = payload[0].payload; // The selected data point from the chart
+  
+      return (
+        <Table celled>
+          <Table.Body>
+            <Table.Row>
+              <Table.Cell style={{ padding: '5px' }}>
+                <strong>Energy:</strong>
+              </Table.Cell>
+              <Table.Cell style={{ padding: '5px' }}>
+                {selectedPoint.energy} units
+              </Table.Cell>
+            </Table.Row>
+  
+            <Table.Row>
+              <Table.Cell style={{ padding: '5px' }}>
+                <strong>Period:</strong>
+              </Table.Cell>
+              <Table.Cell style={{ padding: '5px' }}>
+                {(1 / selectedPoint.frequency).toFixed(2)} seconds
+              </Table.Cell>
+            </Table.Row>
+  
+            <Table.Row>
+              <Table.Cell style={{ padding: '5px' }}>
+                <strong>Swell Direction:</strong>
+              </Table.Cell>
+              <Table.Cell style={{ padding: '5px' }}>
+                {selectedPoint.cord1}&deg;
+              </Table.Cell>
+            </Table.Row>
+          </Table.Body>
+        </Table>
+      );
+    }
+  
+    return null;
+  };
   return data !== undefined ? (
     <Container textAlign="center">
       {/* Main Chart */}
@@ -34,9 +74,7 @@ const WaveEnergy = ({ id }) => {
           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="frequency" 
-          />
+          <XAxis dataKey="frequency" />
           <YAxis
             label={{
               value: "Energy Value",
@@ -44,13 +82,11 @@ const WaveEnergy = ({ id }) => {
               position: "insideLeft",
             }}
           />
-          <Tooltip>
-
-          </Tooltip>
+          <Tooltip content={<CustomTooltip />} />
           <Legend />
           <Line
             type="monotone"
-            dataKey="energy" 
+            dataKey="energy"
             stroke="#82ca9d"
             activeDot={{ r: 8 }}
           />

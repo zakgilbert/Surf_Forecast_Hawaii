@@ -62,7 +62,6 @@ const StationInput = ({ id }) => {
                     </Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
-
                 <Table.Body>
                   {data.cols.slice(1, 7).map((col, index) => (
                     <Table.Row key={index}>
