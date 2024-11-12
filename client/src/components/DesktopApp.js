@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import StationInput from "./components/StationInput.js";
-import Power from "./components/Power.js";
-import Tide from "./components/Tide.js";
-import Forecast from "./components/Forecast.js";
-import MarineForecast from "./components/MarineForecast.js";
-import AnimatedWaveModel from "./components/AnimatedWaveModel.js";
-import { CONTENT_DATA } from "./constants.js";
-import { getTideBeginAndEndDates } from "./utility.js";
+import StationInput from "./StationInput.js";
+import Power from "./Power.js";
+import Tide from "./Tide.js";
+import Forecast from "./Forecast.js";
+import MarineForecast from "./MarineForecast.js";
+import AnimatedWaveModel from "./AnimatedWaveModel.js";
+import { CONTENT_DATA } from "../constants.js";
+import { getTideBeginAndEndDates } from "../utility.js";
 
 import {
   Segment,
