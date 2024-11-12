@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import StationInput from "./StationInput.js";
 import Power from "./Power.js";
 import Tide from "./Tide.js";
@@ -37,8 +37,6 @@ function App() {
   const [renderData, setRenderData] = useState([]);
 
   const handleGridCall = (item) => {
-    console.log("in handle grid call");
-    console.log(item.station);
     if (item.tag === "buoy") {
       return <StationInput id={item.station} />;
     }
@@ -104,6 +102,7 @@ function App() {
     }
     acc[item.tag].push(item);
     return acc;
+
   }, {});
   return (
     <div>
