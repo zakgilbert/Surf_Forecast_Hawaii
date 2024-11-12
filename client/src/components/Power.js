@@ -44,6 +44,9 @@ const Power = ({ id }) => {
           <p>
             <strong>Energy Value: </strong>{selectedPoint.value}
           </p>
+          <p>
+            <strong>Peroid: </strong>{(1 / selectedPoint.frequency).toFixed(2)} seconds
+          </p>
 
           {/* Render the line chart inside the tooltip */}
           <ResponsiveContainer width="100%" height={150}> {/* Increase height */}

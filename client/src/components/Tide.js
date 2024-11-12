@@ -31,18 +31,9 @@ const Tide = ({ id, beginDate, endDate, timeZone }) => {
       .then((res) => res.json())
       .then((data) => {
         setData(data);
-        console.log(data);
       });
   }, [id, beginDate, endDate, timeZone]);
 
-  // Helper function to check if the time is day or night
-  const isDayTime = (timeStr) => {
-    const hour = moment(timeStr, "YYYY-MM-DD hh:mm A").hour();
-    return hour >= 6 && hour < 18; // Day is from 6 AM to 6 PM
-  };
-
-
-  
   return data !== undefined ? (
     <Container textAlign="center">
       <ResponsiveContainer width="100%" height={CHART_HEIGHT_NUM}>
@@ -55,7 +46,7 @@ const Tide = ({ id, beginDate, endDate, timeZone }) => {
             dataKey="t"
             tickFormatter={(timeStr) =>
               moment(timeStr, "YYYY-MM-DD hh:mm A").format("MMM D, h:mm A")
-            } // Format for x-axis
+            }
           />
           <YAxis
             label={{

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Container , Table} from "semantic-ui-react";
-import moment from "moment"; // Import moment.js for date formatting
+import { Container , Tab, Table} from "semantic-ui-react";
+import moment from "moment";
 import {
   LineChart,
   Line,
@@ -11,7 +11,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { CHART_HEIGHT_NUM } from "../constants";
 
 const WaveEnergy = ({ id }) => {
   const [data, setData] = useState([{}]);
@@ -21,16 +20,18 @@ const WaveEnergy = ({ id }) => {
       .then((res) => res.json())
       .then((data) => {
         setData(data);
-        console.log(data[0]); // Check the data fetched
+        console.log(data)
       });
   }, [id]);
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
-      const selectedPoint = payload[0].payload; // The selected data point from the chart
-  
+      const selectedPoint = payload[0].payload;
+      
       return (
         <Table celled>
+          <Table.Header>
+          </Table.Header>
           <Table.Body>
             <Table.Row>
               <Table.Cell style={{ padding: '5px' }}>
@@ -55,7 +56,7 @@ const WaveEnergy = ({ id }) => {
                 <strong>Swell Direction:</strong>
               </Table.Cell>
               <Table.Cell style={{ padding: '5px' }}>
-                {selectedPoint.cord1}&deg;
+                {(selectedPoint.cord1 + selectedPoint.cord2) / 2}&deg;
               </Table.Cell>
             </Table.Row>
           </Table.Body>
@@ -67,7 +68,7 @@ const WaveEnergy = ({ id }) => {
   };
   return data !== undefined ? (
     <Container textAlign="center">
-      {/* Main Chart */}
+          <p>{moment(data[0].dataTime).format("MMM D, YYYY h:mm A")}</p>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart
           data={data[0].values}
@@ -87,7 +88,7 @@ const WaveEnergy = ({ id }) => {
           <Line
             type="monotone"
             dataKey="energy"
-            stroke="#82ca9d"
+            stroke="#d46a6a "
             activeDot={{ r: 8 }}
           />
         </LineChart>

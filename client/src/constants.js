@@ -329,6 +329,22 @@ export const CONTENT_DATA = [
     tag: "wave-model",
     header: "",
     meta: "",
+  },
+  {
+    name: "Barber's Point",
+    station: "51212",
+    id: 41,
+    tag: "buoy",
+    header: "Buoy Station 51212",
+    meta: "Barbers Point, Kalaeloa, HI",
+  },
+  {
+    name: "Barber's Point",
+    station: "51212",
+    id: 42,
+    tag: "power",
+    header: "Wave Energy for Station 51212",
+    meta: "Barbers Point, Kalaeloa, HI",
   }
 
 

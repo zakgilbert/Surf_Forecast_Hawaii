@@ -41,7 +41,7 @@ const StationInput = ({ id }) => {
   }, [id]);
 
   return data.cols !== undefined && data.rows !== undefined ? (
-    <div style={{ maxHeight: CHART_HEIGHT_STR }}>
+    <div style={{ maxHeight: "613px" }}>
       <Grid container stackable columns={2} divided>
         <GridRow>
           <GridColumn width={5}>
@@ -107,7 +107,7 @@ const StationInput = ({ id }) => {
         </GridRow>
       </Grid>
       <Divider></Divider>
-      <div style={{ height: "200px", overflowY: "auto" }}>
+      <div style={{ height: "210px", overflowY: "auto" }}>
         <Table celled>
           <Table.Header>
             <Table.Row>
