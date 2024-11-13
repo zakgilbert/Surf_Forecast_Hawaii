@@ -1,3 +1,11 @@
+import StationInput from "./components/StationInput.js";
+import Power from "./components/Power.js";
+import Tide from "./components/Tide.js";
+import Forecast from "./components/Forecast.js";
+import MarineForecast from "./components/MarineForecast.js";
+import AnimatedWaveModel from "./components/AnimatedWaveModel.js";
+import { CONTENT_DATA } from "./constants.js";
+
 const getFormattedDate = (date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is 0-indexed
@@ -19,6 +27,44 @@ export const getTideBeginAndEndDates = () => {
   };
 };
 
-export function isMobile() {
+export const isMobile = () => {
   return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-}
+};
+
+export const handleGridCall = (item) => {
+  if (item.tag === "buoy") {
+    return <StationInput id={item.station} />;
+  }
+  if (item.tag === "power") {
+    return <Power id={item.station} />;
+  }
+  if (item.tag === "tide") {
+    const beginAndEndDates = getTideBeginAndEndDates();
+    return (
+      <Tide
+        id={item.station}
+        beginDate={beginAndEndDates.beginDate}
+        endDate={beginAndEndDates.endDate}
+        timeZone={"LST"}
+      />
+    );
+  }
+  if (item.tag === "forecast") {
+    return <Forecast id={item.station} />;
+  }
+  if (item.tag === "marine-forecast") {
+    return <MarineForecast id={item.station} />;
+  }
+  if (item.tag === "wave-model") {
+    return <AnimatedWaveModel id={item.station} />;
+  }
+  return <></>;
+};
+
+export const groupedData = CONTENT_DATA.reduce((acc, item) => {
+  if (!acc[item.tag]) {
+    acc[item.tag] = [];
+  }
+  acc[item.tag].push(item);
+  return acc;
+}, {});

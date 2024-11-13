@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import StationInput from "./StationInput.js";
-import Power from "./Power.js";
-import Tide from "./Tide.js";
-import Forecast from "./Forecast.js";
-import MarineForecast from "./MarineForecast.js";
-import AnimatedWaveModel from "./AnimatedWaveModel.js";
-import { getTideBeginAndEndDates } from "../utility.js";
-import { Sidebar, Menu, List, Container, Button, Segment, Header } from "semantic-ui-react";
-import { CONTENT_DATA } from "../constants";
+import {
+  Sidebar,
+  Menu,
+  List,
+  Container,
+  Button,
+  Segment,
+  Header,
+} from "semantic-ui-react";
+import { handleGridCall, groupedData } from "../utility";
 
 function MobileApp() {
   const [showMenu, setShowMenu] = useState(true);
@@ -15,52 +16,13 @@ function MobileApp() {
 
   const handleItemClick = (option) => {
     setSelectedOption(option);
-    setShowMenu(false); 
+    setShowMenu(false);
   };
 
   const handleReturnToMenu = () => {
     setSelectedOption(null);
     setShowMenu(true); // Show menu again
   };
-  const handleGridCall = (item) => {
-    if (item.tag === "buoy") {
-      return <StationInput id={item.station} />;
-    }
-    if (item.tag === "power") {
-      return <Power id={item.station} />;
-    }
-    if (item.tag === "tide") {
-      const beginAndEndDates = getTideBeginAndEndDates();
-      return (
-        <Tide
-          id={item.station}
-          beginDate={beginAndEndDates.beginDate}
-          endDate={beginAndEndDates.endDate}
-          timeZone={"LST"}
-        />
-      );
-    }
-    if (item.tag === "forecast") {
-      return <Forecast id={item.station} />;
-    }
-    if (item.tag === "marine-forecast") {
-      return <MarineForecast id={item.station} />;
-    }
-    if (item.tag === "wave-model") {
-      return <AnimatedWaveModel id={item.station}/>;
-    }
-    return <></>;
-  };
-
-
-  const groupedData = CONTENT_DATA.reduce((acc, item) => {
-    if (!acc[item.tag]) {
-      acc[item.tag] = [];
-    }
-    acc[item.tag].push(item);
-    return acc;
-
-  }, {});
 
   return (
     <Container fluid>

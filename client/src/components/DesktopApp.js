@@ -2,11 +2,7 @@ import React, { useState } from "react";
 import StationInput from "./StationInput.js";
 import Power from "./Power.js";
 import Tide from "./Tide.js";
-import Forecast from "./Forecast.js";
-import MarineForecast from "./MarineForecast.js";
-import AnimatedWaveModel from "./AnimatedWaveModel.js";
-import { CONTENT_DATA } from "../constants.js";
-import { getTideBeginAndEndDates } from "../utility.js";
+import { handleGridCall, groupedData } from "../utility.js";
 
 import {
   Segment,
@@ -36,36 +32,6 @@ function App() {
   const [stationId, setStationId] = useState("");
   const [renderData, setRenderData] = useState([]);
 
-  const handleGridCall = (item) => {
-    if (item.tag === "buoy") {
-      return <StationInput id={item.station} />;
-    }
-    if (item.tag === "power") {
-      return <Power id={item.station} />;
-    }
-    if (item.tag === "tide") {
-      const beginAndEndDates = getTideBeginAndEndDates();
-      return (
-        <Tide
-          id={item.station}
-          beginDate={beginAndEndDates.beginDate}
-          endDate={beginAndEndDates.endDate}
-          timeZone={"LST"}
-        />
-      );
-    }
-    if (item.tag === "forecast") {
-      return <Forecast id={item.station} />;
-    }
-    if (item.tag === "marine-forecast") {
-      return <MarineForecast id={item.station} />;
-    }
-    if (item.tag === "wave-model") {
-      return <AnimatedWaveModel id={item.station}/>;
-    }
-    return <></>;
-  };
-
   const clearGrid = () => {
     setRenderData([]);
   };
@@ -76,34 +42,7 @@ function App() {
   const handleItemClick = (item) => {
     setRenderData((prevData) => [...prevData, item]);
   };
-  function renderStation() {
-    console.log("in renderStation");
-    if (stationId.length === 5) {
-      return <StationInput id={stationId} />;
-    }
-    return <></>;
-  }
-  function renderPower() {
-    if (stationId.length === 5) {
-      return <Power id={stationId} />;
-    }
-    return <></>;
-  }
 
-  function renderTide() {
-    if (stationId.length === 5) {
-      return <Tide id={stationId} />;
-    }
-    return <></>;
-  }
-  const groupedData = CONTENT_DATA.reduce((acc, item) => {
-    if (!acc[item.tag]) {
-      acc[item.tag] = [];
-    }
-    acc[item.tag].push(item);
-    return acc;
-
-  }, {});
   return (
     <div>
       <Container fluid>
