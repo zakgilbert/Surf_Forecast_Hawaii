@@ -31,14 +31,40 @@ const Tide = ({ id, beginDate, endDate, timeZone }) => {
       .then((res) => res.json())
       .then((data) => {
         setData(data);
+        console.log(data);
       });
   }, [id, beginDate, endDate, timeZone]);
 
+  const flattenedData = data
+    ? Object.entries(data).flatMap(([date, predictions]) =>
+        Array.isArray(predictions)
+          ? predictions.map((prediction) => ({
+              ...prediction,
+              t: `${date} ${prediction.t.split(" ")[1]}`, // Construct full timestamp with date and time
+            }))
+          : []
+      )
+    : [];
+
+ // Organize tide data by date with both high and low tides listed together
+ const dailyTides = data
+ ? Object.entries(data).map(([date, predictions]) => {
+     if (!Array.isArray(predictions)) return { date, tides: [] };
+
+     const tides = predictions.map(prediction => ({
+       time: moment(prediction.t, "YYYY-MM-DD HH:mm").format("h:mm A"),
+       height: `${prediction.v} ft`,
+       type: prediction.type === 'H' ? 'High' : 'Low'
+     }));
+     return { date, tides };
+   })
+ : [];
+
   return data !== undefined ? (
     <Container textAlign="center">
-      <ResponsiveContainer width="100%" height={CHART_HEIGHT_NUM}>
+      <ResponsiveContainer width="100%" height={330}>
         <LineChart
-          data={data.predictions}
+          data={flattenedData}
           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
@@ -82,6 +108,31 @@ const Tide = ({ id, beginDate, endDate, timeZone }) => {
           />
         </LineChart>
       </ResponsiveContainer>
+      {/* Table for Tide Times by Date */}
+      <Table celled striped>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell>Date</Table.HeaderCell>
+            <Table.HeaderCell>Tide Times</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {dailyTides.map(({ date, tides }) => (
+            <Table.Row key={date}>
+              <Table.Cell>{moment(date).format("MMM D, YYYY")}</Table.Cell>
+              <Table.Cell>
+                {tides.length > 0
+                  ? tides.map((tide, index) => (
+                      <div key={index}>
+                        {tide.height} at {tide.time} ({tide.type})
+                      </div>
+                    ))
+                  : "No data"}
+              </Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
     </Container>
   ) : (
     <></>
