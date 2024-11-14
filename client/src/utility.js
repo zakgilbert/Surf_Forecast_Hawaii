@@ -4,7 +4,7 @@ import Tide from "./components/Tide.js";
 import Forecast from "./components/Forecast.js";
 import MarineForecast from "./components/MarineForecast.js";
 import AnimatedWaveModel from "./components/AnimatedWaveModel.js";
-import { CONTENT_DATA } from "./constants.js";
+import { CONTENT_DATA} from "./constants.js";
 
 const getFormattedDate = (date) => {
   const year = date.getFullYear();

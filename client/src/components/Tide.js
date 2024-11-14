@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
 import {
   Container,
-  Header,
-  Button,
-  Icon,
-  Menu,
-  Popup,
   Table,
-  TableCell,
+  Input,
 } from "semantic-ui-react";
 import {
   LineChart,
@@ -18,29 +13,32 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  Label,
 } from "recharts";
-import moment from "moment"; // Import moment.js for date formatting
+import moment from "moment";
 import { CHART_HEIGHT_NUM } from "../constants";
+import { useDays } from './DaysContext';
 
-const Tide = ({ id, beginDate, endDate, timeZone }) => {
+const Tide = ({ id, beginDate, timeZone }) => {
+  const { days, setDays } = useDays();  // Access days and setDays from context
   const [data, setData] = useState([{}]);
 
   useEffect(() => {
+    const endDate = moment(beginDate).add(days, 'days').format("YYYYMMDD");
+
     fetch(`/tide/${id}/${beginDate}/${endDate}/${timeZone}`)
       .then((res) => res.json())
       .then((data) => {
         setData(data);
         console.log(data);
       });
-  }, [id, beginDate, endDate, timeZone]);
+  }, [id, beginDate, timeZone, days]);
 
   const flattenedData = data
     ? Object.entries(data).flatMap(([date, predictions]) =>
         Array.isArray(predictions)
           ? predictions.map((prediction) => ({
               ...prediction,
-              t: `${date} ${prediction.t.split(" ")[1]}`, // Construct full timestamp with date and time
+              t: `${date} ${prediction.t.split(" ")[1]}`,
             }))
           : []
       )
@@ -60,9 +58,10 @@ const Tide = ({ id, beginDate, endDate, timeZone }) => {
    })
  : [];
 
-  return data !== undefined ? (
+  return (
     <Container textAlign="center">
-      <ResponsiveContainer width="100%" height={330}>
+      {/* Line Chart */}
+      <ResponsiveContainer width="100%" height={325}>
         <LineChart
           data={flattenedData}
           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -82,20 +81,12 @@ const Tide = ({ id, beginDate, endDate, timeZone }) => {
             }}
           />
           <Tooltip
-            formatter={(value, name, props) => {
-              const dateTime = moment(
-                props.payload.dataTime,
-                "YYYY-MM-DD hh:mm A"
-              ); // Specify format
-              return [`Value: ${value}ft`]; // Return formatted value and dateTime
-            }}
+            formatter={(value) => [`Value: ${value}ft`]}
             labelFormatter={(label) => {
-              const dateTime = moment(label, "YYYY-MM-DD hh:mm A"); // Specify format
-              if (!dateTime.isValid()) {
-                console.error("Invalid label date:", label);
-                return "Invalid date";
-              }
-              return `Date: ${dateTime.format("MMM D, YYYY h:mm A")}`; // Format the label
+              const dateTime = moment(label, "YYYY-MM-DD hh:mm A");
+              return dateTime.isValid()
+                ? `Date: ${dateTime.format("MMM D, YYYY h:mm A")}`
+                : "Invalid date";
             }}
           />
           <Legend />
@@ -108,7 +99,21 @@ const Tide = ({ id, beginDate, endDate, timeZone }) => {
           />
         </LineChart>
       </ResponsiveContainer>
+
+      {/* Slider for Selecting Number of Days */}
+      <div style={{ marginTop: "20px" }}>
+        <label>Number of Days: {days}</label>
+        <Input
+          type="range"
+          min={1}
+          max={7}
+          value={days}
+          onChange={(e) => setDays(Number(e.target.value))}
+        />
+      </div>
+
       {/* Table for Tide Times by Date */}
+      <div style={{maxHeight: '213px', overflow: 'auto', padding: '5px'}}>
       <Table celled striped>
         <Table.Header>
           <Table.Row>
@@ -124,7 +129,7 @@ const Tide = ({ id, beginDate, endDate, timeZone }) => {
                 {tides.length > 0
                   ? tides.map((tide, index) => (
                       <div key={index}>
-                        {tide.height} at {tide.time} ({tide.type})
+                        {tide.type} {tide.height} at {tide.time}
                       </div>
                     ))
                   : "No data"}
@@ -133,9 +138,10 @@ const Tide = ({ id, beginDate, endDate, timeZone }) => {
           ))}
         </Table.Body>
       </Table>
+      </div>
     </Container>
-  ) : (
-    <></>
   );
 };
+
 export default Tide;
+

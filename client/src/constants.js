@@ -1,6 +1,7 @@
 export const CHART_HEIGHT_STR = "600px";
 export const CHART_HEIGHT_NUM= 600;
 export const TIDE_CHART_DAYS = 2;
+export const STARTING_TIDE_DAYS = 1;
 export const CONTENT_DATA = [
   {
     name: "North West",
