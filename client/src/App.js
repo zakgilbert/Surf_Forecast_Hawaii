@@ -9,11 +9,19 @@ function App() {
   const isUserOnMobile = isMobile();
 
   return (
-    <DaysProvider>
-      {" "}
-      {/* Wrap the components with DaysProvider */}
-      {isUserOnMobile ? <MobileApp /> : <DesktopApp />}
-    </DaysProvider>
+    <>
+      <header className="app-header">
+        <div className="title-container">
+          <h1 className="app-title">Surf Forecast Hawaii</h1>
+          <p className="app-subtitle">Powered by MyHagi API</p>
+        </div>
+      </header>
+      <DaysProvider>
+        {" "}
+        {/* Wrap the components with DaysProvider */}
+        {isUserOnMobile ? <MobileApp /> : <DesktopApp />}
+      </DaysProvider>
+    </>
   );
 }
 

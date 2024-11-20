@@ -2,6 +2,8 @@ export const CHART_HEIGHT_STR = "600px";
 export const CHART_HEIGHT_NUM= 600;
 export const TIDE_CHART_DAYS = 2;
 export const STARTING_TIDE_DAYS = 1;
+export const BUOY_TAB_CHART_HEIGHT = 200;
+export const BUOY_TAB_CHART_WIDTH = 800;
 export const CONTENT_DATA = [
   {
     name: "North West",
@@ -287,7 +289,7 @@ export const CONTENT_DATA = [
     name: "Pacific Ocean",
     station: "pac",
     id: 35,
-    tag: "wave-model",
+    tag: "wave-model-period",
     header: "",
     meta: "",
   },
@@ -295,7 +297,7 @@ export const CONTENT_DATA = [
     name: "North Pacific",
     station: "npac",
     id: 36,
-    tag: "wave-model",
+    tag: "wave-model-period",
     header: "",
     meta: "",
   },
@@ -303,7 +305,7 @@ export const CONTENT_DATA = [
     name: "South Pacific",
     station: "spac",
     id: 37,
-    tag: "wave-model",
+    tag: "wave-model-period",
     header: "",
     meta: "",
   },
@@ -311,7 +313,7 @@ export const CONTENT_DATA = [
     name: "Indian Ocean",
     station: "indi",
     id: 38,
-    tag: "wave-model",
+    tag: "wave-model-period",
     header: "",
     meta: "",
   },
@@ -319,7 +321,7 @@ export const CONTENT_DATA = [
     name: "North Atlantic",
     station: "natla",
     id: 39,
-    tag: "wave-model",
+    tag: "wave-model-period",
     header: "",
     meta: "",
   },
@@ -327,7 +329,7 @@ export const CONTENT_DATA = [
     name: "South Atlantic",
     station: "satla",
     id: 40,
-    tag: "wave-model",
+    tag: "wave-model-period",
     header: "",
     meta: "",
   },
@@ -346,9 +348,85 @@ export const CONTENT_DATA = [
     tag: "power",
     header: "Wave Energy for Station 51212",
     meta: "Barbers Point, Kalaeloa, HI",
+  },
+  {
+    name: "Hanapepe Bay",
+    station: "1611347",
+    id: 43,
+    tag: "tide",
+    header: "Tide Predictions at 1611347",
+    meta: "Port Allen, Kauai, HI",
+  },
+  {
+    name: "Hanauma Bay",
+    station: "1612301",
+    id: 44,
+    tag: "tide",
+    header: "Tide Predictions at 1612301",
+    meta: "Waimanalo, HI",
+  },
+  {
+    name: "Waianae",
+    station: "1612482",
+    id: 45,
+    tag: "tide",
+    header: "Tide Predictions at 1612482",
+    meta: "Waianae, HI",
+  },
+  {
+    name: "Pacific Ocean",
+    station: "pac",
+    id: 46,
+    tag: "wave-model-height",
+    header: "",
+    meta: "",
+  },
+  {
+    name: "North Pacific",
+    station: "npac",
+    id: 47,
+    tag: "wave-model-height",
+    header: "",
+    meta: "",
+  },
+  {
+    name: "South Pacific",
+    station: "spac",
+    id: 48,
+    tag: "wave-model-height",
+    header: "",
+    meta: "",
+  },
+  {
+    name: "Indian Ocean",
+    station: "indi",
+    id: 49,
+    tag: "wave-model-height",
+    header: "",
+    meta: "",
+  },
+  {
+    name: "North Atlantic",
+    station: "natla",
+    id: 50,
+    tag: "wave-model-height",
+    header: "",
+    meta: "",
+  },
+  {
+    name: "South Atlantic",
+    station: "satla",
+    id: 51,
+    tag: "wave-model-height",
+    header: "",
+    meta: "",
+  },
+  {
+    name: "Hanalei",
+    station: "202",
+    id: 52,
+    tag: "histogram",
+    header: "A Wave Histogram",
+    meta: "Hanalei, HI"
   }
-
-
-
-
 ];

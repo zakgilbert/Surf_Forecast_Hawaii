@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Container , Tab, Table} from "semantic-ui-react";
+import { Container, Tab, Table } from "semantic-ui-react";
+import ArrowIndicator from "./ArrowIndicator";
 import moment from "moment";
 import {
   LineChart,
@@ -20,56 +21,58 @@ const WaveEnergy = ({ id }) => {
       .then((res) => res.json())
       .then((data) => {
         setData(data);
-        console.log(data)
+        console.log(data);
       });
   }, [id]);
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       const selectedPoint = payload[0].payload;
-      
+
       return (
         <Table celled>
-          <Table.Header>
-          </Table.Header>
+          <Table.Header></Table.Header>
           <Table.Body>
             <Table.Row>
-              <Table.Cell style={{ padding: '5px' }}>
+              <Table.Cell style={{ padding: "5px" }}>
                 <strong>Energy:</strong>
               </Table.Cell>
-              <Table.Cell style={{ padding: '5px' }}>
+              <Table.Cell style={{ padding: "5px" }}>
                 {selectedPoint.energy} units
               </Table.Cell>
             </Table.Row>
-  
+
             <Table.Row>
-              <Table.Cell style={{ padding: '5px' }}>
+              <Table.Cell style={{ padding: "5px" }}>
                 <strong>Period:</strong>
               </Table.Cell>
-              <Table.Cell style={{ padding: '5px' }}>
+              <Table.Cell style={{ padding: "5px" }}>
                 {(1 / selectedPoint.frequency).toFixed(2)} seconds
               </Table.Cell>
             </Table.Row>
-  
+
             <Table.Row>
-              <Table.Cell style={{ padding: '5px' }}>
+              <Table.Cell style={{ padding: "5px" }}>
                 <strong>Swell Direction:</strong>
               </Table.Cell>
-              <Table.Cell style={{ padding: '5px' }}>
+              <Table.Cell style={{ padding: "5px" }}>
                 {(selectedPoint.cord1 + selectedPoint.cord2) / 2}&deg;
+                <ArrowIndicator
+                  direction={(selectedPoint.cord1 + selectedPoint.cord2) / 2}
+                />
               </Table.Cell>
             </Table.Row>
           </Table.Body>
         </Table>
       );
     }
-  
+
     return null;
   };
   return data !== undefined ? (
     <Container textAlign="center">
-          <p>{moment(data[0].dataTime).format("MMM D, YYYY h:mm A")}</p>
-      <ResponsiveContainer width="100%" height={300}>
+      <p>{moment(data[0].dataTime).format("MMM D, YYYY h:mm A")}</p>
+      <ResponsiveContainer width="100%" height={248}>
         <LineChart
           data={data[0].values}
           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}

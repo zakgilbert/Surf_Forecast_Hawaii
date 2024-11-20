@@ -4,7 +4,8 @@ import Tide from "./components/Tide.js";
 import Forecast from "./components/Forecast.js";
 import MarineForecast from "./components/MarineForecast.js";
 import AnimatedWaveModel from "./components/AnimatedWaveModel.js";
-import { CONTENT_DATA} from "./constants.js";
+import Histogram from "./components/Histogram.js";
+import { CONTENT_DATA } from "./constants.js";
 
 const getFormattedDate = (date) => {
   const year = date.getFullYear();
@@ -55,8 +56,14 @@ export const handleGridCall = (item) => {
   if (item.tag === "marine-forecast") {
     return <MarineForecast id={item.station} />;
   }
-  if (item.tag === "wave-model") {
-    return <AnimatedWaveModel id={item.station} />;
+  if (item.tag === "wave-model-period") {
+    return <AnimatedWaveModel id={item.station} mode={"per"}/>;
+  }
+  if (item.tag === "wave-model-height") {
+    return <AnimatedWaveModel id={item.station} mode={"height"}/>;
+  }
+  if (item.tag === "histogram") {
+    return <Histogram />;
   }
   return <></>;
 };
@@ -68,3 +75,14 @@ export const groupedData = CONTENT_DATA.reduce((acc, item) => {
   acc[item.tag].push(item);
   return acc;
 }, {});
+
+export const formatDate = (datetime) => {
+  const date = new Date(datetime);
+  return date.toLocaleString("en-US", {
+    month: "short", // MMM
+    day: "numeric", // D
+    hour: "numeric", // h
+    minute: "numeric", // mm
+    hour12: true, // A (AM/PM)
+  });
+};

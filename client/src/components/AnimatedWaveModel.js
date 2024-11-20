@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../App.css"; // Import the CSS file
 
-const AnimatedWaveModel = ({id}) => {
+const AnimatedWaveModel = ({id, mode}) => {
   const [images, setImages] = useState([]); // To store the fetched images
   const [loading, setLoading] = useState(true); // To track loading state
   const [currentIndex, setCurrentIndex] = useState(0); // To track current image index
@@ -11,7 +11,7 @@ const AnimatedWaveModel = ({id}) => {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const response = await fetch(`/wave-model/${id}`);
+        const response = await fetch(`/wave-model/${id}/${mode}`);
         const data = await response.json();
         if (data.images) {
           setImages(data.images);
@@ -26,7 +26,7 @@ const AnimatedWaveModel = ({id}) => {
     return () => {
       if (intervalId) clearInterval(intervalId);
     };
-  }, []);
+  }, [id, mode]);
 
   // Function to start and pause the animation
   const toggleAnimation = () => {

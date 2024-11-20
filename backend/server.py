@@ -5,6 +5,7 @@ from forecast import *
 from tide import *
 from marine_forecast import *
 from waveModel import *
+from histogram import *
 import time
 
 app = Flask(__name__)
@@ -29,21 +30,18 @@ def marineForecast():
 def tide(id, begin_date,end_date,time_zone):
     return getTide(id, begin_date,end_date,time_zone)
 
-@app.route('/wave-model/<string:id>')
-def waveModel(id):
-    images = []
-    # Loop over hours from 0 to 180 in 6-hour increments
-    for hr in range(0, 186, 6):
-        image_base64 = getWaveModel(id, hr)
-        
-        if image_base64:  # Only append if the image was fetched successfully
-            images.append(image_base64)
-        
-        # Optionally, you can add a delay between requests (e.g., 1 second)
-    return jsonify({'images': images})
+@app.route('/histogram')
+def histogram():
+    return getHistogram()
+    
+
+@app.route('/wave-model/<string:id>/<string:mode>')
+def waveModel(id, mode):
+    return getWaveModelImages(id, mode)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
     
-    
-url = f'http://www.stormsurfing.com/stormuser2/images/grib/npac_per_54hr.png'
+
+  

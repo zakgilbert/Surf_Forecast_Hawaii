@@ -21,6 +21,5 @@ def getTide(station_id, begin_date, end_date, time_zone):
 
     # Convert defaultdict to a regular dictionary
     grouped_data = dict(predictions_by_day)
-    print(grouped_data)
 
     return jsonify(grouped_data)

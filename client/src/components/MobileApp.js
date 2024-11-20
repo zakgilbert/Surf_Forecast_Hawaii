@@ -33,7 +33,7 @@ function MobileApp() {
         inverted
         vertical
         visible={showMenu}
-        direction="left"
+        direction="right"
       >
         {Object.keys(groupedData).map((category) => (
           <div key={category} style={{ padding: "10px", color: "white" }}>
@@ -51,7 +51,7 @@ function MobileApp() {
 
       {/* Conditional rendering for selected option content */}
       {!showMenu && selectedOption && (
-        <Segment basic>
+        <Segment basic fluid>
           <Header as="h2">{selectedOption.header}</Header>
           <p>{selectedOption.meta}</p>
           {handleGridCall(selectedOption)}

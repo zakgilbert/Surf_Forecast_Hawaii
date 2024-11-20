@@ -1,0 +1,11 @@
+--2024-11-14 18:39:13--  https://cdip.ucsd.edu/themes/cdip?d2=p70
+Resolving cdip.ucsd.edu (cdip.ucsd.edu)... 169.228.225.137
+Connecting to cdip.ucsd.edu (cdip.ucsd.edu)|169.228.225.137|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [text/html]
+Saving to: ‘cdip?d2=p70’
+
+cdip?d2=p70                  [<=>                                ]       0  --.-KB/s               cdip?d2=p70                  [ <=>                               ]  95.08K   373KB/s               cdip?d2=p70                  [  <=>                              ] 255.08K   521KB/s               cdip?d2=p70                  [   <=>                             ] 396.15K   622KB/s    in 0.6s    
+
+2024-11-14 18:39:14 (622 KB/s) - ‘cdip?d2=p70’ saved [405657]
+

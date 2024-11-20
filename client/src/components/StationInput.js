@@ -17,20 +17,15 @@ import {
 } from "semantic-ui-react";
 import { CHART_HEIGHT_STR } from "../constants";
 import WaveEnergy from "./WaveEnergy";
+import { Tooltip } from "recharts";
+import ArrowIndicator from "./ArrowIndicator";
+import BuoyTabs from "./BuoyTabs";
+import { formatDate } from "../utility";
 
 const StationInput = ({ id }) => {
   const [data, setData] = useState([{}]);
 
-  const formatDate = (datetime) => {
-    const date = new Date(datetime);
-    return date.toLocaleString("en-US", {
-      month: "short", // MMM
-      day: "numeric", // D
-      hour: "numeric", // h
-      minute: "numeric", // mm
-      hour12: true, // A (AM/PM)
-    });
-  };
+
   useEffect(() => {
     fetch(`/report/${id}`)
       .then((res) => res.json())
@@ -39,6 +34,10 @@ const StationInput = ({ id }) => {
         console.log(data);
       });
   }, [id]);
+
+  const getDirection = () => {
+    return data.rows[0][10];
+  };
 
   return data.cols !== undefined && data.rows !== undefined ? (
     <div style={{ maxHeight: "613px" }}>
@@ -92,7 +91,15 @@ const StationInput = ({ id }) => {
                       {data.cols[10].toolTip}:
                     </Table.Cell>
                     <Table.Cell style={{ padding: "5px" }}>
-                      {data.rows[0][10]}&deg;
+                      <Popup
+                        content={
+                          <ArrowIndicator
+                            direction={Number(data.rows[0][10])}
+                          />
+                        }
+                        trigger={<span>{data.rows[0][10]}&deg;</span>}
+                        position="top center"
+                      />
                     </Table.Cell>
                   </Table.Row>
                 </Table.Body>
@@ -107,35 +114,8 @@ const StationInput = ({ id }) => {
         </GridRow>
       </Grid>
       <Divider></Divider>
-      <div style={{ height: "210px", overflowY: "auto" }}>
-        <Table celled>
-          <Table.Header>
-            <Table.Row>
-              {data.cols.map((col) => (
-                <Popup
-                  trigger={
-                    <Table.HeaderCell key={col}>{col.value}</Table.HeaderCell>
-                  }
-                >
-                  {col.toolTip}
-                </Popup>
-              ))}
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {data.rows.map((row, rowIndex) => (
-              <Table.Row key={rowIndex}>
-                {row.map((val, colIndex) => (
-                  <TableCell key={colIndex} style={{ padding: "5px" }}>
-                    {data.cols[colIndex].value === "Time"
-                      ? formatDate(val)
-                      : val}
-                  </TableCell>
-                ))}
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
+      <div style={{ height: "260px", overflowY: "auto" }}>
+        <BuoyTabs data={data} />
       </div>
     </div>
   ) : (
