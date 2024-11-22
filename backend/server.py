@@ -1,4 +1,3 @@
-from flask import Flask
 from report import *
 from power import *
 from forecast import *
