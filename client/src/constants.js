@@ -7,11 +7,11 @@ export const BUOY_TAB_CHART_WIDTH = 800;
 export const CONTENT_DATA = [
   {
     name: "North West",
-    station: "51101",
+    station: "51001",
     id: 0,
     tag: "buoy",
-    header: "Buoy Station 51101",
-    meta: "186 NM NW of Kauai Is",
+    header: "Buoy Station 51001",
+    meta: "188 NM NW of Kauai Is",
   },
   {
     name: "Hanalei",

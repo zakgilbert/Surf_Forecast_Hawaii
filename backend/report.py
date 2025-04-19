@@ -6,6 +6,9 @@ from datetime import datetime, timedelta
 
 def getReport(id):
     url = f'https://www.ndbc.noaa.gov/data/realtime2/{id}.spec'  # Replace with the URL of the file you want to download
+    print("--------------------------------------")
+    print(url)
+    print("--------------------------------------")
 
     response = requests.get(url)
     toolTips = [
@@ -29,15 +32,22 @@ def getReport(id):
     cols = reports[0].split()
     rows = []
     columns = []
-    del reports[:2]
+    # Skip all comment lines starting with '#'
+    reports = [line for line in reports if not line.startswith('#')]
+
 
     # Define the time window of interest (last 48 hours)
     cutoff_time = datetime.utcnow() - timedelta(days=2)
 
+    print(reports)
     for report in reports:
         row = report.split()
+       
+        # TODO: NOAA uses 'MM' as a placeholder for some kind of error in the data, have to look into it more. 
+        if 'MM' in row:
+            # print(f"Skipping row due to 'MM' value: {row}")
+            continue
 
-        # Convert heights to feet
         row[cols.index('WVHT')] = meters_feet(row[cols.index('WVHT')])
         row[cols.index('SwH')] = meters_feet(row[cols.index('SwH')])
         row[cols.index('WWH')] = meters_feet(row[cols.index('WWH')])
