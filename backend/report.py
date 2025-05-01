@@ -36,7 +36,6 @@ def getReport(id):
     # Define the time window of interest (last 48 hours)
     cutoff_time = datetime.utcnow() - timedelta(days=2)
 
-    print(reports)
     for report in reports:
         row = report.split()
        
