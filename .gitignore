@@ -75,6 +75,7 @@ env.bak/
 
 # Virtual environment
 venv/
+backend/venv/
 
 # Python dependency directories
 .pip/

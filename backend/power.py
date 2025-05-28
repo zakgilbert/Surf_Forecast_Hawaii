@@ -82,4 +82,3 @@ def getSwellPower(id):
     # Convert to JSON
     json_output = json.dumps(output_data, indent=4)
     return json_output
-
