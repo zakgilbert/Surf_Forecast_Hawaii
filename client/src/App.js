@@ -13,7 +13,7 @@ function App() {
       <header className="app-header">
         <div className="title-container">
           <h1 className="app-title">Surf Forecast Hawaii</h1>
-          <p className="app-subtitle">Powered by MyHagi API</p>
+          <p className="app-subtitle">Powered by the MyHagi API</p>
         </div>
       </header>
       <DaysProvider>
