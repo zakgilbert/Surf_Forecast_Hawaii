@@ -1,3 +1,6 @@
+/**
+ * DesktopApp.js
+ */
 import React, { useState } from "react";
 import StationInput from "./StationInput.js";
 import Power from "./Power.js";
@@ -119,6 +122,7 @@ function App() {
                   <SegmentGroup horizontal fluid>
                     <Divider></Divider>
                     <Segment placeholder fluid>
+
                       <Grid stackable columns={2}>
                         {renderData.map((item) => (
                           <GridColumn key={item.id} textAlign="center" fluid>
@@ -134,6 +138,7 @@ function App() {
                           </GridColumn>
                         ))}
                       </Grid>
+
                     </Segment>
                   </SegmentGroup>
                 </SegmentGroup>
