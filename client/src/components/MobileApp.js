@@ -7,6 +7,7 @@ import {
   Button,
   Segment,
   Header,
+  Icon,
 } from "semantic-ui-react";
 import { handleGridCall, groupedData } from "../utility";
 
@@ -51,13 +52,20 @@ function MobileApp() {
 
       {/* Conditional rendering for selected option content */}
       {!showMenu && selectedOption && (
-        <Segment basic fluid>
+        <Segment basic style={{ paddingTop: "2rem" }}>
+          <Button
+            icon
+            labelPosition="left"
+            color="blue"
+            onClick={handleReturnToMenu}
+            style={{ marginBottom: "1rem" }}
+          >
+            <Icon name="arrow left" /> Back to Menu
+          </Button>
+
           <Header as="h2">{selectedOption.header}</Header>
           <p>{selectedOption.meta}</p>
           {handleGridCall(selectedOption)}
-          <Button onClick={handleReturnToMenu} color="blue">
-            Back to Menu
-          </Button>
         </Segment>
       )}
     </Container>
