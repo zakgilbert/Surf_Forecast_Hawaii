@@ -1,6 +1,3 @@
-/**
- * App.js
- */
 import React from "react";
 import { isMobile } from "./utility";
 import { DaysProvider } from "./components/DaysContext"; // Import the DaysProvider
