@@ -1,23 +1,19 @@
 import React, { useState, useEffect } from "react";
 import {
-  Divider,
   Grid,
   GridColumn,
   GridRow,
-  Icon,
-  Label,
-  Menu,
-  Popup,
   Segment,
   Table,
-  TableCell,
-  TableHeader,
   TableRow,
-  TableC,
+  TableCell,
+  Popup,
+  Header,
+  Divider,
 } from "semantic-ui-react";
-import { CHART_HEIGHT_STR } from "../constants";
+import SwipeableViews from "react-swipeable-views";
+import { isMobile } from "react-device-detect";
 import WaveEnergy from "./WaveEnergy";
-import { Tooltip } from "recharts";
 import ArrowIndicator from "./ArrowIndicator";
 import BuoyTabs from "./BuoyTabs";
 import { formatDate } from "../utility";
@@ -25,101 +21,89 @@ import { formatDate } from "../utility";
 const StationInput = ({ id }) => {
   const [data, setData] = useState([{}]);
 
-
   useEffect(() => {
     fetch(`/report/${id}`)
       .then((res) => res.json())
-      .then((data) => {
-        setData(data);
-        console.log(data);
-      });
+      .then((data) => setData(data));
   }, [id]);
 
-  const getDirection = () => {
-    return data.rows[0][10];
-  };
+  if (!data.cols || !data.rows) return null;
 
-  return data.cols !== undefined && data.rows !== undefined ? (
-    <div style={{ maxHeight: "613px" }}>
-      <Grid container stackable columns={2} divided>
-        <GridRow>
-          <GridColumn width={5}>
-            <Segment>
-              <Table celled striped>
-                <Table.Header>
-                  <Table.Row>
-                    <Table.HeaderCell
-                      colSpan="2"
-                      textAlign="center"
-                      style={{
-                        fontSize: "1.2em",
-                        fontWeight: "bold",
-                        backgroundColor: "#f4f4f4",
-                      }}
-                    >
-                      {formatDate(data.rows[0][0])}
-                    </Table.HeaderCell>
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  {data.cols.slice(1, 7).map((col, index) => (
-                    <Table.Row key={index}>
-                      <Table.Cell
-                        style={{
-                          padding: "5px",
-                          fontWeight: "bold",
-                          backgroundColor: "#fafafa",
-                        }}
-                      >
-                        {col.toolTip}:
-                      </Table.Cell>
-                      <Table.Cell style={{ padding: "5px" }}>
-                        {data.rows[0][index + 1]}
-                      </Table.Cell>
-                    </Table.Row>
-                  ))}
-
-                  {/* Special row for index 10 */}
-                  <Table.Row key="index-10">
-                    <Table.Cell
-                      style={{
-                        padding: "5px",
-                        fontWeight: "bold",
-                        backgroundColor: "#fafafa",
-                      }}
-                    >
-                      {data.cols[10].toolTip}:
-                    </Table.Cell>
-                    <Table.Cell style={{ padding: "5px" }}>
-                      <Popup
-                        content={
-                          <ArrowIndicator
-                            direction={Number(data.rows[0][10])}
-                          />
-                        }
-                        trigger={<span>{data.rows[0][10]}&deg;</span>}
-                        position="top center"
-                      />
-                    </Table.Cell>
-                  </Table.Row>
-                </Table.Body>
-              </Table>
-            </Segment>
-          </GridColumn>
-          <GridColumn width={11}>
-            <Segment>
-              <WaveEnergy id={id} />
-            </Segment>
-          </GridColumn>
-        </GridRow>
-      </Grid>
-      <Divider></Divider>
-      <div style={{ height: "260px", overflowY: "auto" }}>
-        <BuoyTabs data={data} />
-      </div>
-    </div>
-  ) : (
-    <></>
+  const summary = (
+    <Segment>
+      <Table celled striped>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell colSpan="2" textAlign="center">
+              {formatDate(data.rows[0][0])}
+            </Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {data.cols.slice(1, 7).map((col, index) => (
+            <Table.Row key={index}>
+              <Table.Cell style={{ fontWeight: "bold" }}>{col.toolTip}:</Table.Cell>
+              <Table.Cell>{data.rows[0][index + 1]}</Table.Cell>
+            </Table.Row>
+          ))}
+          <Table.Row key="index-10">
+            <Table.Cell style={{ fontWeight: "bold" }}>{data.cols[10].toolTip}:</Table.Cell>
+            <Table.Cell>
+              <Popup
+                content={<ArrowIndicator direction={Number(data.rows[0][10])} />}
+                trigger={<span>{data.rows[0][10]}&deg;</span>}
+                position="top center"
+              />
+            </Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table>
+    </Segment>
   );
+
+  const chart = (
+    <Segment>
+      <WaveEnergy id={id} />
+    </Segment>
+  );
+
+  const tabs = (
+    <Segment style={{ padding: "0.5rem", overflowY: "auto", maxHeight: "600px" }}>
+      <BuoyTabs data={data} />
+    </Segment>
+  );
+
+  if (isMobile) {
+    return (
+      <SwipeableViews enableMouseEvents>
+        <div>{summary}</div>
+        <div>{chart}</div>
+        <div>{tabs}</div>
+      </SwipeableViews>
+    );
+  } else {
+    return (
+      <div style={{ maxHeight: "850px" }}>
+        <Grid container stackable columns={2} divided>
+          <GridRow>
+            <GridColumn width={5}>{summary}</GridColumn>
+            <GridColumn width={11}>{chart}</GridColumn>
+          </GridRow>
+        </Grid>
+        <Divider />
+        <Grid>
+          <Grid.Row>
+            <Grid.Column
+              width={16}
+              style={{ maxHeight: "260px", overflowY: "auto" }}
+            >
+              {tabs}
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      </div>
+    );
+  }
 };
+
 export default StationInput;
