@@ -6,6 +6,7 @@ from marine_forecast import *
 from waveModel import *
 from histogram import *
 import time
+import argparse
 
 app = Flask(__name__)
 
@@ -40,7 +41,11 @@ def waveModel(id, mode):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)  # Change the port to 5000
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--port", "-p", type=int, default=5000, help="Port to run server on")
+    args = parser.parse_args()
+    app.run(host="0.0.0.0", port=args.port)  # Change the port to 5001
+
     
 
   
