@@ -116,8 +116,14 @@ function App() {
             >
               Refresh
             </Button>
-            <div style={{ padding: "1rem", width: "100%", maxWidth: "1600px", margin: "0 auto" }}>
-
+            <div
+              style={{
+                padding: "1rem",
+                width: "100%",
+                maxWidth: "1600px",
+                margin: "0 auto",
+              }}
+            >
               <SidebarPusher fluid>
                 <SegmentGroup fluid container>
                   <SegmentGroup horizontal fluid>
@@ -134,12 +140,23 @@ function App() {
                           >
                             <Card
                               fluid
-                              style={{ width: "100%", minHeight: "200px" }}
+                              style={{
+                                width: "100%",
+                                display: "flex",
+                                minHeight: "725px",
+                                flexDirection: "column",
+                              }}
                             >
-                              <CardContent>
+                              <CardContent
+                                style={{
+                                  flex: "1",
+                                  display: "flex",
+                                  flexDirection: "column",
+                                }}
+                              >
                                 <CardHeader>{item.header}</CardHeader>
                                 <CardMeta>{item.meta}</CardMeta>
-                                <CardDescription style={{ maxHeight: "500px", overflowY: "auto" }}>
+                                <CardDescription style={{ overflowY: "visible" }}>
                                   {handleGridCall(item)}
                                 </CardDescription>
                               </CardContent>
