@@ -1,3 +1,6 @@
+/**
+ * DesktopApp.js
+ */
 import React, { useState } from "react";
 import StationInput from "./StationInput.js";
 import Power from "./Power.js";
@@ -113,20 +116,30 @@ function App() {
             >
               Refresh
             </Button>
-            <Container style={{ width: "80%" }}>
+            <div style={{ padding: "1rem", width: "100%", maxWidth: "1600px", margin: "0 auto" }}>
+
               <SidebarPusher fluid>
                 <SegmentGroup fluid container>
                   <SegmentGroup horizontal fluid>
                     <Divider></Divider>
                     <Segment placeholder fluid>
-                      <Grid stackable columns={2}>
+                      <Grid stackable doubling columns={2}>
                         {renderData.map((item) => (
-                          <GridColumn key={item.id} textAlign="center" fluid>
-                            <Card fluid>
-                              <CardContent fluid>
+                          <GridColumn
+                            key={item.id}
+                            mobile={16}
+                            tablet={8}
+                            computer={8}
+                            textAlign="center"
+                          >
+                            <Card
+                              fluid
+                              style={{ width: "100%", minHeight: "200px" }}
+                            >
+                              <CardContent>
                                 <CardHeader>{item.header}</CardHeader>
                                 <CardMeta>{item.meta}</CardMeta>
-                                <CardDescription>
+                                <CardDescription style={{ maxHeight: "500px", overflowY: "auto" }}>
                                   {handleGridCall(item)}
                                 </CardDescription>
                               </CardContent>
@@ -138,7 +151,7 @@ function App() {
                   </SegmentGroup>
                 </SegmentGroup>
               </SidebarPusher>
-            </Container>
+            </div>
           </div>
         )}
       </Container>

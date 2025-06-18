@@ -73,7 +73,7 @@ const BuoyTabs = ({ data }) => {
               {data.rows.map((row, rowIndex) => (
                 <Table.Row key={rowIndex}>
                   {row.map((val, colIndex) => (
-                    <Table.Cell key={colIndex} style={{ padding: "5px" }}>
+                    <Table.Cell key={colIndex} style={{ padding: "1px" }}>
                       {data.cols[colIndex].value === "Time" ? (
                         formatDate(val)
                       ) : data.cols[colIndex].value === "MWD" ? (

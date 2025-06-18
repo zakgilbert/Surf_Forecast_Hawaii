@@ -41,7 +41,7 @@ def getSwellPower(id):
                 formatted_hawaii_time = dt_hawaii.strftime("%Y-%m-%d %I:%M %p")
                 data_dict[formatted_hawaii_time] = []
                 current_datetime = formatted_hawaii_time
-                print(f"Parsed datetime: {formatted_hawaii_time}")  # Debugging output
+                ## print(f"Parsed datetime: {formatted_hawaii_time}")  # Debugging output
 
         elif current_datetime and len(parts) >= 3:  # Data line with frequency and energy
             try:
@@ -81,6 +81,4 @@ def getSwellPower(id):
 
     # Convert to JSON
     json_output = json.dumps(output_data, indent=4)
-    print(json_output)
     return json_output
-
