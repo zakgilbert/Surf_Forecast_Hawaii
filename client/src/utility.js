@@ -45,7 +45,6 @@ export const handleGridCall = (item) => {
       <Tide
         id={item.station}
         beginDate={beginAndEndDates.beginDate}
-        endDate={beginAndEndDates.endDate}
         timeZone={"LST"}
       />
     );

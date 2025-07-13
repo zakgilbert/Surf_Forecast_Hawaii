@@ -2,110 +2,94 @@ import requests
 from bs4 import BeautifulSoup
 import json
 from datetime import datetime, timedelta
+from collections import defaultdict
+import pytz
 
-def getHistogram(duration_hours=1):
-    """Fetch wave data for the past 'duration_hours' (default: 5 hours), process it, and return structured JSON."""
-    
+def getHistogram(duration_hours=0):
+    """Fetch wave data and return a histogram of 1-ft wave height bins (e.g., 0–1 ft, 1–2 ft, ...)."""
+
     def fetch_data(url):
-        """Fetch and extract raw data from the provided URL."""
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         pre_tag = soup.find('pre', text=lambda t: t and 'Time(UTC)' in t)
         return pre_tag.get_text() if pre_tag else ""
 
     def process_wave_data(data_text):
-        """Process wave data to calculate wave heights using the crest-to-trough method."""
-        # Split the data into lines and clean up
         lines = data_text.splitlines()
         lines = [line.strip() for line in lines if line.strip() and not line.startswith("Time(UTC)")]
 
-        wave_data = []
         zero_crossings = []
-        all_data = []
+        parsed_lines = []
 
-        # Collect all raw data with heights in feet
         for line in lines:
             parts = line.split()
             if len(parts) == 4:
                 try:
-                    time, _, _, V = parts
-                    V = int(V)
-                    wave_height_ft = abs(V) * 0.0328084  # Convert cm to feet
-                    all_data.append({"time": time, "height": wave_height_ft})
+                    time, _, _, v = parts
+                    v = int(v)
+                    parsed_lines.append((time, v))
                 except ValueError:
                     continue
 
-        # Identify zero up-crossings based on vertical (V) component
-        for i in range(len(lines) - 1):
-            current_line = lines[i].split()
-            next_line = lines[i + 1].split()
+        for i in range(len(parsed_lines) - 1):
+            t1, v1 = parsed_lines[i]
+            t2, v2 = parsed_lines[i + 1]
+            if v1 <= 0 < v2:
+                zero_crossings.append(i)
 
-            if len(current_line) == 4 and len(next_line) == 4:
-                try:
-                    current_time, _, _, V1 = current_line
-                    next_time, _, _, V2 = next_line
-                    V1, V2 = int(V1), int(V2)
+        wave_heights = []
 
-                    # Detect a zero up-crossing
-                    if V1 <= 0 < V2:
-                        zero_crossings.append((current_time, V1))
-                except ValueError:
-                    continue
-
-        # Calculate wave heights from crest-to-trough differences
         for i in range(len(zero_crossings) - 1):
-            start_time, _ = zero_crossings[i]
-            end_time, _ = zero_crossings[i + 1]
-
-            # Extract the crest (maximum) and trough (minimum) in this range
-            crest, trough = None, None
-            for line in lines:
-                parts = line.split()
-                if len(parts) == 4:
-                    time, _, _, V = parts
-                    try:
-                        V = int(V)
-                        if start_time <= time <= end_time:
-                            crest = max(crest, V) if crest is not None else V
-                            trough = min(trough, V) if trough is not None else V
-                    except ValueError:
-                        continue
-
-            # Calculate wave height (crest-to-trough difference)
-            if crest is not None and trough is not None:
+            start = zero_crossings[i]
+            end = zero_crossings[i + 1]
+            if end > start:
+                crest = max(v for _, v in parsed_lines[start:end+1])
+                trough = min(v for _, v in parsed_lines[start:end+1])
                 wave_height_cm = abs(crest - trough)
-                wave_height_ft = wave_height_cm * 0.0328084
-                wave_data.append({
-                    "start_time": start_time,
-                    "end_time": end_time,
-                    "wave_height_ft": wave_height_ft
-                })
+                wave_height_ft = wave_height_cm * 0.0328084  # Convert cm to ft
+                wave_heights.append(wave_height_ft)
 
-        return wave_data, all_data
+        return wave_heights
 
-    # Generate the list of URLs for the past 'duration_hours' in 30-minute intervals
+    # Use Hawaii time
+    hawaii = pytz.timezone("Pacific/Honolulu")
+    now = datetime.now(hawaii)
+
+    # Determine time range
+    if duration_hours == 0:
+        start = now - timedelta(minutes=30)
+        intervals = [start]
+    else:
+        start = now - timedelta(hours=duration_hours)
+        intervals = []
+        while start < now:
+            intervals.append(start)
+            start += timedelta(minutes=30)
+
+    # Build URLs
     urls = []
-    current_time_obj = datetime.utcnow()
-    start_time_obj = current_time_obj - timedelta(hours=duration_hours)
-
-    while start_time_obj < current_time_obj:
-        dt_param = start_time_obj.strftime("%Y%m%d%H%M")
-        url = f"https://cdip.ucsd.edu/themes/cdip?d2=p70&pb=1&tz=HST&ll=1&un=1&u2=s:202:v:wave_histogram:st:1:max_frq:0.33:dt:{dt_param}:t:data"
+    for dt_time in intervals:
+        dt = dt_time.strftime("%Y%m%d%H%M")
+        url = f"https://cdip.ucsd.edu/themes/cdip?d2=p70&pb=1&tz=HST&ll=1&un=1&u2=s:202:v:wave_histogram:st:1:max_frq:0.33:dt:{dt}:t:data"
         urls.append(url)
-        start_time_obj += timedelta(minutes=30)
 
-    # Fetch and combine data from all generated URLs
-    combined_data_text = ""
+    # Fetch and combine data
+    data_text = ""
     for url in urls:
-        combined_data_text += fetch_data(url)
+        data_text += fetch_data(url)
 
-    # Process the combined data using the crest-to-trough method
-    waves, all_data = process_wave_data(combined_data_text)
+    # Process wave heights
+    wave_heights = process_wave_data(data_text)
 
-    # Construct the final JSON structure
-    result = {
-        "waves": waves,
-        "allData": all_data
-    }
+    # Build histogram with bin ranges like "2–3ft"
+    histogram = defaultdict(int)
+    for h in wave_heights:
+        bin_start = int(h // 1)
+        bin_label = f"{bin_start}–{bin_start + 1}ft"
+        histogram[bin_label] += 1
 
-    return json.dumps(result, indent=2)
+    return json.dumps({"histogram": dict(histogram)}, indent=2)
+
+# Debug output
+if __name__ == "__main__":
+    print(getHistogram(0))  # Call with 0 to test 30-minute fetch
