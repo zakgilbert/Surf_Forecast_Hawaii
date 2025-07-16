@@ -19,7 +19,7 @@ const Histogram = () => {
       .then((res) => res.json())
       .then((data) => {
         const raw = data.histogram;
-        console.log(raw);
+        console.log("Histogram Raw:", raw);
 
         // Convert histogram keys to sorted array of { label, count, binStart }
         const parsed = Object.entries(raw)
@@ -29,9 +29,7 @@ const Histogram = () => {
           })
           .sort((a, b) => a.binStart - b.binStart);
 
-        // Get max count bin for highlight
         const maxBin = parsed.reduce((max, b) => (b.count > max.count ? b : max), parsed[0]);
-
         const totalWaves = parsed.reduce((sum, b) => sum + b.count, 0);
 
         setHistogramData(parsed);
@@ -40,20 +38,19 @@ const Histogram = () => {
           count: totalWaves,
           hTenth: data.hTenth || "N/A",
           tHmax: data.tHmax || "N/A",
-          startUTC: data.startUTC || "[dynamic UTC]",
-          endUTC: data.endUTC || "[dynamic UTC]",
+          startHST: data.startHST || "[start time]",
+          endHST: data.endHST || "[end time]",
         });
       });
   }, []);
 
   return histogramData ? (
     <div style={{ maxWidth: 900, margin: "0 auto", fontFamily: "sans-serif" }}>
-
       <h2 style={{ textAlign: "center", marginBottom: 0 }}>
         Station 201 wave heights (up- and down-cross)
       </h2>
       <p style={{ textAlign: "center", marginTop: 4 }}>
-        Start: {stats.startUTC} &nbsp;&nbsp;&nbsp; End: {stats.endUTC}
+        Start: {stats.startHST} &nbsp;&nbsp;&nbsp; End: {stats.endHST}
       </p>
 
       <div style={{ textAlign: "center", marginTop: 10, marginBottom: 10 }}>
@@ -79,7 +76,6 @@ const Histogram = () => {
             dataKey="label"
             type="category"
             label={{ value: "Height Range (ft)", position: "insideBottom", dy: 20 }}
-            angle={0}
           />
           <YAxis
             label={{ value: "Count", angle: -90, position: "insideLeft", dx: -10 }}

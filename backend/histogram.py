@@ -6,36 +6,53 @@ from collections import defaultdict
 import pytz
 
 def getHistogram(duration_hours=0):
-    """Fetch wave data and return a histogram of 1-ft wave height bins (e.g., 0–1 ft, 1–2 ft, ...)."""
+    """Fetch wave data and return a histogram of 1-ft wave height bins (e.g., 0–1 ft, 1–2 ft, ...),
+    along with the actual UTC and HST time interval from the data.
+    """
 
     def fetch_data(url):
+        print(f"Fetching: {url}")
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         pre_tag = soup.find('pre', text=lambda t: t and 'Time(UTC)' in t)
-        return pre_tag.get_text() if pre_tag else ""
+        text = pre_tag.get_text() if pre_tag else ""
+        print("=== RAW DATA (first 500 chars) ===")
+        print(text[:500])
+        print("=== END RAW ===\n")
+        return text
 
     def process_wave_data(data_text):
         lines = data_text.splitlines()
         lines = [line.strip() for line in lines if line.strip() and not line.startswith("Time(UTC)")]
+        print(f"Total non-header lines: {len(lines)}")
 
         zero_crossings = []
         parsed_lines = []
 
         for line in lines:
             parts = line.split()
-            if len(parts) == 4:
+            if len(parts) >= 4:  # Ensure we have enough columns
                 try:
-                    time, _, _, v = parts
-                    v = int(v)
-                    parsed_lines.append((time, v))
+                    time_str = parts[0]
+                    v = int(parts[3])  # Use V(cm) column
+                    timestamp = datetime.strptime(time_str, "%Y%m%d%H%M%S").replace(tzinfo=pytz.utc)
+                    parsed_lines.append((timestamp, v))
                 except ValueError:
+                    print(f"Skipping line: {line}")
                     continue
 
+        print(f"Parsed lines: {len(parsed_lines)}")
+        if parsed_lines:
+            print(f"First timestamp: {parsed_lines[0][0]}")
+            print(f"Last timestamp:  {parsed_lines[-1][0]}")
+
         for i in range(len(parsed_lines) - 1):
-            t1, v1 = parsed_lines[i]
-            t2, v2 = parsed_lines[i + 1]
+            _, v1 = parsed_lines[i]
+            _, v2 = parsed_lines[i + 1]
             if v1 <= 0 < v2:
                 zero_crossings.append(i)
+
+        print(f"Zero crossings found: {len(zero_crossings)}")
 
         wave_heights = []
 
@@ -46,10 +63,17 @@ def getHistogram(duration_hours=0):
                 crest = max(v for _, v in parsed_lines[start:end+1])
                 trough = min(v for _, v in parsed_lines[start:end+1])
                 wave_height_cm = abs(crest - trough)
-                wave_height_ft = wave_height_cm * 0.0328084  # Convert cm to ft
+                wave_height_ft = wave_height_cm * 0.0328084
                 wave_heights.append(wave_height_ft)
 
-        return wave_heights
+        print(f"Total waves calculated: {len(wave_heights)}")
+        if wave_heights:
+            print(f"First 5 wave heights (ft): {[round(h, 2) for h in wave_heights[:5]]}")
+
+        if parsed_lines:
+            return wave_heights, parsed_lines[0][0], parsed_lines[-1][0]
+        else:
+            return [], None, None
 
     # Use Hawaii time
     hawaii = pytz.timezone("Pacific/Honolulu")
@@ -73,23 +97,44 @@ def getHistogram(duration_hours=0):
         url = f"https://cdip.ucsd.edu/themes/cdip?d2=p70&pb=1&tz=HST&ll=1&un=1&u2=s:202:v:wave_histogram:st:1:max_frq:0.33:dt:{dt}:t:data"
         urls.append(url)
 
-    # Fetch and combine data
+    # Fetch and combine all data
     data_text = ""
     for url in urls:
         data_text += fetch_data(url)
 
-    # Process wave heights
-    wave_heights = process_wave_data(data_text)
+    # Process wave heights and get real data timestamps
+    wave_heights, data_start, data_end = process_wave_data(data_text)
 
-    # Build histogram with bin ranges like "2–3ft"
+    # Build histogram like "2–3ft"
     histogram = defaultdict(int)
     for h in wave_heights:
         bin_start = int(h // 1)
         bin_label = f"{bin_start}–{bin_start + 1}ft"
         histogram[bin_label] += 1
 
-    return json.dumps({"histogram": dict(histogram)}, indent=2)
+    print("\n=== HISTOGRAM ===")
+    for k in sorted(histogram):
+        print(f"{k}: {histogram[k]}")
+    print("=================\n")
 
-# Debug output
+    # Format output times
+    if data_start and data_end:
+        start_utc = data_start.isoformat()
+        end_utc = data_end.isoformat()
+        start_hst_str = data_start.astimezone(hawaii).strftime("%B %d, %Y %I:%M %p HST")
+        end_hst_str = data_end.astimezone(hawaii).strftime("%B %d, %Y %I:%M %p HST")
+    else:
+        start_utc = end_utc = None
+        start_hst_str = end_hst_str = "N/A"
+
+    return json.dumps({
+        "histogram": dict(histogram),
+        "startUTC": start_utc,
+        "endUTC": end_utc,
+        "startHST": start_hst_str,
+        "endHST": end_hst_str
+    }, indent=2)
+
+# Run if called directly
 if __name__ == "__main__":
-    print(getHistogram(0))  # Call with 0 to test 30-minute fetch
+    print(getHistogram(0))
