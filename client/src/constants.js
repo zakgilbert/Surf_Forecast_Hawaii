@@ -422,11 +422,27 @@ export const CONTENT_DATA = [
     meta: "",
   },
   {
-    name: "Hanalei",
-    station: "202",
+    name: "Waimea",
+    station: "106",
     id: 52,
     tag: "histogram",
     header: "A Wave Histogram",
+    meta: "Waimea, HI"
+  },
+  {
+    name: "Hanalei",
+    station: "202",
+    id: 53,
+    tag: "histogram",
+    header: "A Wave Histogram",
     meta: "Hanalei, HI"
-  }
+  },
+  {
+    name: "Barber's Point",
+    station: "238",
+    id: 54,
+    tag: "histogram",
+    header: "A Wave Histogram",
+    meta: "Kalaeloa, HI"
+  },
 ];

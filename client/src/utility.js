@@ -62,7 +62,7 @@ export const handleGridCall = (item) => {
     return <AnimatedWaveModel id={item.station} mode={"height"}/>;
   }
   if (item.tag === "histogram") {
-    return <Histogram />;
+    return <Histogram id={item.station}/>;
   }
   return <></>;
 };

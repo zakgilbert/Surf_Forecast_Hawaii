@@ -30,9 +30,9 @@ def marineForecast():
 def tide(id, begin_date,end_date,time_zone):
     return getTide(id, begin_date,end_date,time_zone)
 
-@app.route('/histogram')
-def histogram():
-    return getHistogram()
+@app.route('/histogram/<string:id>')
+def histogram(id):
+    return getHistogram(0, id)
     
 
 @app.route('/wave-model/<string:id>/<string:mode>')

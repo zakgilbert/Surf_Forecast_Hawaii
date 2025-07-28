@@ -10,16 +10,15 @@ import {
   Cell,
 } from "recharts";
 
-const Histogram = () => {
+const Histogram = ({ id }) => {
   const [histogramData, setHistogramData] = useState(null);
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    fetch(`/histogram`)
+    fetch(`/histogram/${id}`)
       .then((res) => res.json())
       .then((data) => {
         const raw = data.histogram;
-        console.log("Histogram Raw:", raw);
 
         // Convert histogram keys to sorted array of { label, count, binStart }
         const parsed = Object.entries(raw)
@@ -35,19 +34,20 @@ const Histogram = () => {
         setHistogramData(parsed);
         setStats({
           max: maxBin.label,
-          count: totalWaves,
+          count: data.waveCount,
+          largest: data.largestWave || "N/A",
           hTenth: data.hTenth || "N/A",
           tHmax: data.tHmax || "N/A",
           startHST: data.startHST || "[start time]",
           endHST: data.endHST || "[end time]",
         });
       });
-  }, []);
+  }, [id]);
 
   return histogramData ? (
     <div style={{ maxWidth: 900, margin: "0 auto", fontFamily: "sans-serif" }}>
       <h2 style={{ textAlign: "center", marginBottom: 0 }}>
-        Station 201 wave heights (up- and down-cross)
+        Station {id} wave heights (up- and down-cross)
       </h2>
       <p style={{ textAlign: "center", marginTop: 4 }}>
         Start: {stats.startHST} &nbsp;&nbsp;&nbsp; End: {stats.endHST}
@@ -59,6 +59,10 @@ const Histogram = () => {
         </span>
         <span style={{ color: "darkred", fontWeight: "bold", fontSize: "18px" }}>
           Wave count: {stats.count}
+        </span>
+        <br />
+        <span style={{ color: "darkred", fontWeight: "bold", fontSize: "18px" }}>
+          Largest wave: {stats.largest} ft
         </span>
         <br />
         <span style={{ color: "darkred" }}>T@Hmax: {stats.tHmax}</span>&nbsp;&nbsp;
@@ -97,7 +101,7 @@ const Histogram = () => {
                 key={`cell-${index}`}
                 fill={
                   entry.label === stats.max
-                    ? "#FF4500" // highlight most common bin
+                    ? "#FF4500"
                     : "rgba(30, 144, 255, 0.5)"
                 }
               />
