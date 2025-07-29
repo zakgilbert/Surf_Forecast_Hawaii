@@ -5,6 +5,7 @@ import Forecast from "./components/Forecast.js";
 import MarineForecast from "./components/MarineForecast.js";
 import AnimatedWaveModel from "./components/AnimatedWaveModel.js";
 import Histogram from "./components/Histogram.js";
+import HurricaneImage from "./components/Hurricane.js";
 import { CONTENT_DATA } from "./constants.js";
 
 const getFormattedDate = (date) => {
@@ -56,13 +57,17 @@ export const handleGridCall = (item) => {
     return <MarineForecast id={item.station} />;
   }
   if (item.tag === "wave-model-period") {
-    return <AnimatedWaveModel id={item.station} mode={"per"}/>;
+    return <AnimatedWaveModel id={item.station} mode={"per"} />;
   }
   if (item.tag === "wave-model-height") {
-    return <AnimatedWaveModel id={item.station} mode={"height"}/>;
+    return <AnimatedWaveModel id={item.station} mode={"height"} />;
   }
   if (item.tag === "histogram") {
-    return <Histogram id={item.station}/>;
+    return <Histogram id={item.station} />;
+  }
+  if (item.tag === "hurricane") {
+    const[id, width, height] = item.station.split("-");
+    return <HurricaneImage id={id} width={width} height={height} />;
   }
   return <></>;
 };

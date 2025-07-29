@@ -5,6 +5,7 @@ from tide import *
 from marine_forecast import *
 from waveModel import *
 from histogram import *
+from hurricane import *
 import time
 import argparse
 
@@ -38,6 +39,10 @@ def histogram(id):
 @app.route('/wave-model/<string:id>/<string:mode>')
 def waveModel(id, mode):
     return getWaveModelImages(id, mode)
+
+@app.route('/hurricane/<string:mode>/<string:width>/<string:height>')
+def hurricane(mode, width, height):
+    return getHurricaneRendering(mode, width, height)
 
 
 if __name__ == "__main__":

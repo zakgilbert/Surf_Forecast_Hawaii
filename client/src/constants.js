@@ -445,4 +445,36 @@ export const CONTENT_DATA = [
     header: "A Wave Histogram",
     meta: "Kalaeloa, HI"
   },
+  {
+    name: "Hawaii",
+    station: "hi-600-600",
+    id: 55,
+    tag: "hurricane",
+    header: "Geocolor Composite",
+    meta: "Hawaii, Pacific"
+  },
+  {
+    name: "East Pacific Wide",
+    station: "tpw-900-540",
+    id: 56,
+    tag: "hurricane",
+    header: "Geocolor Composite",
+    meta: "Eastern Pacific"
+  },
+  {
+    name: "North-East Pacific",
+    station: "np-900-540",
+    id: 57,
+    tag: "hurricane",
+    header: "Geocolor Composite",
+    meta: "North Eastern Pacific"
+  },
+  {
+    name: "East Pacific",
+    station: "eep-900-540",
+    id: 58,
+    tag: "hurricane",
+    header: "Geocolor Composite",
+    meta: "Eastern Pacific"
+  },
 ];
