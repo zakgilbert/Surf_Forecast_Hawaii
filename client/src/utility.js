@@ -33,43 +33,39 @@ export const isMobile = () => {
   return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 };
 
-export const handleGridCall = (item) => {
-  if (item.tag === "buoy") {
-    return <StationInput id={item.station} />;
-  }
-  if (item.tag === "power") {
-    return <Power id={item.station} />;
-  }
-  if (item.tag === "tide") {
-    const beginAndEndDates = getTideBeginAndEndDates();
-    return (
-      <Tide
-        id={item.station}
-        beginDate={beginAndEndDates.beginDate}
-        timeZone={"LST"}
-      />
-    );
-  }
-  if (item.tag === "forecast") {
-    return <Forecast id={item.station} />;
-  }
-  if (item.tag === "marine-forecast") {
-    return <MarineForecast id={item.station} />;
-  }
-  if (item.tag === "wave-model-period") {
-    return <AnimatedWaveModel id={item.station} mode={"per"} />;
-  }
-  if (item.tag === "wave-model-height") {
-    return <AnimatedWaveModel id={item.station} mode={"height"} />;
-  }
-  if (item.tag === "histogram") {
-    return <Histogram id={item.station} />;
-  }
-  if (item.tag === "hurricane") {
-    const[id, width, height] = item.station.split("-");
+const componentMap = {
+  buoy: ({ station }) => <StationInput id={station} />,
+  power: ({ station }) => <Power id={station} />,
+  tide: ({ station }) => {
+    const { beginDate } = getTideBeginAndEndDates();
+    return <Tide id={station} beginDate={beginDate} timeZone="LST" />;
+  },
+  forecast: ({ station }) => <Forecast id={station} />,
+  "marine-forecast": ({ station }) => <MarineForecast id={station} />,
+  "wave-model-period": ({ station }) => (
+    <AnimatedWaveModel id={station} mode="per" />
+  ),
+  "wave-model-height": ({ station }) => (
+    <AnimatedWaveModel id={station} mode="height" />
+  ),
+  histogram: ({ station }) => <Histogram id={station} />,
+  hurricane: ({ station }) => {
+    const [id, width, height] = station.split("-");
     return <HurricaneImage id={id} width={width} height={height} />;
-  }
-  return <></>;
+  },
+};
+
+const handler = {
+  get(target, prop) {
+    return prop in target ? target[prop] : () => <></>; 
+  },
+};
+
+const gridRenderer = new Proxy(componentMap, handler);
+
+// Now use this in place of your original function
+export const handleGridCall = (item) => {
+  return gridRenderer[item.tag](item);
 };
 
 export const groupedData = CONTENT_DATA.reduce((acc, item) => {
