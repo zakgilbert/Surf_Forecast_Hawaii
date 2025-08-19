@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { CHART_HEIGHT_STR } from "../constants";
-
+import { isMobile } from "react-device-detect";
 
 const Forecast = ({ id }) => {
-  const [data, setData] = useState({}); // Initialize as an object instead of array
+  const [data, setData] = useState(null);
 
   useEffect(() => {
+    let alive = true;
     fetch(`/forecast/${id}`)
       .then((res) => res.json())
-      .then((data) => {
-        setData(data); // Set the whole response data as the state
-        console.log(data); // Check the structure of the response
+      .then((d) => {
+        if (alive) setData(d);
+      })
+      .catch(() => {
+        if (alive) setData(null);
       });
+    return () => {
+      alive = false;
+    };
   }, [id]);
 
-  return data.forecast ? ( // Check if forecast is present
+  if (!data?.forecast) return <></>;
+
+  return !isMobile ? (
+    // 🖥 Desktop: same as before
     <div
       style={{
         maxHeight: CHART_HEIGHT_STR,
@@ -22,13 +31,39 @@ const Forecast = ({ id }) => {
         border: "1px solid #ccc",
         padding: "10px",
         textAlign: "left",
-        height: "700px"
+        height: "700px",
       }}
     >
-      <pre>{data.forecast}</pre> {/* Display the forecast */}
+      <pre
+        style={{
+          margin: 0,
+          whiteSpace: "pre-wrap",
+          wordBreak: "break-word",
+          fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+          fontSize: 14,
+          lineHeight: 1.4,
+        }}
+      >
+        {data.forecast}
+      </pre>
     </div>
   ) : (
-    <></> // Render nothing if there's no forecast
+    // 📱 Mobile: condensed, smaller text
+    <div style={{ padding: "10px 12px", textAlign: "left" }}>
+      <pre
+        style={{
+          margin: 0,
+          whiteSpace: "pre-wrap",
+          wordBreak: "break-word",
+          fontFamily:
+            "system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif",
+          fontSize: 12, // 👈 a bit smaller
+          lineHeight: 1.35,
+        }}
+      >
+        {data.forecast}
+      </pre>
+    </div>
   );
 };
 
