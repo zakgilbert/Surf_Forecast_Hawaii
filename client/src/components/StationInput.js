@@ -8,6 +8,7 @@ import WaveEnergy from "./WaveEnergy";
 import ArrowIndicator from "./ArrowIndicator";
 import BuoyTabs from "./BuoyTabs";
 import { formatDate } from "../utility";
+import { formatTimeMobile, formatDateTime } from "../utility";
 
 const StationInput = ({ id }) => {
   const [data, setData] = useState(null);
@@ -82,7 +83,7 @@ const StationInput = ({ id }) => {
     return (
       <Segment style={styles.segmentBase}>
         <Header as="h4" style={styles.mobileSummaryTitle}>
-          {formatDate(data.rows[0][0])}
+          {formatDateTime(data.rows[0][0])}
         </Header>
         <div style={styles.kvList}>
           {summaryFields.map((row, i) => (

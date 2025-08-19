@@ -4,6 +4,7 @@ import { formatDate } from "../utility";
 import ArrowIndicator from "./ArrowIndicator";
 import { BUOY_TAB_CHART_HEIGHT, BUOY_TAB_CHART_WIDTH } from "../constants";
 import { isMobile } from "react-device-detect";
+import { formatTimeMobile, formatDateTime } from "../utility";
 import {
   LineChart,
   Line,
@@ -124,7 +125,7 @@ const BuoyTabs = ({ data }) => {
             <Table.Row key={rIdx}>
               {/* Sticky first column with TIME-ONLY for mobile */}
               <Table.Cell style={styles.stickyCol}>
-                {formatTimeOnly(row[timeIndex])}
+                {formatTimeMobile(row[timeIndex])}
               </Table.Cell>
               {mobileCols.map((col) => {
                 const val = row[col.idx];
