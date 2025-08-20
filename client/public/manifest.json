@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "MyHagi",
+  "name": "Surf Forecast Hawaii",
   "icons": [
     {
       "src": "favicon.ico",
