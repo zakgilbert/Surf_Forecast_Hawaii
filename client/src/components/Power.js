@@ -1,7 +1,7 @@
 /**
  * Power.js
  */
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Container } from "semantic-ui-react";
 import {
   LineChart,
@@ -19,19 +19,10 @@ import { isMobile } from "react-device-detect";
 
 const Power = ({ id }) => {
   const [data, setData] = useState([]);
-  // ✅ Always declare hooks at top-level (used for mobile external tooltip)
+  // Mobile external tooltip state
   const [activePoint, setActivePoint] = useState(null);
-
-  // Handlers used by the chart (safe to define once)
-  const handleMouseMove = (state) => {
-    if (state && state.activePayload && state.activePayload.length) {
-      setActivePoint({
-        label: state.activeLabel,
-        payload: state.activePayload[0].payload,
-      });
-    }
-  };
-  const handleMouseLeave = () => setActivePoint(null);
+  const hideTimerRef = useRef(null);
+  const rafRef = useRef(null);
 
   useEffect(() => {
     let alive = true;
@@ -43,9 +34,7 @@ const Power = ({ id }) => {
       .catch(() => {
         if (alive) setData([]);
       });
-    return () => {
-      alive = false;
-    };
+    return () => { alive = false; };
   }, [id]);
 
   // Normalize values to numbers
@@ -54,7 +43,7 @@ const Power = ({ id }) => {
     [data]
   );
 
-  // Tooltip content (used for desktop and mobile-external)
+  // ------- Shared tooltip component (used for desktop and mobile-external) -------
   const CustomTooltip = ({ active = true, payload = [], label }) => {
     if (!active || !payload || !payload.length) return null;
     const selectedPoint = payload[0]?.payload || {};
@@ -70,6 +59,7 @@ const Power = ({ id }) => {
           fontSize: 14,
           boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
           width: 300,
+          maxWidth: "92vw",
         }}
       >
         <p style={{ margin: 0, fontWeight: 600 }}>
@@ -152,20 +142,36 @@ const Power = ({ id }) => {
     );
   }
 
-  /* =================== MOBILE (external tooltip above chart) =================== */
+  /* =================== MOBILE (external tooltip BELOW chart) =================== */
+
+  // Throttled move handler to avoid flicker
+  const handleMouseMove = (state) => {
+    if (hideTimerRef.current) {
+      clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = null;
+    }
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+
+    rafRef.current = requestAnimationFrame(() => {
+      if (state && state.activePayload && state.activePayload.length) {
+        setActivePoint({
+          label: state.activeLabel,
+          payload: state.activePayload[0].payload,
+        });
+      }
+    });
+  };
+
+  // Small grace period before hiding so it doesn't flash when finger jitters
+  const handleMouseLeave = () => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    hideTimerRef.current = setTimeout(() => {
+      setActivePoint(null);
+    }, 150);
+  };
+
   return (
     <Container textAlign="center">
-      {/* External tooltip ABOVE the chart */}
-      {activePoint && (
-        <div style={{ marginBottom: 12, display: "flex", justifyContent: "center" }}>
-          <CustomTooltip
-            active={true}
-            payload={[{ payload: activePoint.payload }]}
-            label={activePoint.label}
-          />
-        </div>
-      )}
-
       <div style={{ touchAction: "none" }}>
         <ResponsiveContainer width="100%" height={260}>
           <LineChart
@@ -191,7 +197,7 @@ const Power = ({ id }) => {
                 style: { textAnchor: "middle" },
               }}
             />
-            {/* Keep Tooltip just to draw the cursor line; hide its popup */}
+            {/* Keep Tooltip only for the vertical cursor line; hide popup */}
             <Tooltip
               content={() => null}
               cursor={{ stroke: "#9ca3af", strokeDasharray: "5 5" }}
@@ -210,6 +216,17 @@ const Power = ({ id }) => {
           </LineChart>
         </ResponsiveContainer>
       </div>
+
+      {/* External tooltip rendered BELOW the chart */}
+      {activePoint && (
+        <div style={{ marginTop: 12, display: "flex", justifyContent: "center" }}>
+          <CustomTooltip
+            active={true}
+            payload={[{ payload: activePoint.payload }]}
+            label={activePoint.label}
+          />
+        </div>
+      )}
     </Container>
   );
 };
