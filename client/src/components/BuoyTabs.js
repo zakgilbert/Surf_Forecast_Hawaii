@@ -1,13 +1,10 @@
-import React, { useState } from "react";
-import { Table, Popup, Tab, Segment, Header } from "semantic-ui-react";
+import React, { useState, useMemo } from "react";
+import { Table, Popup, Tab, Segment } from "semantic-ui-react";
 import { formatDate } from "../utility";
 import ArrowIndicator from "./ArrowIndicator";
-import { BUOY_TAB_CHART_HEIGHT } from "../constants";
-import { BUOY_TAB_CHART_WIDTH } from "../constants";
-import CustomXAxisTick from "./CustomXAxisTick";
-import { isMobile } from 'react-device-detect'; // at the top of your file if not already imported
-import dayjs from 'dayjs'; // For date manipulation
-
+import { BUOY_TAB_CHART_HEIGHT, BUOY_TAB_CHART_WIDTH } from "../constants";
+import { isMobile } from "react-device-detect";
+import { formatTimeMobile, formatDateTime } from "../utility";
 import {
   LineChart,
   Line,
@@ -15,164 +12,220 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
+  ResponsiveContainer,
 } from "recharts";
 
 const BuoyTabs = ({ data }) => {
   const [activeTab, setActiveTab] = useState("table");
 
-  // Helper function to prepare chart data
+  /* ------------ column indices ------------ */
+  const timeIndex = useMemo(
+    () => data.cols.findIndex((c) => c.value === "Time"),
+    [data]
+  );
+
+  // Mobile columns: everything except Time (in current order)
+  const mobileCols = useMemo(() => {
+    return data.cols
+      .map((c, idx) => ({ ...c, idx }))
+      .filter((c) => c.value !== "Time");
+  }, [data]);
+
+  /* ------------ helpers ------------ */
+  // Show time-of-day only (e.g., "10:40 AM") on mobile; desktop uses formatDate as-is
+  const formatTimeOnly = (val) => {
+    // Try Date parsing first
+    const d = new Date(val);
+    if (!Number.isNaN(d.getTime())) {
+      return d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    }
+    // Fallback: if formatDate returns "Aug 19, 10:40 AM", grab the last chunk
+    const s = String(formatDate(val));
+    const parts = s.split(", ");
+    return parts.length ? parts[parts.length - 1] : s;
+  };
+
+  /* ------------ chart data helper ------------ */
   const getChartData = (yKey) => {
-    const timeIndex = data.cols.findIndex((col) => col.value === "Time");
-    const yIndex = data.cols.findIndex((col) => col.value === yKey);
-
+    const yIndex = data.cols.findIndex((c) => c.value === yKey);
     if (timeIndex === -1 || yIndex === -1) return [];
-
     return data.rows.map((row) => ({
-      time: formatDate(row[timeIndex]), // Format time for better readability
+      time: formatDate(row[timeIndex]),
       [yKey]: Number(row[yIndex]),
     }));
   };
 
-  // Function to format X-axis labels (show date for the first entry of each day, time for others)
-  const formatXAxis = (tickItem) => {
-    const date = dayjs(tickItem);
-    const formattedDate = date.format("YYYY-MM-DD"); // Format the date as 'YYYY-MM-DD'
-    const formattedTime = date.format("HH:mm"); // Format the time as 'HH:mm'
+  /* ------------ DESKTOP TABLE (unchanged) ------------ */
+  const DesktopTable = (
+    <div style={styles.desktopTableWrap}>
+      <Table celled compact striped unstackable style={styles.desktopTableMinWidth}>
+        <Table.Header>
+          <Table.Row>
+            {data.cols.map((col) => (
+              <Popup
+                key={col.value}
+                trigger={<Table.HeaderCell>{col.value}</Table.HeaderCell>}
+                content={col.toolTip}
+                position="top center"
+              />
+            ))}
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {data.rows.map((row, rowIndex) => (
+            <Table.Row key={rowIndex}>
+              {row.map((val, colIndex) => (
+                <Table.Cell key={colIndex} style={styles.desktopCell}>
+                  {data.cols[colIndex].value === "Time" ? (
+                    formatDate(val)
+                  ) : data.cols[colIndex].value === "MWD" ? (
+                    <Popup
+                      content={<ArrowIndicator direction={Number(val)} />}
+                      trigger={<span>{val}°</span>}
+                      position="top center"
+                    />
+                  ) : (
+                    val
+                  )}
+                </Table.Cell>
+              ))}
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
+    </div>
+  );
 
-    // Only show the date on the first entry of each day
-    if (date.hour() === 0) {
-      return formattedDate; // Show date only for the first entry
-    }
+  /* ------------ MOBILE TABLE (rows = timestamps, cols = metrics) ------------ */
+  const MobileWideTable = (
+    <div style={styles.mobileTableScroll}>
+      <Table celled compact unstackable style={styles.mobileTable}>
+        <Table.Header>
+          <Table.Row>
+            {/* Sticky Time header (no fixed px width; we shortened the content instead) */}
+            <Table.HeaderCell style={{ ...styles.stickyCol, ...styles.stickyHeader }}>
+              Time
+            </Table.HeaderCell>
+            {mobileCols.map((col) => (
+              <Popup
+                key={col.value}
+                trigger={
+                  <Table.HeaderCell style={styles.metricColHeader}>
+                    {col.value}
+                  </Table.HeaderCell>
+                }
+                content={col.toolTip}
+                position="top center"
+              />
+            ))}
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {data.rows.map((row, rIdx) => (
+            <Table.Row key={rIdx}>
+              {/* Sticky first column with TIME-ONLY for mobile */}
+              <Table.Cell style={styles.stickyCol}>
+                {formatTimeMobile(row[timeIndex])}
+              </Table.Cell>
+              {mobileCols.map((col) => {
+                const val = row[col.idx];
+                const isDir = col.value === "MWD";
+                return (
+                  <Table.Cell key={col.value + col.idx} style={styles.metricColCell}>
+                    {isDir ? (
+                      <Popup
+                        content={<ArrowIndicator direction={Number(val)} />}
+                        trigger={<span>{val}°</span>}
+                        position="top center"
+                      />
+                    ) : (
+                      String(val)
+                    )}
+                  </Table.Cell>
+                );
+              })}
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
+    </div>
+  );
 
-    return formattedTime; // Show time for the other entries
-  };
+  /* ------------ Charts (responsive on mobile) ------------ */
+  const SwellHeightChart = isMobile ? (
+    <div style={styles.chartMobileWrap}>
+      <ResponsiveContainer width="100%" height={BUOY_TAB_CHART_HEIGHT}>
+        <LineChart data={getChartData("SwH")} margin={styles.chartMobileMargin}>
+          <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+          <XAxis dataKey="time" interval="preserveStartEnd" tick={{ fontSize: 11 }} />
+          <YAxis tick={{ fontSize: 11 }} />
+          <Tooltip />
+          <Line type="monotone" dataKey="SwH" stroke="#8884d8" dot={false} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  ) : (
+    <div style={styles.chartDesktopWrap}>
+      <LineChart
+        width={BUOY_TAB_CHART_WIDTH}
+        height={BUOY_TAB_CHART_HEIGHT}
+        data={getChartData("SwH")}
+        margin={{ top: 20, right: 30, left: 20, bottom: 0 }}
+      >
+        <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+        <XAxis dataKey="time" textAnchor="end" />
+        <YAxis />
+        <Tooltip />
+        <Line type="monotone" dataKey="SwH" stroke="#8884d8" />
+      </LineChart>
+    </div>
+  );
 
-  // Tab panes
+  const SwellPeriodChart = isMobile ? (
+    <div style={styles.chartMobileWrap}>
+      <ResponsiveContainer width="100%" height={BUOY_TAB_CHART_HEIGHT}>
+        <LineChart data={getChartData("SwP")} margin={styles.chartMobileMargin}>
+          <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
+          <XAxis dataKey="time" interval="preserveStartEnd" tick={{ fontSize: 11 }} />
+          <YAxis domain={[3, "auto"]} tick={{ fontSize: 11 }} />
+          <Tooltip />
+          <Line type="monotone" dataKey="SwP" stroke="#82ca9d" dot={false} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  ) : (
+    <div style={styles.chartDesktopWrap}>
+      <LineChart
+        width={BUOY_TAB_CHART_WIDTH}
+        height={BUOY_TAB_CHART_HEIGHT}
+        data={getChartData("SwP")}
+        margin={{ top: 10, right: 15, left: 15, bottom: 0 }}
+      >
+        <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
+        <XAxis dataKey="time" textAnchor="front" tickSize={6} />
+        <YAxis domain={[3, "auto"]} />
+        <Tooltip />
+        <Line type="monotone" dataKey="SwP" stroke="#82ca9d" />
+      </LineChart>
+    </div>
+  );
+
   const panes = [
     {
       menuItem: "Buoy Data",
       render: () => (
-        <Tab.Pane style={{ padding: "0.5rem" }}>
-          {isMobile ? (
-            // 📱 MOBILE VIEW: vertical cards
-            <div>
-              {data.rows.map((row, i) => (
-                <Segment key={i} style={{ marginBottom: "1rem" }}>
-                  <Header as="h4">{formatDate(row[0])}</Header>
-                  <Table basic="very" compact>
-                    <Table.Body>
-                      {data.cols.slice(1).map((col, j) => (
-                        <Table.Row key={j}>
-                          <Table.Cell style={{ fontWeight: "bold" }}>
-                            {col.value}
-                          </Table.Cell>
-                          <Table.Cell>
-                            {col.value === "MWD" ? (
-                              <Popup
-                                content={
-                                  <ArrowIndicator
-                                    direction={Number(row[j + 1])}
-                                  />
-                                }
-                                trigger={<span>{row[j + 1]}°</span>}
-                                position="top center"
-                              />
-                            ) : (
-                              row[j + 1]
-                            )}
-                          </Table.Cell>
-                        </Table.Row>
-                      ))}
-                    </Table.Body>
-                  </Table>
-                </Segment>
-              ))}
-            </div>
-          ) : (
-            // 🖥 DESKTOP VIEW: traditional table
-            <div style={{ overflowX: "auto" }}>
-              <Table celled compact striped unstackable style={{ minWidth: "900px" }}>
-                <Table.Header>
-                  <Table.Row>
-                    {data.cols.map((col) => (
-                      <Popup
-                        key={col.value}
-                        trigger={<Table.HeaderCell>{col.value}</Table.HeaderCell>}
-                        content={col.toolTip}
-                        position="top center"
-                      />
-                    ))}
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  {data.rows.map((row, rowIndex) => (
-                    <Table.Row key={rowIndex}>
-                      {row.map((val, colIndex) => (
-                        <Table.Cell key={colIndex} style={{ padding: "4px", whiteSpace: "nowrap" }}>
-                          {data.cols[colIndex].value === "Time" ? (
-                            formatDate(val)
-                          ) : data.cols[colIndex].value === "MWD" ? (
-                            <Popup
-                              content={<ArrowIndicator direction={Number(val)} />}
-                              trigger={<span>{val}°</span>}
-                              position="top center"
-                            />
-                          ) : (
-                            val
-                          )}
-                        </Table.Cell>
-                      ))}
-                    </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table>
-            </div>
-          )}
+        <Tab.Pane style={styles.pane}>
+          {isMobile ? MobileWideTable : DesktopTable}
         </Tab.Pane>
       ),
     },
     {
       menuItem: "Swell Height",
-      render: () => (
-        <Tab.Pane>
-          <div style={{ overflow: "visible" }}>
-            <LineChart
-              width={BUOY_TAB_CHART_WIDTH}
-              height={BUOY_TAB_CHART_HEIGHT}
-              data={getChartData("SwH")}
-              margin={{ top: 20, right: 30, left: 20, bottom: 0 }}
-            >
-              <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-              <XAxis dataKey="time" textAnchor="end" />
-              <YAxis />
-              <Tooltip />
-              <Line type="monotone" dataKey="SwH" stroke="#8884d8" />
-            </LineChart>
-          </div>
-        </Tab.Pane>
-      ),
+      render: () => <Tab.Pane style={styles.pane}>{SwellHeightChart}</Tab.Pane>,
     },
     {
       menuItem: "Swell Period",
-      render: () => (
-        <Tab.Pane>
-          <div style={{ overflow: "visible" }}>
-            <LineChart
-              width={BUOY_TAB_CHART_WIDTH}
-              height={BUOY_TAB_CHART_HEIGHT}
-              data={getChartData("SwP")}
-              margin={{ top: 10, right: 15, left: 15, bottom: 0 }}
-            >
-              <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
-              <XAxis dataKey="time" textAnchor="front" tickSize={6} />
-              <YAxis domain={[3, "auto"]} />
-              <Tooltip />
-              <Line type="monotone" dataKey="SwP" stroke="#82ca9d" />
-            </LineChart>
-          </div>
-        </Tab.Pane>
-      ),
+      render: () => <Tab.Pane style={styles.pane}>{SwellPeriodChart}</Tab.Pane>,
     },
   ];
 
@@ -184,6 +237,59 @@ const BuoyTabs = ({ data }) => {
       }
     />
   );
+};
+
+/* ---------------- Styles ---------------- */
+const styles = {
+  pane: { padding: "0.5rem" },
+
+  // Desktop table
+  desktopTableWrap: { overflowX: "auto" },
+  desktopTableMinWidth: { minWidth: "900px" },
+  desktopCell: { padding: "4px", whiteSpace: "nowrap" },
+
+  // Mobile table container
+  mobileTableScroll: {
+    overflowX: "auto",
+    WebkitOverflowScrolling: "touch",
+    borderRadius: 6,
+  },
+  mobileTable: {
+    // allow natural widths; horizontal scroll will handle overflow
+    tableLayout: "auto",
+  },
+
+  // Sticky first column (Time)
+  stickyCol: {
+    position: "sticky",
+    left: 0,
+    top: 0,
+    background: "white",
+    zIndex: 2,
+    whiteSpace: "nowrap",
+    fontWeight: 600,
+    padding: "6px 10px",
+    textAlign: "left",
+  },
+  stickyHeader: { zIndex: 3 },
+
+  // Metric columns
+  metricColHeader: {
+    whiteSpace: "nowrap",
+    textAlign: "center",
+    padding: "6px 8px",
+  },
+  metricColCell: {
+    whiteSpace: "nowrap",
+    textAlign: "right",
+    padding: "6px 8px",
+    fontSize: 13,
+  },
+
+  // Charts
+  chartMobileWrap: { width: "100%", height: BUOY_TAB_CHART_HEIGHT },
+  chartMobileMargin: { top: 10, right: 10, left: 0, bottom: 0 },
+  chartDesktopWrap: { overflow: "visible" },
 };
 
 export default BuoyTabs;

@@ -86,3 +86,99 @@ export const formatDate = (datetime) => {
     hour12: true, // A (AM/PM)
   });
 };
+// utility.js
+const TZ_ABBREV = {
+  UTC: "+00:00", GMT: "+00:00",
+  HST: "-10:00", HDT: "-09:00",
+  PST: "-08:00", PDT: "-07:00",
+  MST: "-07:00", MDT: "-06:00",
+  CST: "-06:00", CDT: "-05:00",
+  EST: "-05:00", EDT: "-04:00",
+};
+
+function normalizeTzAbbrev(s) {
+  // match trailing timezone token like "... 10:40 HST" or "(HST)"
+  const m = s.match(/\s(?:\(|)([A-Z]{2,4})(?:\)|)\s*$/);
+  if (m && TZ_ABBREV[m[1]]) {
+    return s.replace(m[0], "") + TZ_ABBREV[m[1]];
+  }
+  return s;
+}
+
+export function parseDateSafe(val) {
+  if (val == null) return null;
+
+  // numbers or numeric strings => epoch (sec or ms)
+  if (typeof val === "number" || /^\d+$/.test(String(val).trim())) {
+    const n = Number(val);
+    return new Date(n < 1e12 ? n * 1000 : n); // seconds -> ms
+  }
+
+  let s = String(val).trim();
+
+  // common “YYYY-MM-DD HH:mm[:ss]” -> ISO + assume UTC if no tz
+  if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(:\d{2})?$/.test(s)) {
+    s = s.replace(" ", "T") + "Z";
+    const d = new Date(s);
+    if (!isNaN(d)) return d;
+  }
+
+  // normalize timezone abbreviations (HST, PDT, etc.)
+  s = normalizeTzAbbrev(s);
+
+  // try as-is
+  let d = new Date(s);
+  if (!isNaN(d)) return d;
+
+  // try inserting T between date and time
+  d = new Date(s.replace(" ", "T"));
+  if (!isNaN(d)) return d;
+
+  // last resort: assume UTC if no zone
+  if (!/[Z\+\-]\d{2}:?\d{2}$/.test(s)) {
+    d = new Date(s + "Z");
+    if (!isNaN(d)) return d;
+  }
+
+  return null;
+}
+
+// Consistent formatting helpers (default to Honolulu time to match your users)
+const HONO = "Pacific/Honolulu";
+
+export function formatTimeMobile(val, opts = {}) {
+  const d = parseDateSafe(val);
+  if (!d) return String(val);
+  const { timeZone = HONO } = opts;
+  return new Intl.DateTimeFormat(undefined, {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone,
+  }).format(d);
+}
+
+export function formatDateTime(val, opts = {}) {
+  const d = parseDateSafe(val);
+  if (!d) return String(val);
+  const { timeZone = HONO } = opts;
+  return new Intl.DateTimeFormat(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone,
+  }).format(d);
+}
+
+export function formatDateOnly(val, opts = {}) {
+  const d = parseDateSafe(val);
+  if (!d) return String(val);
+  const { timeZone = HONO } = opts;
+  return new Intl.DateTimeFormat(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+    timeZone,
+  }).format(d);
+}

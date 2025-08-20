@@ -1,7 +1,7 @@
 /**
  * Power.js
  */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Container } from "semantic-ui-react";
 import {
   LineChart,
@@ -13,97 +13,210 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import moment from "moment"; // Import moment.js for date formatting
+import moment from "moment";
 import { CHART_HEIGHT_NUM } from "../constants";
+import { isMobile } from "react-device-detect";
 
 const Power = ({ id }) => {
-  const [data, setData] = useState([{}]);
+  const [data, setData] = useState([]); // safer default than [{}]
 
   useEffect(() => {
+    let alive = true;
     fetch(`/power/${id}`)
       .then((res) => res.json())
-      .then((data) => {
-        setData(data);
-        console.log(data); // Check the data fetched
+      .then((d) => {
+        if (alive) setData(Array.isArray(d) ? d : []);
+      })
+      .catch(() => {
+        if (alive) setData([]);
       });
+    return () => {
+      alive = false;
+    };
   }, [id]);
+
+  // Ensure values are numeric so the chart behaves consistently
+  const series = useMemo(
+    () =>
+      (data || []).map((pt) => ({
+        ...pt,
+        value: Number(pt?.value),
+      })),
+    [data]
+  );
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
-      const selectedPoint = payload[0].payload; // The selected data point from the chart
+      const selectedPoint = payload[0]?.payload || {};
+      const nested = Array.isArray(selectedPoint.values)
+        ? selectedPoint.values
+        : [];
+
       return (
         <div
           style={{
             backgroundColor: "#fff",
-            padding: "20px", // Increased padding
-            border: "2px solid #ddd", // Make border slightly thicker
-            borderRadius: "8px", // Add rounded corners for better visual appeal
-            fontSize: "16px", // Increase font size
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", // Add a subtle shadow for better visibility
-            width: "300px", // Increase width of the tooltip container
+            padding: 16,
+            border: "2px solid #ddd",
+            borderRadius: 8,
+            fontSize: 14,
+            boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+            width: 300,
           }}
         >
-          <p>{moment(label).format("MMM D, YYYY h:mm A")}</p>
-          <p>
-            <strong>Energy Value: </strong>{selectedPoint.value}
+          <p style={{ margin: 0, fontWeight: 600 }}>
+            {moment(label).isValid()
+              ? moment(label).format("MMM D, YYYY h:mm A")
+              : String(label)}
           </p>
-          <p>
-            <strong>Peroid: </strong>{(1 / selectedPoint.frequency).toFixed(2)} seconds
+          <p style={{ margin: "6px 0 0" }}>
+            <strong>Energy Value: </strong>
+            {selectedPoint.value}
           </p>
+          {selectedPoint.frequency != null && (
+            <p style={{ margin: "4px 0 8px" }}>
+              <strong>Period: </strong>
+              {(1 / Number(selectedPoint.frequency)).toFixed(2)} seconds
+            </p>
+          )}
 
-          {/* Render the line chart inside the tooltip */}
-          <ResponsiveContainer width="100%" height={150}> {/* Increase height */}
-            <LineChart data={selectedPoint.values}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="frequency" label={{ value: "Frequency (Hz)", dy: 12 }} />
-              <YAxis label={{ value: "Energy", angle: -90 }} />
-              <Line type="monotone" dataKey="energy" stroke="#82ca9d" dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
+          {/* Mini chart inside tooltip */}
+          {nested.length > 0 && (
+            <div style={{ width: "100%", height: 150 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={nested}>
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical={true}
+                    horizontal={true}
+                  />
+                  <XAxis
+                    dataKey="frequency"
+                    label={{ value: "Frequency (Hz)", dy: 12 }}
+                    tick={{ fontSize: 10 }}
+                  />
+                  <YAxis
+                    label={{ value: "Energy", angle: -90 }}
+                    tick={{ fontSize: 10 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="energy"
+                    stroke="#82ca9d"
+                    dot={false}
+                    isAnimationActive={false}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
         </div>
       );
     }
-
     return null;
   };
 
-  return data !== undefined ? (
+  if (!series || series.length === 0) return <></>;
+
+  // === Desktop: unchanged visual behavior ===
+  if (!isMobile) {
+    return (
+      <Container textAlign="center">
+        <ResponsiveContainer width="100%" height={CHART_HEIGHT_NUM}>
+          <LineChart
+            data={series}
+            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          >
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={true}
+              horizontal={true}
+            />
+            <XAxis
+              dataKey="dataTime"
+              tickFormatter={(timeStr) =>
+                moment(timeStr, "YYYY-MM-DD HH:mm").format("MMM D, h:mm A")
+              }
+            />
+            <YAxis
+              label={{
+                value: "m²/Hz",
+                angle: -90,
+                position: "insideLeft",
+                style: { textAnchor: "middle" },
+              }}
+            />
+
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{ stroke: "#9ca3af", strokeDasharray: "5 5" }}
+            />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="value"
+              stroke="#8884d8"
+              activeDot={{ r: 8 }}
+              dot
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </Container>
+    );
+  }
+
+  // === Mobile: compact height, dots visible, stable tooltips, vertical grid lines ===
+  return (
     <Container textAlign="center">
-      {/* Main Chart */}
-      <ResponsiveContainer width="100%" height={CHART_HEIGHT_NUM}>
-        <LineChart
-          data={data}
-          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="dataTime" // Use dataTime for the main chart
-            tickFormatter={(timeStr) =>
-              moment(timeStr, "YYYY-MM-DD hh:mm A").format("MMM D, h:mm A")
-            } // Format for x-axis
-          />
-          <YAxis
-            label={{
-              value: "Energy Value",
-              angle: -90,
-              position: "insideLeft",
-            }}
-          />
-          <Tooltip
-            content={<CustomTooltip />} // Use custom tooltip for chart rendering
-          />
-          <Legend />
-          <Line
-            type="monotone"
-            dataKey="value" // Assuming 'value' is the main energy for this graph
-            stroke="#8884d8"
-            activeDot={{ r: 8 }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+      <div style={{ touchAction: "none" }}>
+        <ResponsiveContainer width="100%" height={260}>
+          <LineChart
+            data={series}
+            margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+          >
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={true}
+              horizontal={true}
+            />
+            <XAxis
+              dataKey="dataTime"
+              tick={{ fontSize: 11 }}
+              tickCount={6}
+              interval="preserveStartEnd"
+              tickFormatter={(timeStr) =>
+                moment(timeStr, "YYYY-MM-DD HH:mm").format("MMM D, h a")
+              }
+            />
+            <YAxis
+              tick={{ fontSize: 11 }}
+              label={{
+                value: "m²/Hz",
+                angle: -90,
+                position: "insideLeft",
+                style: { textAnchor: "middle" },
+              }}
+            />
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{ stroke: "#9ca3af", strokeDasharray: "5 5" }}
+              allowEscapeViewBox={{ x: true, y: true }}
+              wrapperStyle={{ outline: "none" }}
+            />
+            {/* Hide legend on mobile to save space; turn on dots & disable animation */}
+            <Line
+              type="monotone"
+              dataKey="value"
+              stroke="#8884d8"
+              strokeWidth={2}
+              dot={{ r: 3 }}
+              activeDot={{ r: 6 }}
+              isAnimationActive={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </Container>
-  ) : (
-    <></>
   );
 };
 
