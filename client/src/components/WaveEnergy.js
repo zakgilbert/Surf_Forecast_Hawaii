@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Tab, Table } from "semantic-ui-react";
 import ArrowIndicator from "./ArrowIndicator";
+import { formatTimeMobile, formatDateTime } from "../utility";
 import moment from "moment";
 import {
   LineChart,
@@ -71,23 +72,30 @@ const WaveEnergy = ({ id }) => {
   };
   return data !== undefined ? (
     <Container textAlign="center">
-      <p>{moment(data[0].dataTime).format("MMM D, YYYY h:mm A")}</p>
+      <p>{formatDateTime(data[0].dataTime)}</p>
       <ResponsiveContainer width="100%" height={248}>
         <LineChart
           data={data[0].values}
-          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          margin={{ top: 20, right: 30, left: 0, bottom: 15 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="frequency" />
+          <XAxis
+            dataKey="frequency"
+            label={{
+              value: "Frequency (Hz)",
+              position: "insideBottom",
+              offset: -10,
+            }}
+          />
           <YAxis
             label={{
-              value: "Energy Value",
+              value: "m^2/Hz",
               angle: -90,
               position: "insideLeft",
             }}
           />
           <Tooltip content={<CustomTooltip />} />
-          <Legend />
+          <Legend wrapperStyle={{ display: "none" }} />
           <Line
             type="monotone"
             dataKey="energy"
