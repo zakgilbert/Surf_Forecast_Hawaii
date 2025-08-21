@@ -129,6 +129,19 @@ export function formatTimeMobile(val, opts = {}) {
   }).format(d);
 }
 
+export function formatDateTimeMobile(val, opts = {}) {
+  const d = parseDateSafe(val);
+  if (!d) return String(val);
+  const { timeZone = HONO } = opts;
+  return new Intl.DateTimeFormat(undefined, {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone,
+  }).format(d);
+}
+
 export function formatDateTime(val, opts = {}) {
   const d = parseDateSafe(val);
   if (!d) return String(val);
