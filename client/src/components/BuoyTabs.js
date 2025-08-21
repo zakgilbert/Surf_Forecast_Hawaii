@@ -32,20 +32,7 @@ const BuoyTabs = ({ data }) => {
   }, [data]);
 
   /* ------------ helpers ------------ */
-  // Show time-of-day only (e.g., "10:40 AM") on mobile; desktop uses formatDate as-is
-  const formatTimeOnly = (val) => {
-    // Try Date parsing first
-    const d = new Date(val);
-    if (!Number.isNaN(d.getTime())) {
-      return d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-    }
-    // Fallback: if formatDate returns "Aug 19, 10:40 AM", grab the last chunk
-    const s = String(formatDate(val));
-    const parts = s.split(", ");
-    return parts.length ? parts[parts.length - 1] : s;
-  };
-
-  /* ------------ chart data helper ------------ */
+  // (kept as-is) derive chart data using formatted date strings already in use
   const getChartData = (yKey) => {
     const yIndex = data.cols.findIndex((c) => c.value === yKey);
     if (timeIndex === -1 || yIndex === -1) return [];
@@ -96,13 +83,12 @@ const BuoyTabs = ({ data }) => {
     </div>
   );
 
-  /* ------------ MOBILE TABLE (rows = timestamps, cols = metrics) ------------ */
+  /* ------------ MOBILE TABLE (unchanged) ------------ */
   const MobileWideTable = (
     <div style={styles.mobileTableScroll}>
       <Table celled compact unstackable style={styles.mobileTable}>
         <Table.Header>
           <Table.Row>
-            {/* Sticky Time header (no fixed px width; we shortened the content instead) */}
             <Table.HeaderCell style={{ ...styles.stickyCol, ...styles.stickyHeader }}>
               Time
             </Table.HeaderCell>
@@ -123,8 +109,8 @@ const BuoyTabs = ({ data }) => {
         <Table.Body>
           {data.rows.map((row, rIdx) => (
             <Table.Row key={rIdx}>
-              {/* Sticky first column with TIME-ONLY for mobile */}
               <Table.Cell style={styles.stickyCol}>
+                {/* mobile time-only formatting you already use */}
                 {formatTimeMobile(row[timeIndex])}
               </Table.Cell>
               {mobileCols.map((col) => {
@@ -151,15 +137,20 @@ const BuoyTabs = ({ data }) => {
     </div>
   );
 
-  /* ------------ Charts (responsive on mobile) ------------ */
+  /* ------------ Charts ------------ */
   const SwellHeightChart = isMobile ? (
     <div style={styles.chartMobileWrap}>
       <ResponsiveContainer width="100%" height={BUOY_TAB_CHART_HEIGHT}>
         <LineChart data={getChartData("SwH")} margin={styles.chartMobileMargin}>
           <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-          <XAxis dataKey="time" interval="preserveStartEnd" tick={{ fontSize: 11 }} />
+          <XAxis
+            dataKey="time"
+            interval="preserveStartEnd"
+            tick={{ fontSize: 11 }}
+            tickFormatter={(v) => formatDateTime(v)}            // ← mobile-only formatting
+          />
           <YAxis tick={{ fontSize: 11 }} />
-          <Tooltip />
+          <Tooltip labelFormatter={(v) => formatDateTime(v)} /> // ← mobile-only formatting
           <Line type="monotone" dataKey="SwH" stroke="#8884d8" dot={false} />
         </LineChart>
       </ResponsiveContainer>
@@ -186,9 +177,14 @@ const BuoyTabs = ({ data }) => {
       <ResponsiveContainer width="100%" height={BUOY_TAB_CHART_HEIGHT}>
         <LineChart data={getChartData("SwP")} margin={styles.chartMobileMargin}>
           <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
-          <XAxis dataKey="time" interval="preserveStartEnd" tick={{ fontSize: 11 }} />
+          <XAxis
+            dataKey="time"
+            interval="preserveStartEnd"
+            tick={{ fontSize: 11 }}
+            tickFormatter={(v) => formatDateTime(v)}            // ← mobile-only formatting
+          />
           <YAxis domain={[3, "auto"]} tick={{ fontSize: 11 }} />
-          <Tooltip />
+          <Tooltip labelFormatter={(v) => formatDateTime(v)} /> // ← mobile-only formatting
           <Line type="monotone" dataKey="SwP" stroke="#82ca9d" dot={false} />
         </LineChart>
       </ResponsiveContainer>
@@ -255,7 +251,6 @@ const styles = {
     borderRadius: 6,
   },
   mobileTable: {
-    // allow natural widths; horizontal scroll will handle overflow
     tableLayout: "auto",
   },
 
