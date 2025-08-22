@@ -13,12 +13,12 @@ import { CONTENT_DATA } from "./constants.js";
 
 const getFormattedDate = (date) => {
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is 0-indexed
+  const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}${month}${day}`;
 };
 
-// Today to +1 day (as your existing code does)
+// Today to +1 day
 export const getTideBeginAndEndDates = () => {
   const today = new Date();
   const beginDate = getFormattedDate(today);
@@ -26,7 +26,7 @@ export const getTideBeginAndEndDates = () => {
   return { beginDate, endDate };
 };
 
-// Friendly date for desktop tables, etc.
+// Friendly date for quick use
 export const formatDate = (datetime) => {
   const date = new Date(datetime);
   return date.toLocaleString("en-US", {
@@ -38,7 +38,7 @@ export const formatDate = (datetime) => {
   });
 };
 
-/* ---- Robust parsing: handles ISO, "YYYY-MM-DD HH:mm", "YYYY-MM-DD hh:mm AM", epochs, TZ abbrevs ---- */
+/* ---------------- Robust parsing ---------------- */
 
 const TZ_ABBREV = {
   UTC: "+00:00", GMT: "+00:00",
@@ -50,7 +50,6 @@ const TZ_ABBREV = {
 };
 
 function normalizeTzAbbrev(s) {
-  // match trailing timezone token like "... 10:40 HST" or "(HST)"
   const m = s.match(/\s(?:\(|)([A-Z]{2,4})(?:\)|)\s*$/);
   if (m && TZ_ABBREV[m[1]]) return s.replace(m[0], "") + TZ_ABBREV[m[1]];
   return s;
@@ -58,8 +57,8 @@ function normalizeTzAbbrev(s) {
 
 export function parseDateSafe(val) {
   if (val == null) return null;
+  if (val instanceof Date) return isNaN(val) ? null : val;
 
-  // numbers / numeric strings => epoch (sec or ms)
   if (typeof val === "number" || /^\d+$/.test(String(val).trim())) {
     const n = Number(val);
     return new Date(n < 1e12 ? n * 1000 : n);
@@ -67,14 +66,11 @@ export function parseDateSafe(val) {
 
   let s = String(val).trim();
 
-  // 24h: "YYYY-MM-DD HH:mm[:ss]" -> ISO UTC
   if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(:\d{2})?$/.test(s)) {
-    const isoUtc = s.replace(" ", "T") + "Z";
-    const d = new Date(isoUtc);
+    const d = new Date(s.replace(" ", "T") + "Z");
     if (!isNaN(d)) return d;
   }
 
-  // 12h with AM/PM: "YYYY-MM-DD hh:mm[:ss] AM/PM" -> build UTC
   const m12 = s.match(
     /^(\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)$/i
   );
@@ -84,28 +80,20 @@ export function parseDateSafe(val) {
     if (/PM/i.test(ap) && h < 12) h += 12;
     if (/AM/i.test(ap) && h === 12) h = 0;
     const d = new Date(Date.UTC(
-      parseInt(Y, 10),
-      parseInt(M, 10) - 1,
-      parseInt(D, 10),
-      h,
-      parseInt(mm, 10),
-      parseInt(ss, 10)
+      parseInt(Y, 10), parseInt(M, 10) - 1, parseInt(D, 10),
+      h, parseInt(mm, 10), parseInt(ss, 10)
     ));
     if (!isNaN(d)) return d;
   }
 
-  // Normalize timezone abbreviations (HST, PDT, etc.)
   s = normalizeTzAbbrev(s);
 
-  // Try native
   let d = new Date(s);
   if (!isNaN(d)) return d;
 
-  // Try inserting 'T'
   d = new Date(s.replace(" ", "T"));
   if (!isNaN(d)) return d;
 
-  // Assume UTC if no zone
   if (!/[Z+\-]\d{2}:?\d{2}$/.test(s)) {
     d = new Date(s + "Z");
     if (!isNaN(d)) return d;
@@ -114,11 +102,16 @@ export function parseDateSafe(val) {
   return null;
 }
 
-/* ---- Consistent formatting (defaults to Honolulu time) ---- */
+/* ---------------- Consistent formatting ---------------- */
 
 const HONO = "Pacific/Honolulu";
 
-export function formatTimeMobile(val, opts = {}) {
+function ordinal(n) {
+  const s = ["th", "st", "nd", "rd"], v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+export function formatTime(val, opts = {}) {
   const d = parseDateSafe(val);
   if (!d) return String(val);
   const { timeZone = HONO } = opts;
@@ -129,31 +122,49 @@ export function formatTimeMobile(val, opts = {}) {
   }).format(d);
 }
 
-export function formatDateTimeMobile(val, opts = {}) {
+export function formatDayTime(val, opts = {}) {
   const d = parseDateSafe(val);
   if (!d) return String(val);
   const { timeZone = HONO } = opts;
-  return new Intl.DateTimeFormat(undefined, {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
+
+  const weekday = new Intl.DateTimeFormat(undefined, {
+    weekday: "short",
+    timeZone,
+  }).format(d); // => "Mon", "Tue", "Thu", etc.
+  const time = formatTime(d, { timeZone });
+  return `${weekday}, ${time}`;
+}
+
+export function formatNumericalDateTime(val, opts = {}) {
+  const d = parseDateSafe(val);
+  if (!d) return String(val);
+  const { timeZone = HONO } = opts;
+  const date = new Intl.DateTimeFormat(undefined, {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
     timeZone,
   }).format(d);
+  const time = formatTime(d, { timeZone });
+  return `${date}, ${time}`;
 }
 
 export function formatDateTime(val, opts = {}) {
   const d = parseDateSafe(val);
   if (!d) return String(val);
   const { timeZone = HONO } = opts;
-  return new Intl.DateTimeFormat(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "2-digit",
-    hour: "numeric",
-    minute: "2-digit",
+
+  const month = new Intl.DateTimeFormat(undefined, {
+    month: "long",
     timeZone,
   }).format(d);
+  const dayNum = Number(new Intl.DateTimeFormat(undefined, {
+    day: "numeric",
+    timeZone,
+  }).format(d));
+  const time = formatTime(d, { timeZone });
+
+  return `${month} ${dayNum}, ${time}`;
 }
 
 export function formatDateOnly(val, opts = {}) {
@@ -170,9 +181,10 @@ export function formatDateOnly(val, opts = {}) {
 
 /* ---------------- Misc ---------------- */
 
-export const isMobile = () => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+export const isMobile = () =>
+  /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-/* ---- Component router for grid ---- */
+/* ---------------- Component router ---------------- */
 
 const componentMap = {
   buoy: ({ station }) => <StationInput id={station} />,
@@ -183,8 +195,12 @@ const componentMap = {
   },
   forecast: ({ station }) => <Forecast id={station} />,
   "marine-forecast": ({ station }) => <MarineForecast id={station} />,
-  "wave-model-period": ({ station }) => <AnimatedWaveModel id={station} mode="per" />,
-  "wave-model-height": ({ station }) => <AnimatedWaveModel id={station} mode="height" />,
+  "wave-model-period": ({ station }) => (
+    <AnimatedWaveModel id={station} mode="per" />
+  ),
+  "wave-model-height": ({ station }) => (
+    <AnimatedWaveModel id={station} mode="height" />
+  ),
   histogram: ({ station }) => <Histogram id={station} />,
   hurricane: ({ station }) => {
     const [id, width, height] = station.split("-");

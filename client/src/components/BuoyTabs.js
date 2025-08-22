@@ -4,7 +4,7 @@ import { formatDate } from "../utility";
 import ArrowIndicator from "./ArrowIndicator";
 import { BUOY_TAB_CHART_HEIGHT, BUOY_TAB_CHART_WIDTH } from "../constants";
 import { isMobile } from "react-device-detect";
-import { formatTimeMobile, formatDateTime, formatDateTimeMobile } from "../utility";
+import { formatDayTime, formatTime } from "../utility";
 import {
   LineChart,
   Line,
@@ -64,7 +64,7 @@ const BuoyTabs = ({ data }) => {
               {row.map((val, colIndex) => (
                 <Table.Cell key={colIndex} style={styles.desktopCell}>
                   {data.cols[colIndex].value === "Time" ? (
-                    formatDate(val)
+                    formatDayTime(val)
                   ) : data.cols[colIndex].value === "MWD" ? (
                     <Popup
                       content={<ArrowIndicator direction={Number(val)} />}
@@ -110,8 +110,8 @@ const BuoyTabs = ({ data }) => {
           {data.rows.map((row, rIdx) => (
             <Table.Row key={rIdx}>
               <Table.Cell style={styles.stickyCol}>
-                {/* mobile time-only formatting you already use */}
-                {formatTimeMobile(row[timeIndex])}
+                {/* Timestamp */}
+                {formatTime(row[timeIndex])}
               </Table.Cell>
               {mobileCols.map((col) => {
                 const val = row[col.idx];
@@ -147,10 +147,10 @@ const BuoyTabs = ({ data }) => {
             dataKey="time"
             interval="preserveStartEnd"
             tick={{ fontSize: 11 }}
-            tickFormatter={(v) => formatDateTimeMobile(v)}            // ← mobile-only formatting
+            tickFormatter={(v) => formatDayTime(v)}            // TimeStamp
           />
           <YAxis tick={{ fontSize: 11 }} />
-          <Tooltip labelFormatter={(v) => formatDateTimeMobile(v)} /> // ← mobile-only formatting
+          <Tooltip labelFormatter={(v) => formatDayTime(v)} /> // TimeStamp 
           <Line type="monotone" dataKey="SwH" stroke="#8884d8" dot={false} />
         </LineChart>
       </ResponsiveContainer>
@@ -181,10 +181,10 @@ const BuoyTabs = ({ data }) => {
             dataKey="time"
             interval="preserveStartEnd"
             tick={{ fontSize: 11 }}
-            tickFormatter={(v) => formatDateTimeMobile(v)}            // ← mobile-only formatting
+            tickFormatter={(v) => formatDayTime(v)}            // Timestamp
           />
           <YAxis domain={[3, "auto"]} tick={{ fontSize: 11 }} />
-          <Tooltip labelFormatter={(v) => formatDateTimeMobile(v)} /> // ← mobile-only formatting
+          <Tooltip labelFormatter={(v) => formatDayTime(v)} /> // Timestamp
           <Line type="monotone" dataKey="SwP" stroke="#82ca9d" dot={false} />
         </LineChart>
       </ResponsiveContainer>
