@@ -27,10 +27,12 @@ const StationInput = ({ id }) => {
       });
     return () => {
       alive = false;
+      console.log("returning false.....---------------------");
     };
   }, [id]);
 
   const ready = !!(data && data.cols && data.rows);
+  console.log(ready);
 
   const summaryFields = useMemo(() => {
     if (!ready) return [];
@@ -106,9 +108,6 @@ const StationInput = ({ id }) => {
   if (isMobile) {
     return (
       <div style={styles.mobileWrap}>
-        <Header as="h3" style={styles.pageTitle}>
-          Forecast
-        </Header>
         <SummarySection />
         <Divider />
         {chart}

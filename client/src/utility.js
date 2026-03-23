@@ -179,13 +179,10 @@ export function formatDateOnly(val, opts = {}) {
   }).format(d);
 }
 
-/* ---------------- Misc ---------------- */
-
 export const isMobile = () =>
   /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 /* ---------------- Component router ---------------- */
-
 const componentMap = {
   buoy: ({ station }) => <StationInput id={station} />,
   power: ({ station }) => <Power id={station} />,

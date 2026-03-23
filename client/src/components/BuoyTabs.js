@@ -4,7 +4,7 @@ import { formatDate } from "../utility";
 import ArrowIndicator from "./ArrowIndicator";
 import { BUOY_TAB_CHART_HEIGHT, BUOY_TAB_CHART_WIDTH } from "../constants";
 import { isMobile } from "react-device-detect";
-import { formatDayTime, formatTime } from "../utility";
+import { formatDayTime, formatTime, parseDateSafe } from "../utility";
 import {
   LineChart,
   Line,
@@ -31,21 +31,31 @@ const BuoyTabs = ({ data }) => {
       .filter((c) => c.value !== "Time");
   }, [data]);
 
-  /* ------------ helpers ------------ */
-  // (kept as-is) derive chart data using formatted date strings already in use
   const getChartData = (yKey) => {
+    if (!data || !data.cols || !data.rows) return [];
     const yIndex = data.cols.findIndex((c) => c.value === yKey);
     if (timeIndex === -1 || yIndex === -1) return [];
-    return data.rows.map((row) => ({
-      time: formatDate(row[timeIndex]),
-      [yKey]: Number(row[yIndex]),
-    }));
+
+    return data.rows.map((row) => {
+      const d = parseDateSafe(row[timeIndex]); // robust parser
+      return {
+        ts: d ? d.getTime() : null, // ✅ safe numeric timestamp
+        timeStr: formatDate(row[timeIndex]), // ✅ string label for desktop
+        [yKey]: Number(row[yIndex]),
+      };
+    });
   };
 
-  /* ------------ DESKTOP TABLE (unchanged) ------------ */
+  /* ------------ DESKTOP TABLE ------------ */
   const DesktopTable = (
     <div style={styles.desktopTableWrap}>
-      <Table celled compact striped unstackable style={styles.desktopTableMinWidth}>
+      <Table
+        celled
+        compact
+        striped
+        unstackable
+        style={styles.desktopTableMinWidth}
+      >
         <Table.Header>
           <Table.Row>
             {data.cols.map((col) => (
@@ -89,7 +99,9 @@ const BuoyTabs = ({ data }) => {
       <Table celled compact unstackable style={styles.mobileTable}>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell style={{ ...styles.stickyCol, ...styles.stickyHeader }}>
+            <Table.HeaderCell
+              style={{ ...styles.stickyCol, ...styles.stickyHeader }}
+            >
               Time
             </Table.HeaderCell>
             {mobileCols.map((col) => (
@@ -117,7 +129,10 @@ const BuoyTabs = ({ data }) => {
                 const val = row[col.idx];
                 const isDir = col.value === "MWD";
                 return (
-                  <Table.Cell key={col.value + col.idx} style={styles.metricColCell}>
+                  <Table.Cell
+                    key={col.value + col.idx}
+                    style={styles.metricColCell}
+                  >
                     {isDir ? (
                       <Popup
                         content={<ArrowIndicator direction={Number(val)} />}
@@ -147,10 +162,10 @@ const BuoyTabs = ({ data }) => {
             dataKey="time"
             interval="preserveStartEnd"
             tick={{ fontSize: 11 }}
-            tickFormatter={(v) => formatDayTime(v)}            // TimeStamp
+            tickFormatter={(v) => formatDayTime(v)} // TimeStamp
           />
           <YAxis tick={{ fontSize: 11 }} />
-          <Tooltip labelFormatter={(v) => formatDayTime(v)} /> // TimeStamp 
+          <Tooltip labelFormatter={(v) => formatDayTime(v)} /> // TimeStamp
           <Line type="monotone" dataKey="SwH" stroke="#8884d8" dot={false} />
         </LineChart>
       </ResponsiveContainer>
@@ -181,7 +196,7 @@ const BuoyTabs = ({ data }) => {
             dataKey="time"
             interval="preserveStartEnd"
             tick={{ fontSize: 11 }}
-            tickFormatter={(v) => formatDayTime(v)}            // Timestamp
+            tickFormatter={(v) => formatDayTime(v)} // Timestamp
           />
           <YAxis domain={[3, "auto"]} tick={{ fontSize: 11 }} />
           <Tooltip labelFormatter={(v) => formatDayTime(v)} /> // Timestamp
