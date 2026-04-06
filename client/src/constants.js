@@ -477,4 +477,20 @@ export const CONTENT_DATA = [
     header: "Geocolor Composite",
     meta: "Eastern Pacific"
   },
+  {
+    name: "Nawiliwili",
+    station: "1611400",
+    id: 59,
+    tag: "tide",
+    header: "Tide Predictions at 1611400",
+    meta: "Nawiliwili Harbor, Kalapaki Kauai",
+  },
+  {
+    name: "Hanamaulu Bay",
+    station: "1611443",
+    id: 60,
+    tag: "tide",
+    header: "Tide Predictions at 1611443",
+    meta: "Hanamaulu, Kauai",
+  }
 ];
