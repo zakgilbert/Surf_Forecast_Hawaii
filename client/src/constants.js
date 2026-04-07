@@ -1,5 +1,5 @@
 export const CHART_HEIGHT_STR = "600px";
-export const CHART_HEIGHT_NUM= 600;
+export const CHART_HEIGHT_NUM = 600;
 export const TIDE_CHART_DAYS = 2;
 export const STARTING_TIDE_DAYS = 1;
 export const BUOY_TAB_CHART_HEIGHT = 200;
@@ -427,7 +427,7 @@ export const CONTENT_DATA = [
     id: 52,
     tag: "histogram",
     header: "A Wave Histogram",
-    meta: "Waimea, HI"
+    meta: "Waimea, HI",
   },
   {
     name: "Hanalei",
@@ -435,7 +435,7 @@ export const CONTENT_DATA = [
     id: 53,
     tag: "histogram",
     header: "A Wave Histogram",
-    meta: "Hanalei, HI"
+    meta: "Hanalei, HI",
   },
   {
     name: "Barber's Point",
@@ -443,7 +443,7 @@ export const CONTENT_DATA = [
     id: 54,
     tag: "histogram",
     header: "A Wave Histogram",
-    meta: "Kalaeloa, HI"
+    meta: "Kalaeloa, HI",
   },
   {
     name: "Hawaii",
@@ -451,7 +451,7 @@ export const CONTENT_DATA = [
     id: 55,
     tag: "hurricane",
     header: "Geocolor Composite",
-    meta: "Hawaii, Pacific"
+    meta: "Hawaii, Pacific",
   },
   {
     name: "East Pacific Wide",
@@ -459,7 +459,7 @@ export const CONTENT_DATA = [
     id: 56,
     tag: "hurricane",
     header: "Geocolor Composite",
-    meta: "Eastern Pacific"
+    meta: "Eastern Pacific",
   },
   {
     name: "North-East Pacific",
@@ -467,7 +467,7 @@ export const CONTENT_DATA = [
     id: 57,
     tag: "hurricane",
     header: "Geocolor Composite",
-    meta: "North Eastern Pacific"
+    meta: "North Eastern Pacific",
   },
   {
     name: "East Pacific",
@@ -475,7 +475,7 @@ export const CONTENT_DATA = [
     id: 58,
     tag: "hurricane",
     header: "Geocolor Composite",
-    meta: "Eastern Pacific"
+    meta: "Eastern Pacific",
   },
   {
     name: "Nawiliwili",
@@ -492,5 +492,5 @@ export const CONTENT_DATA = [
     tag: "tide",
     header: "Tide Predictions at 1611443",
     meta: "Hanamaulu, Kauai",
-  }
+  },
 ];
