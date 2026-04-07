@@ -24,7 +24,7 @@ const Tide = ({ id, beginDate, timeZone }) => {
 
   useEffect(() => {
     const endDate = moment(beginDate).add(days, "days").format("YYYYMMDD");
-    fetch(`/tide/${id}/${beginDate}/${endDate}/${timeZone}`)
+    fetch(`/api/tide/${id}/${beginDate}/${endDate}/${timeZone}`)
       .then((res) => res.json())
       .then((d) => setData(d || {}));
   }, [id, beginDate, timeZone, days]);

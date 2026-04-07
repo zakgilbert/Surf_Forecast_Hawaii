@@ -26,7 +26,7 @@ const Power = ({ id }) => {
 
   useEffect(() => {
     let alive = true;
-    fetch(`/power/${id}`)
+    fetch(`/api/power/${id}`)
       .then((res) => res.json())
       .then((d) => {
         if (alive) setData(Array.isArray(d) ? d : []);

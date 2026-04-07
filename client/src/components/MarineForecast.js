@@ -6,7 +6,7 @@ const MarineForecast = ({ id }) => {
 
   useEffect(() => {
     let alive = true;
-    fetch(`/marine-forecast`)
+    fetch(`/api/marine-forecast`)
       .then((res) => res.json())
       .then((d) => {
         if (alive) setData(d);

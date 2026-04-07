@@ -18,7 +18,7 @@ const WaveEnergy = ({ id }) => {
   const [data, setData] = useState([{}]);
 
   useEffect(() => {
-    fetch(`/power/${id}`)
+    fetch(`/api/power/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setData(data);

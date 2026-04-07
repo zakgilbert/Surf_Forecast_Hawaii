@@ -4,7 +4,7 @@ const HurricaneImage = ({ id, width, height }) => {
   const [image, setImage] = useState(null);
 
   useEffect(() => {
-    fetch(`/hurricane/${id}/${width}/${height}`)
+    fetch(`/api/hurricane/${id}/${width}/${height}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.image) {

@@ -15,7 +15,7 @@ const Histogram = ({ id }) => {
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    fetch(`/histogram/${id}`)
+    fetch(`/api/histogram/${id}`)
       .then((res) => res.json())
       .then((data) => {
         const raw = data.histogram;

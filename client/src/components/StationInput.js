@@ -20,7 +20,7 @@ const StationInput = ({ id }) => {
 
   useEffect(() => {
     let alive = true;
-    fetch(`/report/${id}`)
+    fetch(`/api/report/${id}`)
       .then((res) => res.json())
       .then((d) => {
         if (alive) setData(d);

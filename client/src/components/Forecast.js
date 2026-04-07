@@ -7,7 +7,7 @@ const Forecast = ({ id }) => {
 
   useEffect(() => {
     let alive = true;
-    fetch(`/forecast/${id}`)
+    fetch(`/api/forecast/${id}`)
       .then((res) => res.json())
       .then((d) => {
         if (alive) setData(d);

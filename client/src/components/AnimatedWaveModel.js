@@ -11,7 +11,7 @@ const AnimatedWaveModel = ({id, mode}) => {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const response = await fetch(`/wave-model/${id}/${mode}`);
+        const response = await fetch(`/api/wave-model/${id}/${mode}`);
         const data = await response.json();
         if (data.images) {
           setImages(data.images);
