@@ -1,4 +1,5 @@
 from flask import Flask, Blueprint
+from cache_config import init_cache
 from report import *
 from power import *
 from forecast import *
@@ -10,6 +11,8 @@ from hurricane import *
 import argparse
 
 app = Flask(__name__)
+init_cache(app)
+
 api = Blueprint('api', __name__, url_prefix='/api')
 
 @api.route('/report/<string:id>')
@@ -50,6 +53,4 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", "-p", type=int, default=5000, help="Port to run server on")
     args = parser.parse_args()
-    app.run(host="0.0.0.0", port=args.port)    
-
-  
+    app.run(host="0.0.0.0", port=args.port)

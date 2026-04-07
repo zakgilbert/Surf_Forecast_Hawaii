@@ -3,8 +3,11 @@ import pandas as pd
 from BuoyReading import *
 from util import *
 from datetime import datetime, timedelta
+from cache_config import cache
 
+@cache.memoize(timeout=300)
 def getReport(id):
+    print(f"RUNNING getReport {id}")
     url = f'https://www.ndbc.noaa.gov/data/realtime2/{id}.spec'  # Replace with the URL of the file you want to download
 
     response = requests.get(url)
