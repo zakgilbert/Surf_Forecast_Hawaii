@@ -2,8 +2,11 @@ import requests
 import json
 import pytz
 from datetime import datetime, timedelta
+from cache_config import cache
 
+@cache.memoize(timeout=300)
 def getSwellPower(id):
+    print(f"RUNNING getSwellPower {id}")
     url = f'https://www.ndbc.noaa.gov/data/5day2/{id}_5day.spectral'
     response = requests.get(url)
 

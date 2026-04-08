@@ -1,9 +1,11 @@
 import requests
 import base64
 from flask import jsonify
+from cache_config import cache
 
+@cache.memoize(timeout=1800)
 def getHurricaneRendering(mode, width, height):
-    print(mode)
+    print(f"RUNNING getHurricaneRendering {mode} {width} {height}")
     url = f'https://cdn.star.nesdis.noaa.gov/GOES18/ABI/SECTOR/{mode}/GEOCOLOR/GOES18-{mode.upper()}-GEOCOLOR-{width}x{height}.gif'
     print(url)
     response = requests.get(url)

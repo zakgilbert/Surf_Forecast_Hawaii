@@ -1,4 +1,5 @@
 import requests
+from cache_config import cache
 
 def split_forecast_to_objects(text):
     # Split the text based on the delimiter '$$'
@@ -30,7 +31,9 @@ def split_forecast_to_objects(text):
     return forecast_objects
 
 
+@cache.memoize(timeout=900)
 def getForecast(id):
+    print(f"RUNNING getForecast {id}")
     # Convert the id to an integer
     try:
         id = int(id)

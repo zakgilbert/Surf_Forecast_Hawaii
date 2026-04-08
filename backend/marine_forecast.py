@@ -2,8 +2,11 @@
 import requests
 from bs4 import BeautifulSoup
 import re
+from cache_config import cache
 
+@cache.memoize(timeout=1800)
 def get_marine_forecast():
+    print("RUNNING get_marine_forecast")
     url = "https://www.ndbc.noaa.gov/data/Forecasts/FZHW50.PHFO.html"
     try:
         # Fetch the HTML content
