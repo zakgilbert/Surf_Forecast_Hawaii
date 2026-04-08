@@ -31,7 +31,7 @@ export const CONTENT_DATA = [
   },
   {
     name: "North West",
-    station: "51101",
+    station: "51001",
     id: 3,
     tag: "power",
     header: "Wave Energy for Station 51101",
