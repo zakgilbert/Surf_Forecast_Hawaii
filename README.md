@@ -18,3 +18,25 @@ With two terminals
   cd client
   npm run start
   ```
+
+## Screenshots
+
+### Main Dashboard
+
+![Main Dashboard](./assets/readme_sample_1.png)
+
+- Buoy station data with wave height, swell, and wind
+- Wave energy frequency spectrum visualization
+- Tide predictions with interactive chart
+- Detailed buoy tables with historical data
+
+---
+
+### Forecast & Satellite Data
+
+![Forecast and Satellite](./assets/readme_sample_2.png)
+
+- Stormsurf wave model visualization
+- NOAA satellite geocolor imagery
+- Marine forecast text data
+- Time-series wave trend charts
