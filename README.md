@@ -1,4 +1,5 @@
-# report_app
+# Surf Forecast Hawaii
+## Powered by the MyHagi API
 A surf report web application
 surfforecasthawaii.com
 
