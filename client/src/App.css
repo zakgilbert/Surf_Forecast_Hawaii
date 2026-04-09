@@ -3,6 +3,8 @@
 
   --bg: #f7f9fc;
   --text: #111111;
+  --muted-text: rgba(17, 17, 17, 0.8);
+
   --header-bg: #1e3a5f;
   --header-text: #ffffff;
   --subtitle-text: #b0c4de;
@@ -17,6 +19,12 @@
   --link: #61dafb;
   --spinner: #3498db;
 
+  --surface: #ffffff;
+  --surface-soft: rgba(255, 255, 255, 0.96);
+  --border: rgba(0, 0, 0, 0.08);
+  --dot-inactive: rgba(0, 0, 0, 0.2);
+  --dot-active: #2185d0;
+
   --shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -24,6 +32,8 @@
   :root {
     --bg: #121212;
     --text: #f1f1f1;
+    --muted-text: rgba(241, 241, 241, 0.82);
+
     --header-bg: #13263d;
     --header-text: #ffffff;
     --subtitle-text: #9db4cc;
@@ -38,6 +48,12 @@
     --link: #7dcfff;
     --spinner: #5ab0ff;
 
+    --surface: #1b1b1b;
+    --surface-soft: rgba(27, 27, 27, 0.96);
+    --border: rgba(255, 255, 255, 0.12);
+    --dot-inactive: rgba(255, 255, 255, 0.3);
+    --dot-active: #4ea3ff;
+
     --shadow: 0px 4px 8px rgba(0, 0, 0, 0.45);
   }
 }
@@ -50,6 +66,11 @@ body,
   background-color: var(--bg);
   color: var(--text);
   font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
 }
 
 .App {
@@ -132,7 +153,6 @@ body,
   }
 }
 
-/* Menu Styling */
 .mobile-menu {
   width: 100%;
   text-align: center;
@@ -159,7 +179,6 @@ body,
   background-color: var(--menu-hover);
 }
 
-/* Content Styling */
 .mobile-content {
   display: flex;
   flex-direction: column;
@@ -207,4 +226,23 @@ body,
   font-style: italic;
   margin: 0;
   color: var(--subtitle-text);
+}
+
+/* Scoped dark mode only for dashboard shells */
+.dashboard-dark {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+.dashboard-dark .ui.header {
+  color: var(--text) !important;
+}
+
+.dashboard-dark .ui.divider {
+  border-top-color: var(--border) !important;
+  border-bottom-color: var(--border) !important;
+}
+
+.dashboard-dark .ui.list > .item {
+  color: var(--text) !important;
 }

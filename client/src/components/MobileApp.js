@@ -43,7 +43,9 @@ function MobileApp() {
     setMode("view");
     setCurrentIndex(0);
     requestAnimationFrame(() => {
-      if (scrollerRef.current) scrollerRef.current.scrollTo({ left: 0, behavior: "instant" });
+      if (scrollerRef.current) {
+        scrollerRef.current.scrollTo({ left: 0, behavior: "auto" });
+      }
     });
   };
 
@@ -56,19 +58,23 @@ function MobileApp() {
     if (mode !== "view") return;
     const el = scrollerRef.current;
     if (!el) return;
+
     const onScroll = () => {
       const w = el.clientWidth || 1;
       const idx = Math.round(el.scrollLeft / w);
       setCurrentIndex(idx);
     };
+
     el.addEventListener("scroll", onScroll, { passive: true });
     return () => el.removeEventListener("scroll", onScroll);
   }, [mode]);
 
   useEffect(() => {
     if (mode !== "view") return;
+
     const onKey = (e) => {
       if (!scrollerRef.current) return;
+
       if (e.key === "ArrowRight") {
         const next = Math.min(currentIndex + 1, selectedItems.length - 1);
         scrollerRef.current.scrollTo({
@@ -83,12 +89,13 @@ function MobileApp() {
         });
       }
     };
+
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [mode, currentIndex, selectedItems.length]);
 
   return (
-    <Container fluid style={styles.container}>
+      <Container fluid className="dashboard-dark" style={styles.container}>
       {mode === "select" && (
         <div style={styles.selectWrapper}>
           <Segment basic style={styles.headerSegment}>
@@ -110,6 +117,7 @@ function MobileApp() {
                 <List selection relaxed>
                   {groupedData[cat].map((item) => {
                     const on = isSelected(item.id);
+
                     return (
                       <List.Item
                         key={item.id}
@@ -128,6 +136,7 @@ function MobileApp() {
                             )}
                           </div>
                         </div>
+
                         {on && (
                           <Label color="blue" size="mini" circular>
                             ✓
@@ -150,8 +159,10 @@ function MobileApp() {
               onClick={startViewing}
             >
               <Icon name="play" />
-              View Forecasts {selectedItems.length ? `(${selectedItems.length})` : ""}
+              View Forecasts{" "}
+              {selectedItems.length ? `(${selectedItems.length})` : ""}
             </Button>
+
             {selectedItems.length > 0 && (
               <Button basic onClick={clearAll}>
                 Clear
@@ -173,9 +184,12 @@ function MobileApp() {
             >
               <Icon name="arrow left" /> Back
             </Button>
+
             <div style={styles.pageIndicatorWrapper}>
               <span style={styles.pageIndicatorText}>
-                {selectedItems.length ? `${currentIndex + 1} / ${selectedItems.length}` : ""}
+                {selectedItems.length
+                  ? `${currentIndex + 1} / ${selectedItems.length}`
+                  : ""}
               </span>
             </div>
           </div>
@@ -209,7 +223,9 @@ function MobileApp() {
                   style={{
                     ...styles.dot,
                     background:
-                      i === currentIndex ? "#2185d0" : "rgba(0,0,0,0.2)",
+                      i === currentIndex
+                        ? "var(--dot-active)"
+                        : "var(--dot-inactive)",
                   }}
                 />
               ))}
@@ -223,42 +239,104 @@ function MobileApp() {
 
 /* ---------------- Styles ---------------- */
 const styles = {
-  container: { padding: 0, minHeight: "100vh" },
-  selectWrapper: { display: "flex", flexDirection: "column", minHeight: "100vh" },
-  headerSegment: { padding: "1rem 1rem 0.5rem" },
-  headerTitle: { marginBottom: 0 },
-  headerSubtitle: { marginTop: 6, opacity: 0.8 },
-  listContainer: { flex: 1, overflow: "auto" },
-  categorySegment: { padding: "0.5rem 1rem" },
-  categoryHeader: { marginTop: 0 },
+  container: {
+    padding: 0,
+    minHeight: "100vh",
+    backgroundColor: "var(--bg)",
+    color: "var(--text)",
+  },
+  selectWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    minHeight: "100vh",
+    backgroundColor: "var(--bg)",
+    color: "var(--text)",
+  },
+  headerSegment: {
+    padding: "1rem 1rem 0.5rem",
+    background: "transparent",
+    color: "var(--text)",
+  },
+  headerTitle: {
+    marginBottom: 0,
+    color: "var(--text)",
+  },
+  headerSubtitle: {
+    marginTop: 6,
+    color: "var(--muted-text)",
+  },
+  listContainer: {
+    flex: 1,
+    overflow: "auto",
+    backgroundColor: "var(--bg)",
+  },
+  categorySegment: {
+    padding: "0.5rem 1rem",
+    background: "transparent",
+    color: "var(--text)",
+  },
+  categoryHeader: {
+    marginTop: 0,
+    color: "var(--text)",
+  },
   listItem: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     padding: "12px 0",
-    borderBottom: "1px solid rgba(0,0,0,0.08)",
+    borderBottom: "1px solid var(--border)",
     touchAction: "manipulation",
+    color: "var(--text)",
   },
-  listItemLeft: { display: "flex", alignItems: "center", gap: 10 },
-  itemName: { fontWeight: 600 },
-  itemMeta: { fontSize: 12, opacity: 0.7, marginTop: 2 },
+  listItemLeft: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    color: "var(--text)",
+  },
+  itemName: {
+    fontWeight: 600,
+    color: "var(--text)",
+  },
+  itemMeta: {
+    fontSize: 12,
+    color: "var(--muted-text)",
+    marginTop: 2,
+  },
   listSpacer: { height: 80 },
   stickyFooter: {
     position: "sticky",
     bottom: 0,
     width: "100%",
-    background: "rgba(255,255,255,0.96)",
-    borderTop: "1px solid rgba(0,0,0,0.08)",
+    background: "var(--surface-soft)",
+    borderTop: "1px solid var(--border)",
     backdropFilter: "saturate(180%) blur(8px)",
     padding: "10px",
     display: "flex",
     gap: 10,
   },
-  viewSegment: { paddingTop: "1rem" },
-  viewTopBar: { display: "flex", alignItems: "center", gap: 8, marginBottom: 8 },
+  viewSegment: {
+    paddingTop: "1rem",
+    backgroundColor: "var(--bg)",
+    color: "var(--text)",
+  },
+  viewTopBar: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 8,
+    color: "var(--text)",
+  },
   backButton: { marginBottom: "0.5rem" },
-  pageIndicatorWrapper: { marginLeft: "auto", display: "flex", alignItems: "center", gap: 12 },
-  pageIndicatorText: { opacity: 0.8 },
+  pageIndicatorWrapper: {
+    marginLeft: "auto",
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+  },
+  pageIndicatorText: {
+    color: "var(--muted-text)",
+  },
   carouselContainer: {
     width: "100%",
     overflowX: "auto",
@@ -266,11 +344,28 @@ const styles = {
     display: "flex",
     gap: 12,
     overscrollBehaviorX: "contain",
+    backgroundColor: "var(--bg)",
   },
-  carouselSlide: { scrollSnapAlign: "start", flex: "0 0 100%", maxWidth: "100%" },
-  slideHeader: { marginBottom: 0 },
-  slideMeta: { marginTop: 6, opacity: 0.8 },
-  dotsContainer: { display: "flex", justifyContent: "center", gap: 8, marginTop: 14 },
+  carouselSlide: {
+    scrollSnapAlign: "start",
+    flex: "0 0 100%",
+    maxWidth: "100%",
+    color: "var(--text)",
+  },
+  slideHeader: {
+    marginBottom: 0,
+    color: "var(--text)",
+  },
+  slideMeta: {
+    marginTop: 6,
+    color: "var(--muted-text)",
+  },
+  dotsContainer: {
+    display: "flex",
+    justifyContent: "center",
+    gap: 8,
+    marginTop: 14,
+  },
   dot: {
     width: 8,
     height: 8,
@@ -280,4 +375,4 @@ const styles = {
   },
 };
 
-export default MobileApp;
+export default MobileApp
