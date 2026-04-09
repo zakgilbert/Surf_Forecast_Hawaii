@@ -7,51 +7,127 @@ import {
   Popup,
   Header,
   Divider,
+  Message,
 } from "semantic-ui-react";
 import { isMobile } from "react-device-detect";
 import WaveEnergy from "./WaveEnergy";
 import ArrowIndicator from "./ArrowIndicator";
 import BuoyTabs from "./BuoyTabs";
-import { formatDate } from "../utility";
-import { formatDateTime } from "../utility";
+import { formatDate, formatDateTime } from "../utility";
 
 const StationInput = ({ id }) => {
   const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let alive = true;
-    fetch(`/api/report/${id}`)
-      .then((res) => res.json())
-      .then((d) => {
-        if (alive) setData(d);
-      });
+    const controller = new AbortController();
+
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        setData(null);
+
+        const res = await fetch(`/api/report/${id}`, {
+          signal: controller.signal,
+        });
+
+        if (!res.ok) {
+          throw new Error(`Buoy ${id} unavailable (${res.status})`);
+        }
+
+        const d = await res.json();
+
+        if (!d || !d.cols || !d.rows || !Array.isArray(d.rows) || d.rows.length === 0) {
+          throw new Error(`No data available for buoy ${id}`);
+        }
+
+        if (alive) {
+          setData(d);
+        }
+      } catch (err) {
+        // Ignore aborts caused by unmount / id change
+        if (err.name === "AbortError") return;
+
+        console.error(`Error loading buoy ${id}:`, err);
+
+        if (alive) {
+          setError(err.message || `Failed to load buoy ${id}`);
+        }
+      } finally {
+        if (alive) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadData();
+
     return () => {
       alive = false;
-      console.log("returning false.....---------------------");
+      controller.abort();
     };
   }, [id]);
 
-  const ready = !!(data && data.cols && data.rows);
-  console.log(ready);
+  const ready = !!(data && data.cols && data.rows && data.rows.length > 0);
 
   const summaryFields = useMemo(() => {
     if (!ready) return [];
+
     const base = data.cols.slice(1, 7).map((col, idx) => ({
       key: col.toolTip,
       value: data.rows[0][idx + 1],
       isDir: false,
     }));
-    const dir = {
-      key: data.cols[10].toolTip,
-      value: data.rows[0][10],
-      isDir: true,
-    };
-    return [...base, dir];
+
+    const dir =
+      data.cols[10] && data.rows[0][10] !== undefined
+        ? {
+            key: data.cols[10].toolTip,
+            value: data.rows[0][10],
+            isDir: true,
+          }
+        : null;
+
+    return dir ? [...base, dir] : base;
   }, [ready, data]);
 
-  if (!ready) return null;
+  if (loading) {
+    return (
+      <Segment style={styles.segmentBase}>
+        <Header as="h4" style={styles.sectionTitle}>
+          Loading buoy {id}...
+        </Header>
+      </Segment>
+    );
+  }
 
-  // ===== Summary Section (shared list style) =====
+  if (error) {
+    return (
+      <Segment style={styles.segmentBase}>
+        <Message
+          negative
+          header={`Buoy ${id} unavailable`}
+          content={error}
+        />
+      </Segment>
+    );
+  }
+
+  if (!ready) {
+    return (
+      <Segment style={styles.segmentBase}>
+        <Message
+          warning
+          header={`Buoy ${id} has no report data`}
+          content="This buoy may be offline or temporarily unavailable."
+        />
+      </Segment>
+    );
+  }
+
   const SummarySection = () => (
     <Segment style={styles.segmentBase}>
       <Header as="h4" style={styles.sectionTitle}>
@@ -80,7 +156,6 @@ const StationInput = ({ id }) => {
     </Segment>
   );
 
-  // ===== Chart & Tabs =====
   const chart = (
     <Segment style={styles.segmentBase}>
       <Header as="h4" style={styles.sectionTitle}>
@@ -104,7 +179,6 @@ const StationInput = ({ id }) => {
     </Segment>
   );
 
-  // ===== Layout =====
   if (isMobile) {
     return (
       <div style={styles.mobileWrap}>
@@ -140,12 +214,10 @@ const StationInput = ({ id }) => {
   );
 };
 
-// ===== Styles =====
 const styles = {
   segmentBase: { padding: "0.75rem" },
   sectionTitle: { margin: "0 0 0.5rem", textAlign: "center" },
 
-  // Shared key–value list
   kvList: {
     display: "grid",
     gridTemplateColumns: "1fr",
@@ -161,7 +233,6 @@ const styles = {
   kvLabel: { fontSize: 13, opacity: 0.85, paddingRight: 10 },
   kvValue: { fontSize: 15, fontWeight: 600, justifySelf: "end" },
 
-  // Layout wrappers
   mobileWrap: {
     padding: "0.75rem",
     display: "flex",
