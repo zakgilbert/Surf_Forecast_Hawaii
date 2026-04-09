@@ -1,8 +1,5 @@
-/**
- * Power.js
- */
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { Container } from "semantic-ui-react";
+import { Container, Message } from "semantic-ui-react";
 import {
   LineChart,
   Line,
@@ -19,6 +16,9 @@ import { isMobile } from "react-device-detect";
 
 const Power = ({ id }) => {
   const [data, setData] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   // Mobile external tooltip state
   const [activePoint, setActivePoint] = useState(null);
   const hideTimerRef = useRef(null);
@@ -26,24 +26,70 @@ const Power = ({ id }) => {
 
   useEffect(() => {
     let alive = true;
-    fetch(`/api/power/${id}`)
-      .then((res) => res.json())
-      .then((d) => {
-        if (alive) setData(Array.isArray(d) ? d : []);
-      })
-      .catch(() => {
-        if (alive) setData([]);
-      });
-    return () => { alive = false; };
+    const controller = new AbortController();
+
+    const loadPower = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        setData([]);
+        setActivePoint(null);
+
+        const res = await fetch(`/api/power/${id}`, {
+          signal: controller.signal,
+        });
+
+        if (!res.ok) {
+          throw new Error(`Power data unavailable for buoy ${id} (${res.status})`);
+        }
+
+        const d = await res.json();
+        const safeData = Array.isArray(d) ? d : [];
+
+        if (!safeData.length) {
+          throw new Error(`No power data available for buoy ${id}`);
+        }
+
+        if (alive) {
+          setData(safeData);
+        }
+      } catch (err) {
+        if (err.name === "AbortError") return;
+
+        console.error(`Error loading power data for buoy ${id}:`, err);
+
+        if (alive) {
+          setError(err.message || `Failed to load power data for buoy ${id}`);
+          setData([]);
+        }
+      } finally {
+        if (alive) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadPower();
+
+    return () => {
+      alive = false;
+      controller.abort();
+
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, [id]);
 
   // Normalize values to numbers
   const series = useMemo(
-    () => (data || []).map((pt) => ({ ...pt, value: Number(pt?.value) })),
+    () =>
+      (data || []).map((pt) => ({
+        ...pt,
+        value: Number(pt?.value),
+      })),
     [data]
   );
 
-  // ------- Shared tooltip component (used for desktop and mobile-external) -------
   const CustomTooltip = ({ active = true, payload = [], label }) => {
     if (!active || !payload || !payload.length) return null;
     const selectedPoint = payload[0]?.payload || {};
@@ -68,7 +114,8 @@ const Power = ({ id }) => {
             : String(label)}
         </p>
         <p style={{ margin: "6px 0 0" }}>
-          <strong>Energy Value: </strong>{selectedPoint.value}
+          <strong>Energy Value: </strong>
+          {selectedPoint.value}
         </p>
         {selectedPoint.frequency != null && (
           <p style={{ margin: "4px 0 8px" }}>
@@ -87,7 +134,10 @@ const Power = ({ id }) => {
                   label={{ value: "Frequency (Hz)", dy: 12 }}
                   tick={{ fontSize: 10 }}
                 />
-                <YAxis label={{ value: "m²/Hz", angle: -90 }} tick={{ fontSize: 10 }} />
+                <YAxis
+                  label={{ value: "m²/Hz", angle: -90 }}
+                  tick={{ fontSize: 10 }}
+                />
                 <Line
                   type="monotone"
                   dataKey="energy"
@@ -103,9 +153,38 @@ const Power = ({ id }) => {
     );
   };
 
-  if (!series || series.length === 0) return <></>;
+  if (loading) {
+    return (
+      <Container textAlign="center">
+        <Message info content={`Loading power data for buoy ${id}...`} />
+      </Container>
+    );
+  }
 
-  /* =================== DESKTOP (unchanged) =================== */
+  if (error) {
+    return (
+      <Container textAlign="center">
+        <Message
+          warning
+          header={`Buoy ${id} power data unavailable`}
+          content={error}
+        />
+      </Container>
+    );
+  }
+
+  if (!series || series.length === 0) {
+    return (
+      <Container textAlign="center">
+        <Message
+          warning
+          header={`Buoy ${id} has no power data`}
+          content="This buoy may be offline or temporarily unavailable."
+        />
+      </Container>
+    );
+  }
+
   if (!isMobile) {
     return (
       <Container textAlign="center">
@@ -142,9 +221,6 @@ const Power = ({ id }) => {
     );
   }
 
-  /* =================== MOBILE (external tooltip BELOW chart) =================== */
-
-  // Throttled move handler to avoid flicker
   const handleMouseMove = (state) => {
     if (hideTimerRef.current) {
       clearTimeout(hideTimerRef.current);
@@ -162,7 +238,6 @@ const Power = ({ id }) => {
     });
   };
 
-  // Small grace period before hiding so it doesn't flash when finger jitters
   const handleMouseLeave = () => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     hideTimerRef.current = setTimeout(() => {
@@ -197,7 +272,6 @@ const Power = ({ id }) => {
                 style: { textAnchor: "middle" },
               }}
             />
-            {/* Keep Tooltip only for the vertical cursor line; hide popup */}
             <Tooltip
               content={() => null}
               cursor={{ stroke: "#9ca3af", strokeDasharray: "5 5" }}
@@ -217,7 +291,6 @@ const Power = ({ id }) => {
         </ResponsiveContainer>
       </div>
 
-      {/* External tooltip rendered BELOW the chart */}
       {activePoint && (
         <div style={{ marginTop: 12, display: "flex", justifyContent: "center" }}>
           <CustomTooltip

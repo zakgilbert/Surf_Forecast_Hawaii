@@ -8,6 +8,7 @@ from marine_forecast import *
 from waveModel import *
 from histogram import *
 from hurricane import *
+from hawaii_weather_radar_loop import *
 import argparse
 
 app = Flask(__name__)
@@ -46,6 +47,10 @@ def waveModel(id, mode):
 @api.route('/hurricane/<string:mode>/<string:width>/<string:height>')
 def hurricane(mode, width, height):
     return getHurricaneRendering(mode, width, height)
+
+@api.route('/hawaii-weather-radar-loop/<string:id>')
+def hawaiiWeatherRadarLoop(id):
+    return getHawaiiWeatherRadarRendering(id)
 
 app.register_blueprint(api)
 

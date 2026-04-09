@@ -7,6 +7,7 @@ import MarineForecast from "./components/MarineForecast.js";
 import AnimatedWaveModel from "./components/AnimatedWaveModel.js";
 import Histogram from "./components/Histogram.js";
 import HurricaneImage from "./components/Hurricane.js";
+import HawaiiWeatherRadarLoop from "./components/HawaiiWeatherRadarLoop.js";
 import { CONTENT_DATA } from "./constants.js";
 
 /* ---------------- Date helpers ---------------- */
@@ -22,7 +23,9 @@ const getFormattedDate = (date) => {
 export const getTideBeginAndEndDates = () => {
   const today = new Date();
   const beginDate = getFormattedDate(today);
-  const endDate = getFormattedDate(new Date(today.setDate(today.getDate() + 1)));
+  const endDate = getFormattedDate(
+    new Date(today.setDate(today.getDate() + 1)),
+  );
   return { beginDate, endDate };
 };
 
@@ -41,12 +44,18 @@ export const formatDate = (datetime) => {
 /* ---------------- Robust parsing ---------------- */
 
 const TZ_ABBREV = {
-  UTC: "+00:00", GMT: "+00:00",
-  HST: "-10:00", HDT: "-09:00",
-  PST: "-08:00", PDT: "-07:00",
-  MST: "-07:00", MDT: "-06:00",
-  CST: "-06:00", CDT: "-05:00",
-  EST: "-05:00", EDT: "-04:00",
+  UTC: "+00:00",
+  GMT: "+00:00",
+  HST: "-10:00",
+  HDT: "-09:00",
+  PST: "-08:00",
+  PDT: "-07:00",
+  MST: "-07:00",
+  MDT: "-06:00",
+  CST: "-06:00",
+  CDT: "-05:00",
+  EST: "-05:00",
+  EDT: "-04:00",
 };
 
 function normalizeTzAbbrev(s) {
@@ -72,17 +81,23 @@ export function parseDateSafe(val) {
   }
 
   const m12 = s.match(
-    /^(\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)$/i
+    /^(\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)$/i,
   );
   if (m12) {
     const [, Y, M, D, hh, mm, ss = "0", ap] = m12;
     let h = parseInt(hh, 10);
     if (/PM/i.test(ap) && h < 12) h += 12;
     if (/AM/i.test(ap) && h === 12) h = 0;
-    const d = new Date(Date.UTC(
-      parseInt(Y, 10), parseInt(M, 10) - 1, parseInt(D, 10),
-      h, parseInt(mm, 10), parseInt(ss, 10)
-    ));
+    const d = new Date(
+      Date.UTC(
+        parseInt(Y, 10),
+        parseInt(M, 10) - 1,
+        parseInt(D, 10),
+        h,
+        parseInt(mm, 10),
+        parseInt(ss, 10),
+      ),
+    );
     if (!isNaN(d)) return d;
   }
 
@@ -107,7 +122,8 @@ export function parseDateSafe(val) {
 const HONO = "Pacific/Honolulu";
 
 function ordinal(n) {
-  const s = ["th", "st", "nd", "rd"], v = n % 100;
+  const s = ["th", "st", "nd", "rd"],
+    v = n % 100;
   return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
 
@@ -158,10 +174,12 @@ export function formatDateTime(val, opts = {}) {
     month: "long",
     timeZone,
   }).format(d);
-  const dayNum = Number(new Intl.DateTimeFormat(undefined, {
-    day: "numeric",
-    timeZone,
-  }).format(d));
+  const dayNum = Number(
+    new Intl.DateTimeFormat(undefined, {
+      day: "numeric",
+      timeZone,
+    }).format(d),
+  );
   const time = formatTime(d, { timeZone });
 
   return `${month} ${dayNum}, ${time}`;
@@ -203,6 +221,9 @@ const componentMap = {
     const [id, width, height] = station.split("-");
     return <HurricaneImage id={id} width={width} height={height} />;
   },
+  "hawaii-weather-radar-loop": ({ station }) => (
+    <HawaiiWeatherRadarLoop id={station} />
+  ),
 };
 
 const handler = {
