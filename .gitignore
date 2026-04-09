@@ -1,103 +1,66 @@
+# =========================
+# Project-specific
+# =========================
 notes.txt
 
-
-# Logs
-logs
-*.log
+# =========================
+# Node / React
+# =========================
+node_modules/
+client/node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-
-# Compiled binary addons (http://nodejs.org/api/addons.html)
-build/Release
-
-# Dependency directories
-node_modules/
-jspm_packages/
-
-# Distribution directories
-dist/
-
-# Typescript v1 declaration files
-typings/
-
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# Optional REPL history
-.node_repl_history
-
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
-
-# Node.js / React.js specific
-node_modules/
-npm-debug.log
-yarn-debug.log
-yarn-error.log
 build/
+client/build/
 dist/
 coverage/
 
-# React development build output
-public/build/
-public/static/
-*.env
+# React env
+.env
+.env.*
 
-# Logs
-*.log
-*.log.*
-
-# Operating System files
-.DS_Store
-Thumbs.db
-
-# Python specific
+# =========================
+# Python
+# =========================
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
-env/
-venv/
-venv.bak/
-ENV/
-env.bak/
 *.egg-info/
 *.egg
 
-# Virtual environment
+# Virtual environments (CRITICAL)
+.venv/
 venv/
+env/
+ENV/
+backend/.venv/
 backend/venv/
 
-# Python dependency directories
+# Python package caches
 .pip/
 __pypackages__/
-
-# JetBrains / PyCharm IDE files
-.idea/
-
-# VS Code settings
-.vscode/
-
-# Flask / Django specific (if using these frameworks)
-instance/
 .pytest_cache/
-coverage/
 
-# Other editor or IDE specific files
+# =========================
+# Logs
+# =========================
+*.log
+*.log.*
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDEs / Editors
+# =========================
 .vscode/
-*.swp
-
-# PyCharm, Sublime Text, etc. IDEs
 .idea/
+*.swp
 *.sublime-workspace
 *.sublime-project
-
