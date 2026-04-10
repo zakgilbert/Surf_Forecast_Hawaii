@@ -1165,3 +1165,24 @@ body,
 .power-container .ui.message .header {
   color: var(--text) !important;
 }
+
+/* =========================
+   PowerGraph
+========================= */
+
+.power-graph-container {
+  color: var(--text);
+}
+
+.power-graph-title {
+  color: var(--text) !important;
+}
+
+.power-graph-chart-wrap {
+  width: 100%;
+}
+
+/* Semantic UI cleanup */
+.power-graph-container .ui.header {
+  color: var(--text) !important;
+}
