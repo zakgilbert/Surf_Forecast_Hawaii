@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Table, Popup, Tab, Segment } from "semantic-ui-react";
+import { Table, Popup, Tab } from "semantic-ui-react";
 import { formatDate } from "../utility";
 import ArrowIndicator from "./ArrowIndicator";
 import { BUOY_TAB_CHART_HEIGHT, BUOY_TAB_CHART_WIDTH } from "../constants";
@@ -18,13 +18,11 @@ import {
 const BuoyTabs = ({ data }) => {
   const [activeTab, setActiveTab] = useState("table");
 
-  /* ------------ column indices ------------ */
   const timeIndex = useMemo(
     () => data.cols.findIndex((c) => c.value === "Time"),
     [data]
   );
 
-  // Mobile columns: everything except Time (in current order)
   const mobileCols = useMemo(() => {
     return data.cols
       .map((c, idx) => ({ ...c, idx }))
@@ -37,24 +35,23 @@ const BuoyTabs = ({ data }) => {
     if (timeIndex === -1 || yIndex === -1) return [];
 
     return data.rows.map((row) => {
-      const d = parseDateSafe(row[timeIndex]); // robust parser
+      const d = parseDateSafe(row[timeIndex]);
       return {
-        ts: d ? d.getTime() : null, // ✅ safe numeric timestamp
-        timeStr: formatDate(row[timeIndex]), // ✅ string label for desktop
+        ts: d ? d.getTime() : null,
+        timeStr: formatDate(row[timeIndex]),
         [yKey]: Number(row[yIndex]),
       };
     });
   };
 
-  /* ------------ DESKTOP TABLE ------------ */
   const DesktopTable = (
-    <div style={styles.desktopTableWrap}>
+    <div className="buoy-tabs-desktop-table-wrap">
       <Table
         celled
         compact
         striped
         unstackable
-        style={styles.desktopTableMinWidth}
+        className="buoy-tabs-desktop-table"
       >
         <Table.Header>
           <Table.Row>
@@ -72,7 +69,7 @@ const BuoyTabs = ({ data }) => {
           {data.rows.map((row, rowIndex) => (
             <Table.Row key={rowIndex}>
               {row.map((val, colIndex) => (
-                <Table.Cell key={colIndex} style={styles.desktopCell}>
+                <Table.Cell key={colIndex} className="buoy-tabs-desktop-cell">
                   {data.cols[colIndex].value === "Time" ? (
                     formatDayTime(val)
                   ) : data.cols[colIndex].value === "MWD" ? (
@@ -93,22 +90,19 @@ const BuoyTabs = ({ data }) => {
     </div>
   );
 
-  /* ------------ MOBILE TABLE (unchanged) ------------ */
   const MobileWideTable = (
-    <div style={styles.mobileTableScroll}>
-      <Table celled compact unstackable style={styles.mobileTable}>
+    <div className="buoy-tabs-mobile-table-scroll">
+      <Table celled compact unstackable className="buoy-tabs-mobile-table">
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell
-              style={{ ...styles.stickyCol, ...styles.stickyHeader }}
-            >
+            <Table.HeaderCell className="buoy-tabs-sticky-col buoy-tabs-sticky-header">
               Time
             </Table.HeaderCell>
             {mobileCols.map((col) => (
               <Popup
                 key={col.value}
                 trigger={
-                  <Table.HeaderCell style={styles.metricColHeader}>
+                  <Table.HeaderCell className="buoy-tabs-metric-col-header">
                     {col.value}
                   </Table.HeaderCell>
                 }
@@ -121,8 +115,7 @@ const BuoyTabs = ({ data }) => {
         <Table.Body>
           {data.rows.map((row, rIdx) => (
             <Table.Row key={rIdx}>
-              <Table.Cell style={styles.stickyCol}>
-                {/* Timestamp */}
+              <Table.Cell className="buoy-tabs-sticky-col">
                 {formatTime(row[timeIndex])}
               </Table.Cell>
               {mobileCols.map((col) => {
@@ -131,7 +124,7 @@ const BuoyTabs = ({ data }) => {
                 return (
                   <Table.Cell
                     key={col.value + col.idx}
-                    style={styles.metricColCell}
+                    className="buoy-tabs-metric-col-cell"
                   >
                     {isDir ? (
                       <Popup
@@ -152,26 +145,28 @@ const BuoyTabs = ({ data }) => {
     </div>
   );
 
-  /* ------------ Charts ------------ */
   const SwellHeightChart = isMobile ? (
-    <div style={styles.chartMobileWrap}>
+    <div className="buoy-tabs-chart-mobile-wrap">
       <ResponsiveContainer width="100%" height={BUOY_TAB_CHART_HEIGHT}>
-        <LineChart data={getChartData("SwH")} margin={styles.chartMobileMargin}>
+        <LineChart
+          data={getChartData("SwH")}
+          margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+        >
           <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
           <XAxis
             dataKey="time"
             interval="preserveStartEnd"
             tick={{ fontSize: 11 }}
-            tickFormatter={(v) => formatDayTime(v)} // TimeStamp
+            tickFormatter={(v) => formatDayTime(v)}
           />
           <YAxis tick={{ fontSize: 11 }} />
-          <Tooltip labelFormatter={(v) => formatDayTime(v)} /> // TimeStamp
+          <Tooltip labelFormatter={(v) => formatDayTime(v)} />
           <Line type="monotone" dataKey="SwH" stroke="#8884d8" dot={false} />
         </LineChart>
       </ResponsiveContainer>
     </div>
   ) : (
-    <div style={styles.chartDesktopWrap}>
+    <div className="buoy-tabs-chart-desktop-wrap">
       <LineChart
         width={BUOY_TAB_CHART_WIDTH}
         height={BUOY_TAB_CHART_HEIGHT}
@@ -188,24 +183,27 @@ const BuoyTabs = ({ data }) => {
   );
 
   const SwellPeriodChart = isMobile ? (
-    <div style={styles.chartMobileWrap}>
+    <div className="buoy-tabs-chart-mobile-wrap">
       <ResponsiveContainer width="100%" height={BUOY_TAB_CHART_HEIGHT}>
-        <LineChart data={getChartData("SwP")} margin={styles.chartMobileMargin}>
+        <LineChart
+          data={getChartData("SwP")}
+          margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+        >
           <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
           <XAxis
             dataKey="time"
             interval="preserveStartEnd"
             tick={{ fontSize: 11 }}
-            tickFormatter={(v) => formatDayTime(v)} // Timestamp
+            tickFormatter={(v) => formatDayTime(v)}
           />
           <YAxis domain={[3, "auto"]} tick={{ fontSize: 11 }} />
-          <Tooltip labelFormatter={(v) => formatDayTime(v)} /> // Timestamp
+          <Tooltip labelFormatter={(v) => formatDayTime(v)} />
           <Line type="monotone" dataKey="SwP" stroke="#82ca9d" dot={false} />
         </LineChart>
       </ResponsiveContainer>
     </div>
   ) : (
-    <div style={styles.chartDesktopWrap}>
+    <div className="buoy-tabs-chart-desktop-wrap">
       <LineChart
         width={BUOY_TAB_CHART_WIDTH}
         height={BUOY_TAB_CHART_HEIGHT}
@@ -225,18 +223,22 @@ const BuoyTabs = ({ data }) => {
     {
       menuItem: "Buoy Data",
       render: () => (
-        <Tab.Pane style={styles.pane}>
+        <Tab.Pane className="buoy-tabs-pane">
           {isMobile ? MobileWideTable : DesktopTable}
         </Tab.Pane>
       ),
     },
     {
       menuItem: "Swell Height",
-      render: () => <Tab.Pane style={styles.pane}>{SwellHeightChart}</Tab.Pane>,
+      render: () => (
+        <Tab.Pane className="buoy-tabs-pane">{SwellHeightChart}</Tab.Pane>
+      ),
     },
     {
       menuItem: "Swell Period",
-      render: () => <Tab.Pane style={styles.pane}>{SwellPeriodChart}</Tab.Pane>,
+      render: () => (
+        <Tab.Pane className="buoy-tabs-pane">{SwellPeriodChart}</Tab.Pane>
+      ),
     },
   ];
 
@@ -248,58 +250,6 @@ const BuoyTabs = ({ data }) => {
       }
     />
   );
-};
-
-/* ---------------- Styles ---------------- */
-const styles = {
-  pane: { padding: "0.5rem" },
-
-  // Desktop table
-  desktopTableWrap: { overflowX: "auto" },
-  desktopTableMinWidth: { minWidth: "900px" },
-  desktopCell: { padding: "4px", whiteSpace: "nowrap" },
-
-  // Mobile table container
-  mobileTableScroll: {
-    overflowX: "auto",
-    WebkitOverflowScrolling: "touch",
-    borderRadius: 6,
-  },
-  mobileTable: {
-    tableLayout: "auto",
-  },
-
-  // Sticky first column (Time)
-  stickyCol: {
-    position: "sticky",
-    left: 0,
-    top: 0,
-    background: "white",
-    zIndex: 2,
-    whiteSpace: "nowrap",
-    fontWeight: 600,
-    padding: "6px 10px",
-    textAlign: "left",
-  },
-  stickyHeader: { zIndex: 3 },
-
-  // Metric columns
-  metricColHeader: {
-    whiteSpace: "nowrap",
-    textAlign: "center",
-    padding: "6px 8px",
-  },
-  metricColCell: {
-    whiteSpace: "nowrap",
-    textAlign: "right",
-    padding: "6px 8px",
-    fontSize: 13,
-  },
-
-  // Charts
-  chartMobileWrap: { width: "100%", height: BUOY_TAB_CHART_HEIGHT },
-  chartMobileMargin: { top: 10, right: 10, left: 0, bottom: 0 },
-  chartDesktopWrap: { overflow: "visible" },
 };
 
 export default BuoyTabs;

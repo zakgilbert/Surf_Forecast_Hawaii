@@ -68,11 +68,6 @@ body,
   font-family: Arial, sans-serif;
 }
 
-body {
-  background-color: var(--bg);
-  color: var(--text);
-}
-
 .App {
   text-align: center;
   display: flex;
@@ -262,7 +257,6 @@ body {
   height: 100%;
 }
 
-/* keep buttons where they are */
 .wave-model-controls {
   position: absolute;
   top: 10px;
@@ -270,11 +264,10 @@ body {
   z-index: 2;
 }
 
-/* mobile only */
 @media (max-width: 768px) {
   .wave-model-container {
     height: auto;
-    min-height: 420px; /* optional, adjust if needed */
+    min-height: 420px;
   }
 
   .wave-model-image {
@@ -311,4 +304,227 @@ body {
 .arrow-head,
 .arrow-body {
   fill: var(--text);
+}
+
+/* =========================
+   StationInput
+========================= */
+
+.station-input-mobile-wrap,
+.station-input-desktop-wrap {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+.station-input-mobile-wrap {
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.station-input-desktop-wrap {
+  max-height: 850px;
+}
+
+.station-input-segment,
+.station-input-segment.ui.segment {
+  padding: 0.75rem !important;
+  background-color: var(--surface) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+.station-input-section-title {
+  margin: 0 0 0.5rem !important;
+  text-align: center;
+  color: var(--text) !important;
+}
+
+.station-input-kv-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+.station-input-kv-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.station-input-kv-label {
+  font-size: 13px;
+  color: var(--muted-text);
+  padding-right: 10px;
+}
+
+.station-input-kv-value {
+  font-size: 15px;
+  font-weight: 600;
+  justify-self: end;
+  color: var(--text);
+}
+
+.station-input-tabs-mobile {
+  padding: 0.5rem !important;
+  overflow-y: visible;
+  max-height: unset;
+}
+
+.station-input-tabs-desktop {
+  padding: 0.5rem !important;
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+.station-input-tabs-column-desktop {
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.station-input-bottom-spacer {
+  height: 24px;
+}
+
+.station-input-mobile-wrap .ui.divider,
+.station-input-desktop-wrap .ui.divider {
+  border-top: 1px solid var(--border) !important;
+  border-bottom: 0 !important;
+}
+
+/* =========================
+   BuoyTabs
+========================= */
+
+.buoy-tabs-pane,
+.buoy-tabs-pane.ui.segment {
+  padding: 0.5rem !important;
+  background-color: transparent !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+.buoy-tabs-desktop-table-wrap {
+  overflow-x: auto;
+}
+
+.buoy-tabs-desktop-table {
+  min-width: 900px;
+}
+
+.buoy-tabs-desktop-cell {
+  padding: 4px !important;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.buoy-tabs-mobile-table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 6px;
+}
+
+.buoy-tabs-mobile-table {
+  table-layout: auto;
+}
+
+.buoy-tabs-sticky-col {
+  position: sticky;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  white-space: nowrap;
+  font-weight: 600;
+  padding: 6px 10px !important;
+  text-align: left;
+  background: var(--surface) !important;
+  color: var(--text) !important;
+}
+
+.buoy-tabs-sticky-header {
+  z-index: 3;
+}
+
+.buoy-tabs-metric-col-header {
+  white-space: nowrap;
+  text-align: center;
+  padding: 6px 8px !important;
+  color: var(--text) !important;
+}
+
+.buoy-tabs-metric-col-cell {
+  white-space: nowrap;
+  text-align: right;
+  padding: 6px 8px !important;
+  font-size: 13px;
+  color: var(--text) !important;
+}
+
+.buoy-tabs-chart-mobile-wrap {
+  width: 100%;
+}
+
+.buoy-tabs-chart-desktop-wrap {
+  overflow: visible;
+}
+
+/* =========================
+   Semantic UI overrides
+========================= */
+
+.station-input-segment .ui.header,
+.buoy-tabs-pane .ui.header,
+.station-input-desktop-wrap .ui.header,
+.station-input-mobile-wrap .ui.header {
+  color: var(--text) !important;
+}
+
+.station-input-desktop-wrap .ui.table,
+.station-input-mobile-wrap .ui.table {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+.station-input-desktop-wrap .ui.table th,
+.station-input-desktop-wrap .ui.table td,
+.station-input-mobile-wrap .ui.table th,
+.station-input-mobile-wrap .ui.table td {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+.station-input-desktop-wrap .ui.tabular.menu .item,
+.station-input-mobile-wrap .ui.tabular.menu .item {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+.station-input-desktop-wrap .ui.tabular.menu .active.item,
+.station-input-mobile-wrap .ui.tabular.menu .active.item {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+/* =========================
+   Popup dark mode
+========================= */
+
+.ui.popup {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+.ui.popup::before {
+  background: var(--surface) !important;
+  box-shadow: -1px -1px 0 0 var(--border) !important;
 }
