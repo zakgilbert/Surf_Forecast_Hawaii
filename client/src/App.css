@@ -591,18 +591,6 @@ body,
   text-align: left;
 }
 
-.desktop-app-list-link {
-  display: block;
-  text-align: left;
-  color: var(--text);
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.desktop-app-list-link:hover {
-  color: var(--link);
-}
-
 .desktop-app-content-shell {
   position: relative;
 }
@@ -690,4 +678,26 @@ body,
 .desktop-app .ui.divider {
   border-top-color: var(--border) !important;
   border-bottom-color: transparent !important;
+}
+.desktop-app-list-button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  font: inherit;
+}
+
+.desktop-app-list-button:hover {
+  color: var(--link);
+}
+
+.desktop-app-empty-search {
+  margin: 1rem 0 0 10px;
+  color: var(--muted-text);
+  text-align: left;
 }
