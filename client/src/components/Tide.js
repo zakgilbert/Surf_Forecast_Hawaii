@@ -37,7 +37,7 @@ const Tide = ({ id, beginDate, timeZone }) => {
             const t = `${date} ${timePart}`;
             return { ...p, t, v: Number(p.v) };
           })
-        : []
+        : [],
     );
   }, [data]);
 
@@ -57,6 +57,23 @@ const Tide = ({ id, beginDate, timeZone }) => {
       return { date, tides };
     });
   }, [data]);
+
+  const tideTooltipTheme = {
+    contentStyle: {
+      backgroundColor: "var(--surface)",
+      border: "1px solid var(--border)",
+      borderRadius: "8px",
+      boxShadow: "var(--shadow)",
+      color: "var(--text)",
+    },
+    labelStyle: {
+      color: "var(--text)",
+      fontWeight: 600,
+    },
+    itemStyle: {
+      color: "var(--text)",
+    },
+  };
 
   if (!isMobile) {
     return (
@@ -81,6 +98,7 @@ const Tide = ({ id, beginDate, timeZone }) => {
               }}
             />
             <Tooltip
+              {...tideTooltipTheme}
               formatter={(value) => [`Value: ${value}ft`]}
               labelFormatter={(label) => {
                 const dt = moment(label, "YYYY-MM-DD HH:mm");
@@ -168,13 +186,16 @@ const Tide = ({ id, beginDate, timeZone }) => {
               />
               <YAxis tick={{ fontSize: 11 }} />
               <Tooltip
+                {...tideTooltipTheme}
                 cursor={{ stroke: "#9ca3af", strokeDasharray: "5 5" }}
                 allowEscapeViewBox={{ x: true, y: true }}
                 wrapperStyle={{ outline: "none" }}
                 formatter={(value) => [`${value} ft`]}
                 labelFormatter={(label) => {
                   const dt = moment(label, "YYYY-MM-DD HH:mm");
-                  return dt.isValid() ? dt.format("MMM D, h:mm A") : String(label);
+                  return dt.isValid()
+                    ? dt.format("MMM D, h:mm A")
+                    : String(label);
                 }}
               />
               <Line
