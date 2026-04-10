@@ -1342,3 +1342,49 @@ body,
   color: var(--text) !important;
   border: 1px solid var(--border) !important;
 }
+
+/* =========================
+   Wave Energy
+========================= */
+
+.wave-energy-container {
+  color: var(--text);
+}
+
+.wave-energy-timestamp {
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+
+.wave-energy-direction-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.wave-energy-tooltip-table.ui.table {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow) !important;
+  margin: 0 !important;
+}
+
+.wave-energy-tooltip-table.ui.table td,
+.wave-energy-tooltip-table.ui.table th {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+.wave-energy-tooltip-label,
+.wave-energy-tooltip-value {
+  padding: 5px !important;
+}
+
+/* Optional: keep tooltip compact */
+.wave-energy-tooltip-table {
+  width: auto !important;
+  min-width: 220px;
+}

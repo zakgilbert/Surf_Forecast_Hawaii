@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Container, Tab, Table } from "semantic-ui-react";
+import { Container, Table } from "semantic-ui-react";
 import ArrowIndicator from "./ArrowIndicator";
-import { formatTimeMobile, formatDateTime } from "../utility";
-import moment from "moment";
+import { formatDateTime } from "../utility";
 import {
   LineChart,
   Line,
@@ -15,67 +14,78 @@ import {
 } from "recharts";
 
 const WaveEnergy = ({ id }) => {
-  const [data, setData] = useState([{}]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     fetch(`/api/power/${id}`)
       .then((res) => res.json())
-      .then((data) => {
-        setData(data);
-        console.log(data);
+      .then((responseData) => {
+        setData(Array.isArray(responseData) ? responseData : []);
+      })
+      .catch(() => {
+        setData([]);
       });
   }, [id]);
 
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      const selectedPoint = payload[0].payload;
+  const firstPoint = data?.[0];
+  const chartData = Array.isArray(firstPoint?.values) ? firstPoint.values : [];
 
-      return (
-        <Table celled>
-          <Table.Header></Table.Header>
-          <Table.Body>
-            <Table.Row>
-              <Table.Cell style={{ padding: "5px" }}>
-                <strong>Energy:</strong>
-              </Table.Cell>
-              <Table.Cell style={{ padding: "5px" }}>
-                {selectedPoint.energy} units
-              </Table.Cell>
-            </Table.Row>
+  const CustomTooltip = ({ active, payload }) => {
+    if (!active || !payload || !payload.length) return null;
 
-            <Table.Row>
-              <Table.Cell style={{ padding: "5px" }}>
-                <strong>Period:</strong>
-              </Table.Cell>
-              <Table.Cell style={{ padding: "5px" }}>
-                {(1 / selectedPoint.frequency).toFixed(2)} seconds
-              </Table.Cell>
-            </Table.Row>
+    const selectedPoint = payload[0].payload;
+    const direction = (selectedPoint.cord1 + selectedPoint.cord2) / 2;
 
-            <Table.Row>
-              <Table.Cell style={{ padding: "5px" }}>
-                <strong>Swell Direction:</strong>
-              </Table.Cell>
-              <Table.Cell style={{ padding: "5px" }}>
-                {(selectedPoint.cord1 + selectedPoint.cord2) / 2}&deg;
-                <ArrowIndicator
-                  direction={(selectedPoint.cord1 + selectedPoint.cord2) / 2}
-                />
-              </Table.Cell>
-            </Table.Row>
-          </Table.Body>
-        </Table>
-      );
-    }
+    return (
+      <Table celled className="wave-energy-tooltip-table">
+        <Table.Body>
+          <Table.Row>
+            <Table.Cell className="wave-energy-tooltip-label">
+              <strong>Energy:</strong>
+            </Table.Cell>
+            <Table.Cell className="wave-energy-tooltip-value">
+              {selectedPoint.energy} units
+            </Table.Cell>
+          </Table.Row>
 
-    return null;
+          <Table.Row>
+            <Table.Cell className="wave-energy-tooltip-label">
+              <strong>Period:</strong>
+            </Table.Cell>
+            <Table.Cell className="wave-energy-tooltip-value">
+              {(1 / selectedPoint.frequency).toFixed(2)} seconds
+            </Table.Cell>
+          </Table.Row>
+
+          <Table.Row>
+            <Table.Cell className="wave-energy-tooltip-label">
+              <strong>Swell Direction:</strong>
+            </Table.Cell>
+            <Table.Cell className="wave-energy-tooltip-value">
+              <div className="wave-energy-direction-cell">
+                <span>{direction}&deg;</span>
+                <ArrowIndicator direction={direction} />
+              </div>
+            </Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table>
+    );
   };
-  return data !== undefined ? (
-    <Container textAlign="center">
-      <p>{formatDateTime(data[0].dataTime)}</p>
+
+  if (!firstPoint || chartData.length === 0) {
+    return null;
+  }
+
+  return (
+    <Container textAlign="center" className="wave-energy-container">
+      <p className="wave-energy-timestamp">
+        {formatDateTime(firstPoint.dataTime)}
+      </p>
+
       <ResponsiveContainer width="100%" height={248}>
         <LineChart
-          data={data[0].values}
+          data={chartData}
           margin={{ top: 20, right: 30, left: 0, bottom: 15 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
@@ -99,14 +109,12 @@ const WaveEnergy = ({ id }) => {
           <Line
             type="monotone"
             dataKey="energy"
-            stroke="#d46a6a "
+            stroke="#64f851"
             activeDot={{ r: 8 }}
           />
         </LineChart>
       </ResponsiveContainer>
     </Container>
-  ) : (
-    <></>
   );
 };
 
