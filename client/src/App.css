@@ -853,3 +853,48 @@ body,
   color: var(--muted-text);
   font-size: 0.95rem;
 }
+
+/* =========================
+   Marine Forecast
+========================= */
+
+.marine-forecast {
+  text-align: left;
+  color: var(--text);
+}
+
+.marine-forecast-desktop {
+  height: 640px;
+  overflow-y: auto; /* better than scroll */
+  border: 1px solid var(--border);
+  padding: 10px;
+  background-color: var(--surface);
+}
+
+.marine-forecast-mobile {
+  padding: 10px 12px;
+  background-color: transparent;
+}
+
+/* Shared pre styles */
+.marine-forecast-pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text);
+}
+
+/* Desktop typography */
+.marine-forecast-pre-desktop {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Mobile typography */
+.marine-forecast-pre-mobile {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+    sans-serif;
+  font-size: 12px;
+  line-height: 1.35;
+}
