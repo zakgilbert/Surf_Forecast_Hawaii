@@ -14,21 +14,15 @@ const HawaiiWeatherRadarLoop = ({ id }) => {
   }, [id]);
 
   return (
-    <div style={{ width: "100%", textAlign: "center" }}>
+    <div className="radar-loop">
       {image ? (
         <img
           src={image}
-          alt={`Hurricane rendering (${id})`}
-          style={{
-            maxWidth: "100%",
-            maxHeight: "600px",
-            objectFit: "contain",
-            borderRadius: "8px",
-            boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-          }}
+          alt={`Hawaii radar loop (${id})`}
+          className="radar-loop-image"
         />
       ) : (
-        <p>Loading image...</p>
+        <p className="radar-loop-loading">Loading image...</p>
       )}
     </div>
   );

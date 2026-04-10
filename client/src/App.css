@@ -752,3 +752,27 @@ body,
   font-size: 12px;
   line-height: 1.35;
 }
+
+/* =========================
+   Hawaii Weather Radar Loop
+========================= */
+
+.radar-loop {
+  width: 100%;
+  text-align: center;
+}
+
+.radar-loop-image {
+  max-width: 100%;
+  max-height: 600px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  background-color: var(--surface);
+}
+
+/* Loading text */
+.radar-loop-loading {
+  color: var(--muted-text);
+  font-size: 0.95rem;
+}
