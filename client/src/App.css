@@ -829,3 +829,27 @@ body,
 .histogram-loading {
   color: var(--muted-text);
 }
+
+/* =========================
+   Hurricane Image
+========================= */
+
+.hurricane-image {
+  width: 100%;
+  text-align: center;
+}
+
+.hurricane-image-img {
+  max-width: 100%;
+  max-height: 600px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  background-color: var(--surface);
+}
+
+/* Loading text */
+.hurricane-image-loading {
+  color: var(--muted-text);
+  font-size: 0.95rem;
+}
