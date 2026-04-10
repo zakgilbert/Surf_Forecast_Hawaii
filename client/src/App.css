@@ -528,3 +528,166 @@ body,
   background: var(--surface) !important;
   box-shadow: -1px -1px 0 0 var(--border) !important;
 }
+
+/* =========================
+   DesktopApp
+========================= */
+
+.desktop-app {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+.desktop-app-sidebar {
+  background-color: var(--surface) !important;
+  color: var(--text) !important;
+  border-right: 1px solid var(--border) !important;
+}
+
+.desktop-app-sidebar-section {
+  min-height: 100vh;
+  background-color: var(--surface);
+  color: var(--text);
+}
+
+.desktop-app-sidebar-title-wrap {
+  color: var(--text);
+}
+
+.desktop-app-search-wrap {
+  padding: 0.5rem;
+}
+
+.desktop-app-search-input {
+  width: calc(100% - 2rem);
+  max-width: 100%;
+  background-color: var(--bg) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.desktop-app-search-input::placeholder {
+  color: var(--muted-text);
+}
+
+.desktop-app-group {
+  text-align: left;
+  color: var(--text);
+  margin-top: 20px;
+  margin-bottom: 5px;
+  margin-left: 10px;
+}
+
+.desktop-app-group-title {
+  margin: 0 0 0.5rem 0;
+  color: var(--text);
+}
+
+.desktop-app-list {
+  margin-top: 0.25rem !important;
+}
+
+.desktop-app-list-item {
+  text-align: left;
+}
+
+.desktop-app-list-link {
+  display: block;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.desktop-app-list-link:hover {
+  color: var(--link);
+}
+
+.desktop-app-content-shell {
+  position: relative;
+}
+
+.desktop-app-refresh-button {
+  position: absolute !important;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+}
+
+.desktop-app-content-wrap {
+  padding: 1rem;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.desktop-app-pusher {
+  background: transparent !important;
+}
+
+.desktop-app-segment-group,
+.desktop-app-segment-group-horizontal {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.desktop-app-main-segment.ui.segment {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.desktop-app-card.ui.card {
+  width: 100% !important;
+  display: flex !important;
+  min-height: 725px;
+  flex-direction: column;
+  background-color: var(--surface) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+.desktop-app-card-content {
+  flex: 1;
+  display: flex !important;
+  flex-direction: column;
+  background-color: var(--surface);
+  color: var(--text);
+}
+
+.desktop-app-card-description {
+  overflow-y: visible;
+  color: var(--text) !important;
+}
+
+/* Semantic UI cleanup for DesktopApp */
+.desktop-app .ui.menu,
+.desktop-app .ui.vertical.menu {
+  background-color: var(--surface) !important;
+  border-color: var(--border) !important;
+}
+
+.desktop-app .ui.list > .item,
+.desktop-app .ui.list .list > .item {
+  color: var(--text) !important;
+}
+
+.desktop-app .ui.card > .content,
+.desktop-app .ui.cards > .card > .content {
+  background-color: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+.desktop-app .ui.card .header,
+.desktop-app .ui.card .meta,
+.desktop-app .ui.card .description {
+  color: var(--text) !important;
+}
+
+.desktop-app .ui.divider {
+  border-top-color: var(--border) !important;
+  border-bottom-color: transparent !important;
+}
