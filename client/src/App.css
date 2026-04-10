@@ -1388,3 +1388,128 @@ body,
   width: auto !important;
   min-width: 220px;
 }
+
+/* =========================
+   DesktopApp Sidebar Polish
+========================= */
+
+.desktop-app-sidebar {
+  width: 280px !important;
+  background: var(--surface) !important;
+  border-right: 1px solid var(--border) !important;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.06) !important;
+}
+
+.desktop-app-sidebar-section {
+  min-height: 100vh;
+  padding: 14px 12px 24px;
+  overflow-y: auto;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.desktop-app-search-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 0 0 12px;
+  background: var(--surface);
+}
+
+.desktop-app-search-input {
+  width: 100%;
+  margin: 0 !important;
+  padding: 0.85rem 0.95rem !important;
+  border-radius: 10px !important;
+  border: 1px solid var(--border) !important;
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+.desktop-app-group {
+  margin: 0 0 18px 0;
+}
+
+.desktop-app-group-title {
+  margin: 0 0 10px 0;
+  padding: 0 6px;
+
+  font-size: 0.9rem;        /* 👈 slightly bigger */
+  font-weight: 700;
+
+  letter-spacing: 0.04em;   /* 👈 a bit tighter for readability */
+  text-transform: uppercase;
+
+  color: var(--muted-text);
+}
+
+.desktop-app-list-item {
+  margin: 0 !important;
+}
+
+.desktop-app-list-button {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 10px;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.desktop-app-list-button:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--link);
+}
+/* =========================
+   DesktopApp Toolbar
+========================= */
+
+.desktop-app-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-right: 70px;
+}
+
+.desktop-app-column-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 6px 8px;
+  box-shadow: var(--shadow);
+}
+
+.desktop-app-column-label {
+  font-size: 0.9rem;
+  color: var(--muted-text);
+  margin-right: 4px;
+}
+
+.desktop-app-column-button {
+  min-width: 34px;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+}
+
+.desktop-app-column-button:hover {
+  background: var(--bg);
+}
+
+.desktop-app-column-button.active {
+  background: var(--button-bg);
+  color: var(--button-text);
+  border-color: var(--button-bg);
+}
