@@ -7,6 +7,7 @@ const Forecast = ({ id }) => {
 
   useEffect(() => {
     let alive = true;
+
     fetch(`/api/forecast/${id}`)
       .then((res) => res.json())
       .then((d) => {
@@ -15,54 +16,24 @@ const Forecast = ({ id }) => {
       .catch(() => {
         if (alive) setData(null);
       });
+
     return () => {
       alive = false;
     };
   }, [id]);
 
-  if (!data?.forecast) return <></>;
+  if (!data?.forecast) return null;
 
   return !isMobile ? (
-    // 🖥 Desktop: same as before
     <div
-      style={{
-        maxHeight: CHART_HEIGHT_STR,
-        overflowY: "scroll",
-        border: "1px solid #ccc",
-        padding: "10px",
-        textAlign: "left",
-        height: "700px",
-      }}
+      className="forecast forecast-desktop"
+      style={{ "--forecast-max-height": CHART_HEIGHT_STR }}
     >
-      <pre
-        style={{
-          margin: 0,
-          whiteSpace: "pre-wrap",
-          wordBreak: "break-word",
-          fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-          fontSize: 14,
-          lineHeight: 1.4,
-        }}
-      >
-        {data.forecast}
-      </pre>
+      <pre className="forecast-pre forecast-pre-desktop">{data.forecast}</pre>
     </div>
   ) : (
-    // 📱 Mobile: condensed, smaller text
-    <div style={{ padding: "10px 12px", textAlign: "left" }}>
-      <pre
-        style={{
-          margin: 0,
-          whiteSpace: "pre-wrap",
-          wordBreak: "break-word",
-          fontFamily:
-            "system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif",
-          fontSize: 12, // 👈 a bit smaller
-          lineHeight: 1.35,
-        }}
-      >
-        {data.forecast}
-      </pre>
+    <div className="forecast forecast-mobile">
+      <pre className="forecast-pre forecast-pre-mobile">{data.forecast}</pre>
     </div>
   );
 };
