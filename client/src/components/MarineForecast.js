@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { CHART_HEIGHT_STR } from "../constants";
 import { isMobile } from "react-device-detect";
 
 const MarineForecast = ({ id }) => {
@@ -24,7 +25,10 @@ const MarineForecast = ({ id }) => {
   if (!data?.[id]) return null;
 
   return !isMobile ? (
-    <div className="marine-forecast marine-forecast-desktop">
+    <div
+      className="marine-forecast marine-forecast-desktop"
+      style={{ "--forecast-max-height": CHART_HEIGHT_STR }}
+    >
       <pre className="marine-forecast-pre marine-forecast-pre-desktop">
         {data[id]}
       </pre>

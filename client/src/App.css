@@ -898,3 +898,12 @@ body,
   font-size: 12px;
   line-height: 1.35;
 }
+
+.marine-forecast-desktop::-webkit-scrollbar {
+  width: 8px;
+}
+
+.marine-forecast-desktop::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
