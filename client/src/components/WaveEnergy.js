@@ -109,7 +109,7 @@ const WaveEnergy = ({ id }) => {
           <Line
             type="monotone"
             dataKey="energy"
-            stroke="#64f851"
+            stroke="#fa1010"
             activeDot={{ r: 8 }}
           />
         </LineChart>
