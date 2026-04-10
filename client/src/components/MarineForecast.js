@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { CHART_HEIGHT_STR } from "../constants";
 import { isMobile } from "react-device-detect";
 
 const MarineForecast = ({ id }) => {
@@ -6,6 +7,7 @@ const MarineForecast = ({ id }) => {
 
   useEffect(() => {
     let alive = true;
+
     fetch(`/api/marine-forecast`)
       .then((res) => res.json())
       .then((d) => {
@@ -14,51 +16,26 @@ const MarineForecast = ({ id }) => {
       .catch(() => {
         if (alive) setData(null);
       });
+
     return () => {
       alive = false;
     };
   }, [id]);
 
-  if (!data?.[id]) return <></>;
+  if (!data?.[id]) return null;
 
   return !isMobile ? (
-    // 🖥 Desktop view
     <div
-      style={{
-        height: "640px",
-        overflowY: "scroll",
-        border: "1px solid #ccc",
-        padding: "10px",
-        textAlign: "left",
-      }}
+      className="marine-forecast marine-forecast-desktop"
+      style={{ "--forecast-max-height": CHART_HEIGHT_STR }}
     >
-      <pre
-        style={{
-          margin: 0,
-          whiteSpace: "pre-wrap",
-          wordBreak: "break-word",
-          fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-          fontSize: 14,
-          lineHeight: 1.4,
-        }}
-      >
+      <pre className="marine-forecast-pre marine-forecast-pre-desktop">
         {data[id]}
       </pre>
     </div>
   ) : (
-    // 📱 Mobile view
-    <div style={{ padding: "10px 12px", textAlign: "left" }}>
-      <pre
-        style={{
-          margin: 0,
-          whiteSpace: "pre-wrap",
-          wordBreak: "break-word",
-          fontFamily:
-            "system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif",
-          fontSize: 12, // 👈 smaller text for mobile
-          lineHeight: 1.35,
-        }}
-      >
+    <div className="marine-forecast marine-forecast-mobile">
+      <pre className="marine-forecast-pre marine-forecast-pre-mobile">
         {data[id]}
       </pre>
     </div>

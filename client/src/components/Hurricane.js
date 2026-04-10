@@ -10,25 +10,20 @@ const HurricaneImage = ({ id, width, height }) => {
         if (data.image) {
           setImage(`data:image/gif;base64,${data.image}`);
         }
-      });
+      })
+      .catch(() => setImage(null));
   }, [id, width, height]);
 
   return (
-    <div style={{ width: "100%", textAlign: "center" }}>
+    <div className="hurricane-image">
       {image ? (
         <img
           src={image}
           alt={`Hurricane rendering (${id})`}
-          style={{
-            maxWidth: "100%",
-            maxHeight: "600px",
-            objectFit: "contain",
-            borderRadius: "8px",
-            boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-          }}
+          className="hurricane-image-img"
         />
       ) : (
-        <p>Loading image...</p>
+        <p className="hurricane-image-loading">Loading image...</p>
       )}
     </div>
   );

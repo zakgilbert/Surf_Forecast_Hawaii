@@ -40,7 +40,13 @@ const StationInput = ({ id }) => {
 
         const d = await res.json();
 
-        if (!d || !d.cols || !d.rows || !Array.isArray(d.rows) || d.rows.length === 0) {
+        if (
+          !d ||
+          !d.cols ||
+          !d.rows ||
+          !Array.isArray(d.rows) ||
+          d.rows.length === 0
+        ) {
           throw new Error(`No data available for buoy ${id}`);
         }
 
@@ -48,7 +54,6 @@ const StationInput = ({ id }) => {
           setData(d);
         }
       } catch (err) {
-        // Ignore aborts caused by unmount / id change
         if (err.name === "AbortError") return;
 
         console.error(`Error loading buoy ${id}:`, err);
@@ -96,8 +101,8 @@ const StationInput = ({ id }) => {
 
   if (loading) {
     return (
-      <Segment style={styles.segmentBase}>
-        <Header as="h4" style={styles.sectionTitle}>
+      <Segment className="station-input-segment">
+        <Header as="h4" className="station-input-section-title">
           Loading buoy {id}...
         </Header>
       </Segment>
@@ -106,7 +111,7 @@ const StationInput = ({ id }) => {
 
   if (error) {
     return (
-      <Segment style={styles.segmentBase}>
+      <Segment className="station-input-segment">
         <Message
           negative
           header={`Buoy ${id} unavailable`}
@@ -118,7 +123,7 @@ const StationInput = ({ id }) => {
 
   if (!ready) {
     return (
-      <Segment style={styles.segmentBase}>
+      <Segment className="station-input-segment">
         <Message
           warning
           header={`Buoy ${id} has no report data`}
@@ -129,17 +134,17 @@ const StationInput = ({ id }) => {
   }
 
   const SummarySection = () => (
-    <Segment style={styles.segmentBase}>
-      <Header as="h4" style={styles.sectionTitle}>
+    <Segment className="station-input-segment">
+      <Header as="h4" className="station-input-section-title">
         {isMobile
           ? formatDateTime(data.rows[0][0])
           : formatDate(data.rows[0][0])}
       </Header>
-      <div style={styles.kvList}>
+      <div className="station-input-kv-list">
         {summaryFields.map((row, i) => (
-          <div key={i} style={styles.kvRow}>
-            <div style={styles.kvLabel}>{row.key}:</div>
-            <div style={styles.kvValue}>
+          <div key={i} className="station-input-kv-row">
+            <div className="station-input-kv-label">{row.key}:</div>
+            <div className="station-input-kv-value">
               {row.isDir ? (
                 <Popup
                   content={<ArrowIndicator direction={Number(row.value)} />}
@@ -157,8 +162,8 @@ const StationInput = ({ id }) => {
   );
 
   const chart = (
-    <Segment style={styles.segmentBase}>
-      <Header as="h4" style={styles.sectionTitle}>
+    <Segment className="station-input-segment">
+      <Header as="h4" className="station-input-section-title">
         Wave Energy
       </Header>
       <WaveEnergy id={id} />
@@ -167,12 +172,11 @@ const StationInput = ({ id }) => {
 
   const tabs = (
     <Segment
-      style={{
-        ...styles.segmentBase,
-        ...(isMobile ? styles.tabsMobile : styles.tabsDesktop),
-      }}
+      className={`station-input-segment ${
+        isMobile ? "station-input-tabs-mobile" : "station-input-tabs-desktop"
+      }`}
     >
-      <Header as="h4" style={styles.sectionTitle}>
+      <Header as="h4" className="station-input-section-title">
         Buoy Details
       </Header>
       <BuoyTabs data={data} />
@@ -181,19 +185,19 @@ const StationInput = ({ id }) => {
 
   if (isMobile) {
     return (
-      <div style={styles.mobileWrap}>
+      <div className="station-input-mobile-wrap">
         <SummarySection />
         <Divider />
         {chart}
         <Divider />
         {tabs}
-        <div style={styles.bottomSpacer} />
+        <div className="station-input-bottom-spacer" />
       </div>
     );
   }
 
   return (
-    <div style={styles.desktopWrap}>
+    <div className="station-input-desktop-wrap">
       <Grid container stackable columns={2} divided>
         <GridRow>
           <GridColumn width={5}>
@@ -205,47 +209,13 @@ const StationInput = ({ id }) => {
       <Divider />
       <Grid>
         <Grid.Row>
-          <Grid.Column width={16} style={styles.tabsColumnDesktop}>
+          <Grid.Column width={16} className="station-input-tabs-column-desktop">
             {tabs}
           </Grid.Column>
         </Grid.Row>
       </Grid>
     </div>
   );
-};
-
-const styles = {
-  segmentBase: { padding: "0.75rem" },
-  sectionTitle: { margin: "0 0 0.5rem", textAlign: "center" },
-
-  kvList: {
-    display: "grid",
-    gridTemplateColumns: "1fr",
-    gap: "6px",
-  },
-  kvRow: {
-    display: "grid",
-    gridTemplateColumns: "1fr auto",
-    alignItems: "center",
-    padding: "4px 0",
-    borderBottom: "1px solid rgba(0,0,0,0.06)",
-  },
-  kvLabel: { fontSize: 13, opacity: 0.85, paddingRight: 10 },
-  kvValue: { fontSize: 15, fontWeight: 600, justifySelf: "end" },
-
-  mobileWrap: {
-    padding: "0.75rem",
-    display: "flex",
-    flexDirection: "column",
-    gap: "0.5rem",
-  },
-  pageTitle: { marginTop: 0, marginBottom: "0.5rem" },
-  tabsMobile: { padding: "0.5rem", overflowY: "visible", maxHeight: "unset" },
-  bottomSpacer: { height: 24 },
-
-  desktopWrap: { maxHeight: "850px" },
-  tabsDesktop: { padding: "0.5rem", overflowY: "auto", maxHeight: "600px" },
-  tabsColumnDesktop: { maxHeight: "260px", overflowY: "auto" },
 };
 
 export default StationInput;

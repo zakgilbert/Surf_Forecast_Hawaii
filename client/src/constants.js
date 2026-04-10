@@ -34,7 +34,7 @@ export const CONTENT_DATA = [
     station: "51001",
     id: 3,
     tag: "power",
-    header: "Wave Energy for Station 51101",
+    header: "Wave Energy for Station 51001",
     meta: "186 NM NW of Kauai Is",
   },
   {
