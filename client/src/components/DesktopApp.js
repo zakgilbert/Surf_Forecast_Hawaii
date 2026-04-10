@@ -22,6 +22,7 @@ import {
 function DesktopApp() {
   const [searchTerm, setSearchTerm] = useState("");
   const [renderData, setRenderData] = useState([]);
+  const [columnCount, setColumnCount] = useState(2);
 
   const clearGrid = () => {
     setRenderData([]);
@@ -146,6 +147,42 @@ function DesktopApp() {
             </Button>
 
             <div className="desktop-app-content-wrap">
+              <div className="desktop-app-toolbar">
+                <div className="desktop-app-column-picker">
+                  <span className="desktop-app-column-label">Columns</span>
+
+                  <button
+                    type="button"
+                    className={`desktop-app-column-button ${
+                      columnCount === 1 ? "active" : ""
+                    }`}
+                    onClick={() => setColumnCount(1)}
+                  >
+                    1
+                  </button>
+
+                  <button
+                    type="button"
+                    className={`desktop-app-column-button ${
+                      columnCount === 2 ? "active" : ""
+                    }`}
+                    onClick={() => setColumnCount(2)}
+                  >
+                    2
+                  </button>
+
+                  <button
+                    type="button"
+                    className={`desktop-app-column-button ${
+                      columnCount === 3 ? "active" : ""
+                    }`}
+                    onClick={() => setColumnCount(3)}
+                  >
+                    3
+                  </button>
+                </div>
+              </div>
+
               <SidebarPusher className="desktop-app-pusher">
                 <SegmentGroup className="desktop-app-segment-group">
                   <SegmentGroup
@@ -154,13 +191,19 @@ function DesktopApp() {
                   >
                     <Divider />
                     <Segment placeholder className="desktop-app-main-segment">
-                      <Grid stackable doubling columns={2}>
+                      <Grid stackable doubling columns={columnCount}>
                         {renderData.map((item) => (
                           <GridColumn
                             key={item.id}
                             mobile={16}
                             tablet={8}
-                            computer={8}
+                            computer={columnCount === 1 ? 16 : 8}
+                            largeScreen={
+                              columnCount === 3 ? 5 : columnCount === 2 ? 8 : 16
+                            }
+                            widescreen={
+                              columnCount === 3 ? 5 : columnCount === 2 ? 8 : 16
+                            }
                             textAlign="center"
                           >
                             <Card fluid className="desktop-app-card">

@@ -603,9 +603,9 @@ body,
 }
 
 .desktop-app-content-wrap {
-  padding: 1rem;
+  padding: 1.25rem 1.25rem 1.5rem;
   width: 100%;
-  max-width: 1600px;
+  max-width: 1800px;
   margin: 0 auto;
 }
 
@@ -680,16 +680,18 @@ body,
   border-bottom-color: transparent !important;
 }
 .desktop-app-list-button {
-  display: block;
   width: 100%;
   text-align: left;
-  color: var(--text);
-  cursor: pointer;
-  text-decoration: none;
   background: transparent;
   border: none;
-  padding: 0;
+  border-radius: 8px;
+
+  padding: 6.5px 10px !important;        /* 👈 tighter */
+  line-height: 1;        /* 👈 tighter text */
+
+  color: var(--text);
   font: inherit;
+  cursor: pointer;
 }
 
 .desktop-app-list-button:hover {
@@ -893,7 +895,13 @@ body,
 
 /* Mobile typography */
 .marine-forecast-pre-mobile {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+  font-family:
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Helvetica,
+    Arial,
     sans-serif;
   font-size: 12px;
   line-height: 1.35;
@@ -1431,16 +1439,19 @@ body,
 }
 
 .desktop-app-group-title {
-  margin: 0 0 10px 0;
+  margin: 16px 0 10px 0;
   padding: 0 6px;
 
-  font-size: 0.9rem;        /* 👈 slightly bigger */
+  font-size: 0.9rem;
   font-weight: 700;
 
-  letter-spacing: 0.04em;   /* 👈 a bit tighter for readability */
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 
   color: var(--muted-text);
+
+  border-bottom: 1px solid var(--border); /* 👈 subtle divider */
+  padding-bottom: 4px;
 }
 
 .desktop-app-list-item {
@@ -1457,7 +1468,9 @@ body,
   color: var(--text);
   font: inherit;
   cursor: pointer;
-  transition: background-color 0.18s ease, color 0.18s ease;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
 }
 
 .desktop-app-list-button:hover {
@@ -1502,6 +1515,10 @@ body,
   color: var(--text);
   cursor: pointer;
   font: inherit;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease;
 }
 
 .desktop-app-column-button:hover {
@@ -1512,4 +1529,69 @@ body,
   background: var(--button-bg);
   color: var(--button-text);
   border-color: var(--button-bg);
+}
+/* =========================
+   App Root
+========================= */
+
+.app-root {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* =========================
+   Header
+========================= */
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+
+  background: linear-gradient(
+    to bottom,
+    var(--header-bg),
+    rgba(19, 38, 61, 0.95)
+  );
+
+  border-bottom: 1px solid var(--border);
+
+  backdrop-filter: saturate(180%) blur(8px);
+}
+
+.title-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 14px 18px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-title {
+  font-size: 1.65rem;
+  font-weight: 700;
+  margin: 0;
+
+  color: var(--header-text);
+  letter-spacing: 0.02em;
+}
+
+.app-subtitle {
+  font-size: 0.9rem;
+  margin-top: 4px;
+
+  color: var(--subtitle-text);
+  letter-spacing: 0.04em;
+}
+
+/* =========================
+   Main
+========================= */
+
+.app-main {
+  padding-top: 6px;
 }

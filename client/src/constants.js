@@ -83,7 +83,7 @@ export const CONTENT_DATA = [
     id: 9,
     tag: "buoy",
     header: "Buoy Station 51201",
-    meta: "WESTERN HAWAII - 205 NM SW of Honolulu, HI",
+    meta: "Waimea Bay, HI",
   },
   {
     name: "Waimea Bay",
