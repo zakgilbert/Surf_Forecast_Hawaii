@@ -12,7 +12,7 @@ import {
 import { handleGridCall, groupedData } from "../utility";
 
 function MobileApp() {
-  const [mode, setMode] = useState("select"); // "select" | "view"
+  const [mode, setMode] = useState("select");
   const [selectedItems, setSelectedItems] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollerRef = useRef(null);
@@ -42,6 +42,7 @@ function MobileApp() {
     if (!selectedItems.length) return;
     setMode("view");
     setCurrentIndex(0);
+
     requestAnimationFrame(() => {
       if (scrollerRef.current) {
         scrollerRef.current.scrollTo({ left: 0, behavior: "auto" });
@@ -95,25 +96,26 @@ function MobileApp() {
   }, [mode, currentIndex, selectedItems.length]);
 
   return (
-      <Container fluid className="dashboard-dark" style={styles.container}>
+    <Container fluid className="dashboard-dark mobile-app-container">
       {mode === "select" && (
-        <div style={styles.selectWrapper}>
-          <Segment basic style={styles.headerSegment}>
-            <Header as="h2" style={styles.headerTitle}>
+        <div className="mobile-app-select-wrapper">
+          <Segment basic className="mobile-app-header-segment">
+            <Header as="h2" className="mobile-app-header-title">
               Select Forecasts
             </Header>
-            <p style={styles.headerSubtitle}>
+            <p className="mobile-app-header-subtitle">
               Tap to select multiple forecasts. Then press{" "}
               <strong>View Forecasts</strong>.
             </p>
           </Segment>
 
-          <div style={styles.listContainer}>
+          <div className="mobile-app-list-container">
             {categories.map((cat) => (
-              <Segment key={cat} basic style={styles.categorySegment}>
-                <Header as="h4" style={styles.categoryHeader}>
+              <Segment key={cat} basic className="mobile-app-category-segment">
+                <Header as="h4" className="mobile-app-category-header">
                   {cat.charAt(0).toUpperCase() + cat.slice(1)}
                 </Header>
+
                 <List selection relaxed>
                   {groupedData[cat].map((item) => {
                     const on = isSelected(item.id);
@@ -122,17 +124,21 @@ function MobileApp() {
                       <List.Item
                         key={item.id}
                         onClick={() => toggleSelect(item)}
-                        style={styles.listItem}
+                        className="mobile-app-list-item"
                       >
-                        <div style={styles.listItemLeft}>
+                        <div className="mobile-app-list-item-left">
                           <Icon
                             name={on ? "check circle" : "circle outline"}
                             color={on ? "green" : "grey"}
                           />
                           <div>
-                            <div style={styles.itemName}>{item.name}</div>
+                            <div className="mobile-app-item-name">
+                              {item.name}
+                            </div>
                             {item.meta && (
-                              <div style={styles.itemMeta}>{item.meta}</div>
+                              <div className="mobile-app-item-meta">
+                                {item.meta}
+                              </div>
                             )}
                           </div>
                         </div>
@@ -148,10 +154,10 @@ function MobileApp() {
                 </List>
               </Segment>
             ))}
-            <div style={styles.listSpacer} />
+            <div className="mobile-app-list-spacer" />
           </div>
 
-          <div style={styles.stickyFooter}>
+          <div className="mobile-app-sticky-footer">
             <Button
               fluid
               color="blue"
@@ -173,20 +179,20 @@ function MobileApp() {
       )}
 
       {mode === "view" && (
-        <Segment basic style={styles.viewSegment}>
-          <div style={styles.viewTopBar}>
+        <Segment basic className="mobile-app-view-segment">
+          <div className="mobile-app-view-top-bar">
             <Button
               icon
               labelPosition="left"
               color="blue"
               onClick={backToSelect}
-              style={styles.backButton}
+              className="mobile-app-back-button"
             >
               <Icon name="arrow left" /> Back
             </Button>
 
-            <div style={styles.pageIndicatorWrapper}>
-              <span style={styles.pageIndicatorText}>
+            <div className="mobile-app-page-indicator-wrapper">
+              <span className="mobile-app-page-indicator-text">
                 {selectedItems.length
                   ? `${currentIndex + 1} / ${selectedItems.length}`
                   : ""}
@@ -196,20 +202,22 @@ function MobileApp() {
 
           <Divider />
 
-          <div ref={scrollerRef} style={styles.carouselContainer}>
+          <div ref={scrollerRef} className="mobile-app-carousel-container">
             {selectedItems.map((item) => (
-              <div key={item.id} style={styles.carouselSlide}>
-                <Header as="h2" style={styles.slideHeader}>
+              <div key={item.id} className="mobile-app-carousel-slide">
+                <Header as="h2" className="mobile-app-slide-header">
                   {item.header || item.name}
                 </Header>
-                {item.meta && <p style={styles.slideMeta}>{item.meta}</p>}
+                {item.meta && (
+                  <p className="mobile-app-slide-meta">{item.meta}</p>
+                )}
                 {handleGridCall(item)}
               </div>
             ))}
           </div>
 
           {selectedItems.length > 1 && (
-            <div style={styles.dotsContainer}>
+            <div className="mobile-app-dots-container">
               {selectedItems.map((_, i) => (
                 <span
                   key={i}
@@ -220,13 +228,9 @@ function MobileApp() {
                       behavior: "smooth",
                     });
                   }}
-                  style={{
-                    ...styles.dot,
-                    background:
-                      i === currentIndex
-                        ? "var(--dot-active)"
-                        : "var(--dot-inactive)",
-                  }}
+                  className={`mobile-app-dot ${
+                    i === currentIndex ? "mobile-app-dot-active" : ""
+                  }`}
                 />
               ))}
             </div>
@@ -237,142 +241,4 @@ function MobileApp() {
   );
 }
 
-/* ---------------- Styles ---------------- */
-const styles = {
-  container: {
-    padding: 0,
-    minHeight: "100vh",
-    backgroundColor: "var(--bg)",
-    color: "var(--text)",
-  },
-  selectWrapper: {
-    display: "flex",
-    flexDirection: "column",
-    minHeight: "100vh",
-    backgroundColor: "var(--bg)",
-    color: "var(--text)",
-  },
-  headerSegment: {
-    padding: "1rem 1rem 0.5rem",
-    background: "transparent",
-    color: "var(--text)",
-  },
-  headerTitle: {
-    marginBottom: 0,
-    color: "var(--text)",
-  },
-  headerSubtitle: {
-    marginTop: 6,
-    color: "var(--muted-text)",
-  },
-  listContainer: {
-    flex: 1,
-    overflow: "auto",
-    backgroundColor: "var(--bg)",
-  },
-  categorySegment: {
-    padding: "0.5rem 1rem",
-    background: "transparent",
-    color: "var(--text)",
-  },
-  categoryHeader: {
-    marginTop: 0,
-    color: "var(--text)",
-  },
-  listItem: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "12px 0",
-    borderBottom: "1px solid var(--border)",
-    touchAction: "manipulation",
-    color: "var(--text)",
-  },
-  listItemLeft: {
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-    color: "var(--text)",
-  },
-  itemName: {
-    fontWeight: 600,
-    color: "var(--text)",
-  },
-  itemMeta: {
-    fontSize: 12,
-    color: "var(--muted-text)",
-    marginTop: 2,
-  },
-  listSpacer: { height: 80 },
-  stickyFooter: {
-    position: "sticky",
-    bottom: 0,
-    width: "100%",
-    background: "var(--surface-soft)",
-    borderTop: "1px solid var(--border)",
-    backdropFilter: "saturate(180%) blur(8px)",
-    padding: "10px",
-    display: "flex",
-    gap: 10,
-  },
-  viewSegment: {
-    paddingTop: "1rem",
-    backgroundColor: "var(--bg)",
-    color: "var(--text)",
-  },
-  viewTopBar: {
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    marginBottom: 8,
-    color: "var(--text)",
-  },
-  backButton: { marginBottom: "0.5rem" },
-  pageIndicatorWrapper: {
-    marginLeft: "auto",
-    display: "flex",
-    alignItems: "center",
-    gap: 12,
-  },
-  pageIndicatorText: {
-    color: "var(--muted-text)",
-  },
-  carouselContainer: {
-    width: "100%",
-    overflowX: "auto",
-    scrollSnapType: "x mandatory",
-    display: "flex",
-    gap: 12,
-    overscrollBehaviorX: "contain",
-    backgroundColor: "var(--bg)",
-  },
-  carouselSlide: {
-    scrollSnapAlign: "start",
-    flex: "0 0 100%",
-    maxWidth: "100%",
-    color: "var(--text)",
-  },
-  slideHeader: {
-    marginBottom: 0,
-    color: "var(--text)",
-  },
-  slideMeta: {
-    marginTop: 6,
-    color: "var(--muted-text)",
-  },
-  dotsContainer: {
-    display: "flex",
-    justifyContent: "center",
-    gap: 8,
-    marginTop: 14,
-  },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: "50%",
-    display: "inline-block",
-    cursor: "pointer",
-  },
-};
-
-export default MobileApp
+export default MobileApp;
