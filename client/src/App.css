@@ -776,3 +776,56 @@ body,
   color: var(--muted-text);
   font-size: 0.95rem;
 }
+
+/* =========================
+   Histogram
+========================= */
+
+.histogram {
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+  color: var(--text);
+}
+
+.histogram-title {
+  text-align: center;
+  margin-bottom: 0;
+  color: var(--text);
+}
+
+.histogram-time-range {
+  text-align: center;
+  margin-top: 4px;
+  color: var(--text);
+}
+
+.histogram-stats {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.histogram-stats-primary {
+  color: darkred;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.histogram-stats-secondary {
+  color: darkred;
+}
+
+.histogram-chart-wrap {
+  width: 100%;
+}
+
+.histogram-status {
+  text-align: center;
+  color: var(--histogram-status-color, #3366cc);
+  margin-top: 12px;
+}
+
+.histogram-loading {
+  color: var(--muted-text);
+}

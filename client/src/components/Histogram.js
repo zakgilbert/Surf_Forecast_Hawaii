@@ -10,6 +10,13 @@ import {
   Cell,
 } from "recharts";
 
+const HISTOGRAM_BAR_FILL = "rgba(30, 144, 255, 0.5)";
+const HISTOGRAM_BAR_STROKE = "#1E90FF";
+const HISTOGRAM_HIGHLIGHT_FILL = "#FF4500";
+const HISTOGRAM_GRID_STROKE = "#ccc";
+const HISTOGRAM_STATS_COLOR = "darkred";
+const HISTOGRAM_STATUS_COLOR = "#3366cc";
+
 const Histogram = ({ id }) => {
   const [histogramData, setHistogramData] = useState(null);
   const [stats, setStats] = useState(null);
@@ -20,16 +27,17 @@ const Histogram = ({ id }) => {
       .then((data) => {
         const raw = data.histogram;
 
-        // Convert histogram keys to sorted array of { label, count, binStart }
         const parsed = Object.entries(raw)
           .map(([label, count]) => {
-            const binStart = parseInt(label.split("–")[0]);
+            const binStart = parseInt(label.split("–")[0], 10);
             return { label, count, binStart };
           })
           .sort((a, b) => a.binStart - b.binStart);
 
-        const maxBin = parsed.reduce((max, b) => (b.count > max.count ? b : max), parsed[0]);
-        const totalWaves = parsed.reduce((sum, b) => sum + b.count, 0);
+        const maxBin = parsed.reduce(
+          (max, bin) => (bin.count > max.count ? bin : max),
+          parsed[0]
+        );
 
         setHistogramData(parsed);
         setStats({
@@ -41,81 +49,110 @@ const Histogram = ({ id }) => {
           startHST: data.startHST || "[start time]",
           endHST: data.endHST || "[end time]",
         });
+      })
+      .catch(() => {
+        setHistogramData(null);
+        setStats(null);
       });
   }, [id]);
 
-  return histogramData ? (
-    <div style={{ maxWidth: 900, margin: "0 auto", fontFamily: "sans-serif" }}>
-      <h2 style={{ textAlign: "center", marginBottom: 0 }}>
+  if (!histogramData || !stats) {
+    return <div className="histogram-loading">Loading...</div>;
+  }
+
+  return (
+    <div className="histogram">
+      <h2 className="histogram-title">
         Station {id} wave heights (up- and down-cross)
       </h2>
-      <p style={{ textAlign: "center", marginTop: 4 }}>
+
+      <p className="histogram-time-range">
         Start: {stats.startHST} &nbsp;&nbsp;&nbsp; End: {stats.endHST}
       </p>
 
-      <div style={{ textAlign: "center", marginTop: 10, marginBottom: 10 }}>
-        <span style={{ color: "darkred", fontWeight: "bold", fontSize: "18px" }}>
+      <div className="histogram-stats">
+        <span className="histogram-stats-primary">
           Most common bin: {stats.max} &nbsp;&nbsp;
         </span>
-        <span style={{ color: "darkred", fontWeight: "bold", fontSize: "18px" }}>
+        <span className="histogram-stats-primary">
           Wave count: {stats.count}
         </span>
         <br />
-        <span style={{ color: "darkred", fontWeight: "bold", fontSize: "18px" }}>
+        <span className="histogram-stats-primary">
           Largest wave: {stats.largest} ft
         </span>
         <br />
-        <span style={{ color: "darkred" }}>T@Hmax: {stats.tHmax}</span>&nbsp;&nbsp;
-        <span style={{ color: "darkred" }}>Htenth: {stats.hTenth}</span>
+        <span className="histogram-stats-secondary">
+          T@Hmax: {stats.tHmax}
+        </span>
+        &nbsp;&nbsp;
+        <span className="histogram-stats-secondary">
+          Htenth: {stats.hTenth}
+        </span>
       </div>
 
-      <ResponsiveContainer width="100%" minHeight={400}>
-        <BarChart
-          data={histogramData}
-          margin={{ top: 10, right: 20, left: 10, bottom: 30 }}
-          barCategoryGap={1}
-        >
-          <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
-          <XAxis
-            dataKey="label"
-            type="category"
-            label={{ value: "Height Range (ft)", position: "insideBottom", dy: 20 }}
-          />
-          <YAxis
-            label={{ value: "Count", angle: -90, position: "insideLeft", dx: -10 }}
-          />
-          <Tooltip
-            formatter={(value) => [`${value}`, "Wave count"]}
-            labelFormatter={(label) => `Range: ${label}`}
-          />
-          <Bar
-            dataKey="count"
-            fill="rgba(30, 144, 255, 0.5)"
-            stroke="#1E90FF"
-            strokeWidth={1}
-            isAnimationActive={false}
-            barSize={16}
+      <div className="histogram-chart-wrap">
+        <ResponsiveContainer width="100%" minHeight={400}>
+          <BarChart
+            data={histogramData}
+            margin={{ top: 10, right: 20, left: 10, bottom: 30 }}
+            barCategoryGap={1}
           >
-            {histogramData.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={
-                  entry.label === stats.max
-                    ? "#FF4500"
-                    : "rgba(30, 144, 255, 0.5)"
-                }
-              />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+            <CartesianGrid
+              stroke={HISTOGRAM_GRID_STROKE}
+              strokeDasharray="3 3"
+            />
+            <XAxis
+              dataKey="label"
+              type="category"
+              label={{
+                value: "Height Range (ft)",
+                position: "insideBottom",
+                dy: 20,
+              }}
+            />
+            <YAxis
+              label={{
+                value: "Count",
+                angle: -90,
+                position: "insideLeft",
+                dx: -10,
+              }}
+            />
+            <Tooltip
+              formatter={(value) => [`${value}`, "Wave count"]}
+              labelFormatter={(label) => `Range: ${label}`}
+            />
+            <Bar
+              dataKey="count"
+              fill={HISTOGRAM_BAR_FILL}
+              stroke={HISTOGRAM_BAR_STROKE}
+              strokeWidth={1}
+              isAnimationActive={false}
+              barSize={16}
+            >
+              {histogramData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={
+                    entry.label === stats.max
+                      ? HISTOGRAM_HIGHLIGHT_FILL
+                      : HISTOGRAM_BAR_FILL
+                  }
+                />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
 
-      <p style={{ textAlign: "center", color: "#3366cc", marginTop: 12 }}>
+      <p
+        className="histogram-status"
+        style={{ "--histogram-status-color": HISTOGRAM_STATUS_COLOR }}
+      >
         File has passed quality control
       </p>
     </div>
-  ) : (
-    <div>Loading...</div>
   );
 };
 
