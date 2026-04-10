@@ -145,7 +145,8 @@ body {
 }
 
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(0);
   }
   50% {
@@ -283,4 +284,31 @@ body {
     object-fit: contain;
     display: block;
   }
+}
+
+/* =========================
+   Arrow Indicator
+========================= */
+
+.arrow-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10px;
+}
+
+.arrow-rotate {
+  display: inline-block;
+  transform: rotate(var(--rotation));
+  transition: transform 0.3s ease;
+}
+
+.arrow-svg {
+  width: 22px;
+  height: 22px;
+}
+
+.arrow-head,
+.arrow-body {
+  fill: var(--text);
 }
