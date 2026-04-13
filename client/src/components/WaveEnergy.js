@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Table } from "semantic-ui-react";
 import ArrowIndicator from "./ArrowIndicator";
-import { formatDateTime } from "../utility";
+import { formatDateTime,formatDate } from "../utility";
 import {
   LineChart,
   Line,
@@ -80,7 +80,7 @@ const WaveEnergy = ({ id }) => {
   return (
     <Container textAlign="center" className="wave-energy-container">
       <p className="wave-energy-timestamp">
-        {formatDateTime(firstPoint.dataTime)}
+        {formatDate(firstPoint.dataTime)}
       </p>
 
       <ResponsiveContainer width="100%" height={248}>

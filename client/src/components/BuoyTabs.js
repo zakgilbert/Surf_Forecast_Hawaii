@@ -20,7 +20,7 @@ const BuoyTabs = ({ data }) => {
 
   const timeIndex = useMemo(
     () => data.cols.findIndex((c) => c.value === "Time"),
-    [data]
+    [data],
   );
 
   const mobileCols = useMemo(() => {
@@ -154,11 +154,12 @@ const BuoyTabs = ({ data }) => {
         >
           <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
           <XAxis
-            dataKey="time"
+            dataKey="ts"
             interval="preserveStartEnd"
             tick={{ fontSize: 11 }}
             tickFormatter={(v) => formatDayTime(v)}
           />
+          <Tooltip labelFormatter={(v) => formatDayTime(v)} />
           <YAxis tick={{ fontSize: 11 }} />
           <Tooltip labelFormatter={(v) => formatDayTime(v)} />
           <Line type="monotone" dataKey="SwH" stroke="#8884d8" dot={false} />
@@ -174,7 +175,12 @@ const BuoyTabs = ({ data }) => {
         margin={{ top: 20, right: 30, left: 20, bottom: 0 }}
       >
         <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-        <XAxis dataKey="time" textAnchor="end" />
+        <XAxis
+          dataKey="ts"
+          tickFormatter={(v) => formatDayTime(v)}
+          textAnchor="end"
+        />
+        <Tooltip labelFormatter={(v) => formatDayTime(v)} />
         <YAxis />
         <Tooltip />
         <Line type="monotone" dataKey="SwH" stroke="#8884d8" />
@@ -191,7 +197,7 @@ const BuoyTabs = ({ data }) => {
         >
           <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
           <XAxis
-            dataKey="time"
+            dataKey="ts"
             interval="preserveStartEnd"
             tick={{ fontSize: 11 }}
             tickFormatter={(v) => formatDayTime(v)}
@@ -211,7 +217,7 @@ const BuoyTabs = ({ data }) => {
         margin={{ top: 10, right: 15, left: 15, bottom: 0 }}
       >
         <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
-        <XAxis dataKey="time" textAnchor="front" tickSize={6} />
+        <XAxis dataKey="ts" textAnchor="front" tickSize={6} />
         <YAxis domain={[3, "auto"]} />
         <Tooltip />
         <Line type="monotone" dataKey="SwP" stroke="#82ca9d" />

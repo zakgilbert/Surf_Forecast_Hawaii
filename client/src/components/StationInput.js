@@ -137,7 +137,7 @@ const StationInput = ({ id }) => {
     <Segment className="station-input-segment">
       <Header as="h4" className="station-input-section-title">
         {isMobile
-          ? formatDateTime(data.rows[0][0])
+          ? formatDate(data.rows[0][0])
           : formatDate(data.rows[0][0])}
       </Header>
       <div className="station-input-kv-list">

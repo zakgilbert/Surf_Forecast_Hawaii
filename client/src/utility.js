@@ -30,6 +30,7 @@ export const getTideBeginAndEndDates = () => {
 };
 
 // Friendly date for quick use
+/*
 export const formatDate = (datetime) => {
   const date = new Date(datetime);
   return date.toLocaleString("en-US", {
@@ -40,6 +41,7 @@ export const formatDate = (datetime) => {
     hour12: true,
   });
 };
+
 
 /* ---------------- Robust parsing ---------------- */
 
@@ -75,28 +77,38 @@ export function parseDateSafe(val) {
 
   let s = String(val).trim();
 
-  if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(:\d{2})?$/.test(s)) {
-    const d = new Date(s.replace(" ", "T") + "Z");
+  // YYYY-MM-DD HH:mm[:ss] -> treat as local time
+  let m = s.match(/^(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2})(?::(\d{2}))?$/);
+  if (m) {
+    const [, Y, M, D, hh, mm, ss = "0"] = m;
+    const d = new Date(
+      Number(Y),
+      Number(M) - 1,
+      Number(D),
+      Number(hh),
+      Number(mm),
+      Number(ss)
+    );
     if (!isNaN(d)) return d;
   }
 
-  const m12 = s.match(
-    /^(\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)$/i,
+  // YYYY-MM-DD h:mm[:ss] AM/PM -> treat as local time
+  m = s.match(
+    /^(\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)$/i
   );
-  if (m12) {
-    const [, Y, M, D, hh, mm, ss = "0", ap] = m12;
+  if (m) {
+    const [, Y, M, D, hh, mm, ss = "0", ap] = m;
     let h = parseInt(hh, 10);
     if (/PM/i.test(ap) && h < 12) h += 12;
     if (/AM/i.test(ap) && h === 12) h = 0;
+
     const d = new Date(
-      Date.UTC(
-        parseInt(Y, 10),
-        parseInt(M, 10) - 1,
-        parseInt(D, 10),
-        h,
-        parseInt(mm, 10),
-        parseInt(ss, 10),
-      ),
+      Number(Y),
+      Number(M) - 1,
+      Number(D),
+      h,
+      Number(mm),
+      Number(ss)
     );
     if (!isNaN(d)) return d;
   }
@@ -109,23 +121,26 @@ export function parseDateSafe(val) {
   d = new Date(s.replace(" ", "T"));
   if (!isNaN(d)) return d;
 
-  if (!/[Z+\-]\d{2}:?\d{2}$/.test(s)) {
-    d = new Date(s + "Z");
-    if (!isNaN(d)) return d;
-  }
-
   return null;
 }
 
-/* ---------------- Consistent formatting ---------------- */
-
 const HONO = "Pacific/Honolulu";
 
-function ordinal(n) {
-  const s = ["th", "st", "nd", "rd"],
-    v = n % 100;
-  return n + (s[(v - 20) % 10] || s[v] || s[0]);
-}
+export const formatDate = (datetime, opts = {}) => {
+  const d = parseDateSafe(datetime);
+  if (!d) return String(datetime);
+
+  const { timeZone = HONO } = opts;
+
+  return new Intl.DateTimeFormat(undefined, {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+    timeZone,
+  }).format(d);
+};
 
 export function formatTime(val, opts = {}) {
   const d = parseDateSafe(val);
@@ -146,7 +161,8 @@ export function formatDayTime(val, opts = {}) {
   const weekday = new Intl.DateTimeFormat(undefined, {
     weekday: "short",
     timeZone,
-  }).format(d); // => "Mon", "Tue", "Thu", etc.
+  }).format(d);
+
   const time = formatTime(d, { timeZone });
   return `${weekday}, ${time}`;
 }
