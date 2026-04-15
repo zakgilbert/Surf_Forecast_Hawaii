@@ -9,7 +9,7 @@ from cache_config import cache
 
 @cache.memoize(timeout=300)
 def getHistogram(duration_hours, id):
-    print(f"RUNNING getHistogram {a} {id}")
+    print(f"RUNNING getHistogram {id}")
     """Fetch wave data and return histogram, largest wave, and significant wave stats."""
 
     def fetch_data(url):

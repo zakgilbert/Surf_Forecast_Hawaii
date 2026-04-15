@@ -8,6 +8,7 @@ import AnimatedWaveModel from "./components/AnimatedWaveModel.js";
 import Histogram from "./components/Histogram.js";
 import HurricaneImage from "./components/Hurricane.js";
 import HawaiiWeatherRadarLoop from "./components/HawaiiWeatherRadarLoop.js";
+import WeatherForecast from "./components/WeatherForecast.js";
 import { CONTENT_DATA } from "./constants.js";
 
 /* ---------------- Date helpers ---------------- */
@@ -87,14 +88,14 @@ export function parseDateSafe(val) {
       Number(D),
       Number(hh),
       Number(mm),
-      Number(ss)
+      Number(ss),
     );
     if (!isNaN(d)) return d;
   }
 
   // YYYY-MM-DD h:mm[:ss] AM/PM -> treat as local time
   m = s.match(
-    /^(\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)$/i
+    /^(\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)$/i,
   );
   if (m) {
     const [, Y, M, D, hh, mm, ss = "0", ap] = m;
@@ -108,7 +109,7 @@ export function parseDateSafe(val) {
       Number(D),
       h,
       Number(mm),
-      Number(ss)
+      Number(ss),
     );
     if (!isNaN(d)) return d;
   }
@@ -240,6 +241,7 @@ const componentMap = {
   "hawaii-weather-radar-loop": ({ station }) => (
     <HawaiiWeatherRadarLoop id={station} />
   ),
+  "weather-forecast": ({ station }) => <WeatherForecast id={station} />,
 };
 
 const handler = {
