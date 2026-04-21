@@ -18,11 +18,14 @@ import {
   CardDescription,
   CardMeta,
 } from "semantic-ui-react";
+import PresetSelector from "./PresetSelector";
+import { PRESET_DEFINITIONS } from "../presetDefinitions.js";
+import { CONTENT_DATA } from "../contentData.js";
 
-function DesktopApp() {
-  const [searchTerm, setSearchTerm] = useState("");
+function DesktopApp({ sidebarOpen, searchTerm, setSearchTerm }) {
   const [renderData, setRenderData] = useState([]);
   const [columnCount, setColumnCount] = useState(2);
+  const [selectedPreset, setSelectedPreset] = useState("Forecast Presets");
 
   const clearGrid = () => {
     setRenderData([]);
@@ -37,6 +40,22 @@ function DesktopApp() {
       const alreadyExists = prevData.some((entry) => entry.id === item.id);
       return alreadyExists ? prevData : [...prevData, item];
     });
+  };
+
+  const loadPreset = (presetName) => {
+    setSelectedPreset(presetName);
+
+    if (presetName === "All Hawaii") {
+      setRenderData([]);
+      return;
+    }
+
+    const presetIds = PRESET_DEFINITIONS[presetName] || [];
+    const presetItems = CONTENT_DATA.filter((item) =>
+      presetIds.includes(item.id),
+    );
+
+    setRenderData(presetItems);
   };
 
   const filteredGroupedData = useMemo(() => {
@@ -74,7 +93,11 @@ function DesktopApp() {
   const hasResults = renderData.length > 0;
 
   return (
-    <div className="desktop-app">
+    <div
+      className={`desktop-app ${
+        sidebarOpen ? "desktop-app-sidebar-open" : "desktop-app-sidebar-closed"
+      }`}
+    >
       <Container fluid>
         <Sidebar
           as={Menu}
@@ -82,7 +105,7 @@ function DesktopApp() {
           icon="labeled"
           inverted
           vertical
-          visible
+          visible={sidebarOpen}
           direction="left"
           className="desktop-app-sidebar"
         >
@@ -90,17 +113,11 @@ function DesktopApp() {
             <div className="navy georgia ma0 grow desktop-app-sidebar-title-wrap">
               <h2 className="f2"></h2>
             </div>
-
-            <div className="desktop-app-search-wrap">
-              <input
-                className="pa3 bb br3 grow b--none bg-lightest-blue ma3 desktop-app-search-input"
-                type="search"
-                placeholder="Search Buoy"
-                value={searchTerm}
-                onChange={handleChange}
-              />
-            </div>
-
+            <PresetSelector
+              presets={Object.keys(PRESET_DEFINITIONS)}
+              selectedPreset={selectedPreset}
+              onSelectPreset={loadPreset}
+            />
             <div>
               {Object.keys(filteredGroupedData).map((tag) => (
                 <div key={tag} className="desktop-app-group">

@@ -38,6 +38,8 @@
     --header-text: #ffffff;
     --subtitle-text: #9db4cc;
 
+    --app-header-height: 64px;
+
     --menu-bg: #1f1f1f;
     --menu-hover: #2c2c2c;
 
@@ -89,17 +91,6 @@ body,
   }
 }
 
-.App-header {
-  background-color: var(--header-bg);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: var(--header-text);
-}
-
 .App-link {
   color: var(--link);
 }
@@ -148,6 +139,142 @@ body,
     transform: scale(1);
   }
 }
+
+/* =========================
+   App Root
+========================= */
+
+.app-root {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* =========================
+   Header
+========================= */
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  min-height: var(--app-header-height);
+  background: linear-gradient(
+    to bottom,
+    var(--header-bg),
+    rgba(19, 38, 61, 0.95)
+  );
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  backdrop-filter: saturate(180%) blur(8px);
+  padding: 0;
+}
+
+.title-container {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 10px 16px 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.app-header-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.app-menu-button {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 8px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.app-menu-button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.app-menu-button span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--header-text);
+}
+
+.app-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--header-text);
+  letter-spacing: 0.02em;
+  text-align: left;
+}
+
+.app-description {
+  font-size: 0.82rem;
+  line-height: 1.25;
+  margin: 3px 0 0;
+  max-width: 760px;
+  color: var(--subtitle-text);
+  opacity: 0.95;
+  text-align: left;
+}
+
+.app-header-search {
+  margin-left: auto;
+  width: 280px;
+  max-width: 30vw;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.app-header-search::placeholder {
+  color: var(--muted-text);
+}
+
+.app-header-search:focus {
+  outline: none;
+  border-color: var(--link);
+}
+
+.app-subtitle {
+  font-size: 0.85rem;
+  margin-top: 4px;
+  color: var(--subtitle-text);
+  letter-spacing: 0.04em;
+  text-align: left;
+}
+
+/* =========================
+   Main
+========================= */
+
+.app-main {
+  padding-top: 6px;
+}
+
+/* =========================
+   Generic mobile menu
+========================= */
 
 .mobile-menu {
   width: 100%;
@@ -198,32 +325,6 @@ body,
   background-color: var(--button-hover);
 }
 
-.app-header {
-  background-color: var(--header-bg);
-  color: var(--header-text);
-  padding: 1rem;
-  text-align: center;
-  box-shadow: var(--shadow);
-}
-
-.title-container {
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.app-title {
-  font-size: 2rem;
-  font-weight: bold;
-  margin: 0;
-}
-
-.app-subtitle {
-  font-size: 1rem;
-  font-style: italic;
-  margin: 0;
-  color: var(--subtitle-text);
-}
-
 /* Scoped dark mode only for dashboard shells */
 .dashboard-dark {
   background-color: var(--bg);
@@ -242,6 +343,10 @@ body,
 .dashboard-dark .ui.list > .item {
   color: var(--text) !important;
 }
+
+/* =========================
+   Wave Model
+========================= */
 
 .wave-model-container {
   position: relative;
@@ -535,54 +640,47 @@ body,
    DesktopApp
 ========================= */
 
+.desktop-app-sidebar.ui.sidebar,
+.desktop-app-sidebar.ui.visible.left.sidebar {
+  top: var(--app-header-height) !important;
+  height: calc(100vh - var(--app-header-height)) !important;
+}
+
 .desktop-app {
   background-color: var(--bg);
   color: var(--text);
 }
 
 .desktop-app-sidebar {
-  background-color: var(--surface) !important;
+  width: 280px !important;
+  background: var(--surface) !important;
   color: var(--text) !important;
   border-right: 1px solid var(--border) !important;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.06) !important;
 }
 
 .desktop-app-sidebar-section {
-  min-height: 100vh;
-  background-color: var(--surface);
+  min-height: calc(100vh - var(--app-header-height));
+  padding: 14px 12px 24px;
+  overflow-y: auto;
+  background: var(--surface);
   color: var(--text);
 }
-
-.desktop-app-sidebar-title-wrap {
-  color: var(--text);
-}
-
-.desktop-app-search-wrap {
-  padding: 0.5rem;
-}
-
-.desktop-app-search-input {
-  width: calc(100% - 2rem);
-  max-width: 100%;
-  background-color: var(--bg) !important;
-  color: var(--text) !important;
-  border: 1px solid var(--border) !important;
-}
-
-.desktop-app-search-input::placeholder {
-  color: var(--muted-text);
-}
-
 .desktop-app-group {
+  margin: 0 0 18px 0;
   text-align: left;
   color: var(--text);
-  margin-top: 20px;
-  margin-bottom: 5px;
-  margin-left: 10px;
 }
 
 .desktop-app-group-title {
-  margin: 0 0 0.5rem 0;
-  color: var(--text);
+  margin: 16px 0 10px 0;
+  padding: 0 6px 4px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted-text);
+  border-bottom: 1px solid var(--border);
 }
 
 .desktop-app-list {
@@ -590,6 +688,34 @@ body,
 }
 
 .desktop-app-list-item {
+  margin: 0 !important;
+  text-align: left;
+}
+
+.desktop-app-list-button {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 10px;
+  line-height: 1;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.desktop-app-list-button:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--link);
+}
+
+.desktop-app-empty-search {
+  margin: 1rem 0 0 10px;
+  color: var(--muted-text);
   text-align: left;
 }
 
@@ -609,6 +735,56 @@ body,
   width: 100%;
   max-width: 1800px;
   margin: 0 auto;
+}
+
+.desktop-app-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-right: 70px;
+}
+
+.desktop-app-column-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 6px 8px;
+  box-shadow: var(--shadow);
+}
+
+.desktop-app-column-label {
+  font-size: 0.9rem;
+  color: var(--muted-text);
+  margin-right: 4px;
+}
+
+.desktop-app-column-button {
+  min-width: 34px;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.desktop-app-column-button:hover {
+  background: var(--bg);
+}
+
+.desktop-app-column-button.active {
+  background: var(--button-bg);
+  color: var(--button-text);
+  border-color: var(--button-bg);
 }
 
 .desktop-app-pusher {
@@ -681,30 +857,6 @@ body,
   border-top-color: var(--border) !important;
   border-bottom-color: transparent !important;
 }
-.desktop-app-list-button {
-  width: 100%;
-  text-align: left;
-  background: transparent;
-  border: none;
-  border-radius: 8px;
-
-  padding: 6.5px 10px !important;        /* 👈 tighter */
-  line-height: 1;        /* 👈 tighter text */
-
-  color: var(--text);
-  font: inherit;
-  cursor: pointer;
-}
-
-.desktop-app-list-button:hover {
-  color: var(--link);
-}
-
-.desktop-app-empty-search {
-  margin: 1rem 0 0 10px;
-  color: var(--muted-text);
-  text-align: left;
-}
 
 /* =========================
    Forecast
@@ -775,7 +927,6 @@ body,
   background-color: var(--surface);
 }
 
-/* Loading text */
 .radar-loop-loading {
   color: var(--muted-text);
   font-size: 0.95rem;
@@ -852,7 +1003,6 @@ body,
   background-color: var(--surface);
 }
 
-/* Loading text */
 .hurricane-image-loading {
   color: var(--muted-text);
   font-size: 0.95rem;
@@ -869,7 +1019,7 @@ body,
 
 .marine-forecast-desktop {
   height: 640px;
-  overflow-y: auto; /* better than scroll */
+  overflow-y: auto;
   border: 1px solid var(--border);
   padding: 10px;
   background-color: var(--surface);
@@ -880,7 +1030,6 @@ body,
   background-color: transparent;
 }
 
-/* Shared pre styles */
 .marine-forecast-pre {
   margin: 0;
   white-space: pre-wrap;
@@ -888,14 +1037,12 @@ body,
   color: var(--text);
 }
 
-/* Desktop typography */
 .marine-forecast-pre-desktop {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 14px;
   line-height: 1.4;
 }
 
-/* Mobile typography */
 .marine-forecast-pre-mobile {
   font-family:
     system-ui,
@@ -1090,7 +1237,6 @@ body,
   background: var(--dot-active);
 }
 
-/* Semantic UI cleanup */
 .mobile-app-container .ui.segment,
 .mobile-app-container .ui.basic.segment {
   background: transparent !important;
@@ -1164,7 +1310,6 @@ body,
   height: 150px;
 }
 
-/* Semantic UI cleanup for messages inside Power */
 .power-container .ui.message {
   background-color: var(--surface) !important;
   color: var(--text) !important;
@@ -1192,7 +1337,6 @@ body,
   width: 100%;
 }
 
-/* Semantic UI cleanup */
 .power-graph-container .ui.header {
   color: var(--text) !important;
 }
@@ -1221,7 +1365,6 @@ body,
   padding: 5px;
 }
 
-/* Mobile */
 .tide-mobile-wrap {
   padding-top: 8px !important;
   padding-bottom: 8px !important;
@@ -1333,7 +1476,6 @@ body,
   color: var(--muted-text);
 }
 
-/* Semantic UI cleanup */
 .tide-container .ui.table {
   background: var(--surface) !important;
   color: var(--text) !important;
@@ -1393,207 +1535,106 @@ body,
   padding: 5px !important;
 }
 
-/* Optional: keep tooltip compact */
 .wave-energy-tooltip-table {
   width: auto !important;
   min-width: 220px;
 }
+@media (max-width: 768px) {
+  .title-container {
+    padding: 12px 14px 10px;
+  }
 
-/* =========================
-   DesktopApp Sidebar Polish
-========================= */
+  .app-header-text {
+    width: 100%;
+  }
 
-.desktop-app-sidebar {
-  width: 280px !important;
-  background: var(--surface) !important;
-  border-right: 1px solid var(--border) !important;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.06) !important;
+  .app-title,
+  .app-description,
+  .app-subtitle {
+    text-align: left;
+  }
 }
 
-.desktop-app-sidebar-section {
-  min-height: 100vh;
-  padding: 14px 12px 24px;
-  overflow-y: auto;
-  background: var(--surface);
-  color: var(--text);
+/* ==============================
+    Preset Selector 
+    ============================ */
+
+.desktop-app-preset-wrap {
+  padding: 0 0 8px 0;
+  margin: 0 -12px 4px -12px;
 }
 
-.desktop-app-search-wrap {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  padding: 0 0 12px;
-  background: var(--surface);
+.desktop-app-preset-container {
+  position: relative;
 }
 
-.desktop-app-search-input {
-  width: 100%;
-  margin: 0 !important;
-  padding: 0.85rem 0.95rem !important;
-  border-radius: 10px !important;
-  border: 1px solid var(--border) !important;
-  background: var(--bg) !important;
-  color: var(--text) !important;
+.desktop-app-preset-selector {
+  width: calc(100% - 8px);
+  margin: 0 4px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
 }
 
-.desktop-app-group {
-  margin: 0 0 18px 0;
+.desktop-app-preset-selector:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
-.desktop-app-group-title {
-  margin: 16px 0 10px 0;
-  padding: 0 6px;
-
-  font-size: 0.9rem;
-  font-weight: 700;
-
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-
-  color: var(--muted-text);
-
-  border-bottom: 1px solid var(--border); /* 👈 subtle divider */
-  padding-bottom: 4px;
+.desktop-app-preset-icon {
+  font-size: 1rem;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
-.desktop-app-list-item {
-  margin: 0 !important;
-}
-
-.desktop-app-list-button {
-  width: 100%;
+.desktop-app-preset-text {
+  flex: 1;
+  font-weight: 500;
   text-align: left;
+}
+
+.desktop-app-preset-chevron {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.desktop-app-preset-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 4px;
+  right: 4px;
+  margin-top: 6px;
+  border-radius: 12px;
+  background: #1e1e1e;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.desktop-app-preset-option {
+  width: 100%;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #fff;
   background: transparent;
   border: none;
-  border-radius: 10px;
-  padding: 9px 10px;
-  color: var(--text);
-  font: inherit;
-  cursor: pointer;
-  transition:
-    background-color 0.18s ease,
-    color 0.18s ease;
+  text-align: left;
+  transition: background 0.15s ease;
 }
 
-.desktop-app-list-button:hover {
-  background: rgba(0, 0, 0, 0.05);
-  color: var(--link);
-}
-/* =========================
-   DesktopApp Toolbar
-========================= */
-
-.desktop-app-toolbar {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-bottom: 12px;
-  padding-right: 70px;
-}
-
-.desktop-app-column-picker {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 6px 8px;
-  box-shadow: var(--shadow);
-}
-
-.desktop-app-column-label {
-  font-size: 0.9rem;
-  color: var(--muted-text);
-  margin-right: 4px;
-}
-
-.desktop-app-column-button {
-  min-width: 34px;
-  height: 34px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: transparent;
-  color: var(--text);
-  cursor: pointer;
-  font: inherit;
-  transition:
-    background-color 0.18s ease,
-    color 0.18s ease,
-    border-color 0.18s ease;
-}
-
-.desktop-app-column-button:hover {
-  background: var(--bg);
-}
-
-.desktop-app-column-button.active {
-  background: var(--button-bg);
-  color: var(--button-text);
-  border-color: var(--button-bg);
-}
-/* =========================
-   App Root
-========================= */
-
-.app-root {
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-}
-
-/* =========================
-   Header
-========================= */
-
-.app-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-
-  background: linear-gradient(
-    to bottom,
-    var(--header-bg),
-    rgba(19, 38, 61, 0.95)
-  );
-
-  border-bottom: 1px solid var(--border);
-
-  backdrop-filter: saturate(180%) blur(8px);
-}
-
-.title-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 14px 18px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.app-title {
-  font-size: 1.65rem;
-  font-weight: 700;
-  margin: 0;
-
-  color: var(--header-text);
-  letter-spacing: 0.02em;
-}
-
-.app-subtitle {
-  font-size: 0.9rem;
-  margin-top: 4px;
-
-  color: var(--subtitle-text);
-  letter-spacing: 0.04em;
-}
-
-/* =========================
-   Main
-========================= */
-
-.app-main {
-  padding-top: 6px;
+.desktop-app-preset-option:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
