@@ -27,6 +27,10 @@ function DesktopApp({ sidebarOpen, searchTerm, setSearchTerm }) {
   const [columnCount, setColumnCount] = useState(2);
   const [selectedPreset, setSelectedPreset] = useState("Forecast Presets");
 
+  const contentById = useMemo(() => {
+  return Object.fromEntries(CONTENT_DATA.map((item) => [item.id, item]));
+}, []);
+
   const clearGrid = () => {
     setRenderData([]);
   };
@@ -42,21 +46,17 @@ function DesktopApp({ sidebarOpen, searchTerm, setSearchTerm }) {
     });
   };
 
-  const loadPreset = (presetName) => {
-    setSelectedPreset(presetName);
+const loadPreset = (presetName) => {
+  setSelectedPreset(presetName);
 
-    if (presetName === "All Hawaii") {
-      setRenderData([]);
-      return;
-    }
+  const presetIds = PRESET_DEFINITIONS[presetName] || [];
 
-    const presetIds = PRESET_DEFINITIONS[presetName] || [];
-    const presetItems = CONTENT_DATA.filter((item) =>
-      presetIds.includes(item.id),
-    );
+  const presetItems = presetIds
+    .map((id) => contentById[id])
+    .filter(Boolean);
 
-    setRenderData(presetItems);
-  };
+  setRenderData(presetItems);
+};
 
   const filteredGroupedData = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
