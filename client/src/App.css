@@ -201,14 +201,10 @@ body,
   top: 0;
   z-index: 200;
   min-height: var(--app-header-height);
-  background: linear-gradient(
-    to bottom,
-    var(--header-bg),
-    rgba(19, 38, 61, 0.95)
-  );
+  background: var(--bg);
   border-bottom: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  backdrop-filter: saturate(180%) blur(8px);
+  box-shadow: none;
+  backdrop-filter: none;
   padding: 0;
 }
 
