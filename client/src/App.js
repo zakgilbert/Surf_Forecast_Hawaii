@@ -9,6 +9,8 @@ function App() {
   const isUserOnMobile = isMobile();
   const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [renderData, setRenderData] = useState([]);
+  const [columnCount, setColumnCount] = useState(2);
 
   useEffect(() => {
     if (isUserOnMobile) return;
@@ -32,6 +34,10 @@ function App() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isUserOnMobile]);
+
+  const clearGrid = () => {
+    setRenderData([]);
+  };
 
   return (
     <div className="app-root">
@@ -61,14 +67,62 @@ function App() {
           </div>
 
           {!isUserOnMobile && (
-            <input
-              className="app-header-search"
-              type="search"
-              placeholder="Search Buoy"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              aria-label="Search buoy"
-            />
+            <div className="header-search-wrapper">
+              <input
+                className="app-header-search"
+                type="search"
+                placeholder="Search Buoy"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                aria-label="Search buoy"
+              />
+            </div>
+          )}
+
+          {!isUserOnMobile && (
+            <div className="header-actions">
+              <button
+                type="button"
+                className="header-icon-button"
+                onClick={clearGrid}
+                aria-label="Refresh"
+                title="Refresh"
+              >
+                ↻
+              </button>
+
+              <div className="header-columns" aria-label="Column selection">
+                <button
+                  type="button"
+                  className={`header-icon-button ${columnCount === 1 ? "active" : ""}`}
+                  onClick={() => setColumnCount(1)}
+                  aria-label="1 column"
+                  title="1 column"
+                >
+                  1
+                </button>
+
+                <button
+                  type="button"
+                  className={`header-icon-button ${columnCount === 2 ? "active" : ""}`}
+                  onClick={() => setColumnCount(2)}
+                  aria-label="2 columns"
+                  title="2 columns"
+                >
+                  2
+                </button>
+
+                <button
+                  type="button"
+                  className={`header-icon-button ${columnCount === 3 ? "active" : ""}`}
+                  onClick={() => setColumnCount(3)}
+                  aria-label="3 columns"
+                  title="3 columns"
+                >
+                  3
+                </button>
+              </div>
+            </div>
           )}
         </div>
       </header>
@@ -82,6 +136,10 @@ function App() {
               sidebarOpen={desktopSidebarOpen}
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
+              renderData={renderData}
+              setRenderData={setRenderData}
+              columnCount={columnCount}
+              setColumnCount={setColumnCount}
             />
           )}
         </main>

@@ -6,7 +6,6 @@ import {
   Grid,
   Divider,
   GridColumn,
-  Button,
   Sidebar,
   Menu,
   SidebarPusher,
@@ -22,22 +21,19 @@ import PresetSelector from "./PresetSelector";
 import { PRESET_DEFINITIONS } from "../presetDefinitions.js";
 import { CONTENT_DATA } from "../contentData.js";
 
-function DesktopApp({ sidebarOpen, searchTerm, setSearchTerm }) {
-  const [renderData, setRenderData] = useState([]);
-  const [columnCount, setColumnCount] = useState(2);
+function DesktopApp({
+  sidebarOpen,
+  searchTerm,
+  setSearchTerm,
+  renderData,
+  setRenderData,
+  columnCount,
+}) {
   const [selectedPreset, setSelectedPreset] = useState("Forecast Presets");
 
   const contentById = useMemo(() => {
-  return Object.fromEntries(CONTENT_DATA.map((item) => [item.id, item]));
-}, []);
-
-  const clearGrid = () => {
-    setRenderData([]);
-  };
-
-  const handleChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
+    return Object.fromEntries(CONTENT_DATA.map((item) => [item.id, item]));
+  }, []);
 
   const handleItemClick = (item) => {
     setRenderData((prevData) => {
@@ -46,17 +42,15 @@ function DesktopApp({ sidebarOpen, searchTerm, setSearchTerm }) {
     });
   };
 
-const loadPreset = (presetName) => {
-  setSelectedPreset(presetName);
+  const loadPreset = (presetName) => {
+    setSelectedPreset(presetName);
 
-  const presetIds = PRESET_DEFINITIONS[presetName] || [];
+    const presetIds = PRESET_DEFINITIONS[presetName] || [];
 
-  const presetItems = presetIds
-    .map((id) => contentById[id])
-    .filter(Boolean);
+    const presetItems = presetIds.map((id) => contentById[id]).filter(Boolean);
 
-  setRenderData(presetItems);
-};
+    setRenderData(presetItems);
+  };
 
   const filteredGroupedData = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
@@ -113,11 +107,13 @@ const loadPreset = (presetName) => {
             <div className="navy georgia ma0 grow desktop-app-sidebar-title-wrap">
               <h2 className="f2"></h2>
             </div>
+
             <PresetSelector
               presets={Object.keys(PRESET_DEFINITIONS)}
               selectedPreset={selectedPreset}
               onSelectPreset={loadPreset}
             />
+
             <div>
               {Object.keys(filteredGroupedData).map((tag) => (
                 <div key={tag} className="desktop-app-group">
@@ -155,51 +151,7 @@ const loadPreset = (presetName) => {
 
         {hasResults && (
           <div className="desktop-app-content-shell">
-            <Button
-              onClick={clearGrid}
-              color="red"
-              className="desktop-app-refresh-button"
-            >
-              Refresh
-            </Button>
-
             <div className="desktop-app-content-wrap">
-              <div className="desktop-app-toolbar">
-                <div className="desktop-app-column-picker">
-                  <span className="desktop-app-column-label">Columns</span>
-
-                  <button
-                    type="button"
-                    className={`desktop-app-column-button ${
-                      columnCount === 1 ? "active" : ""
-                    }`}
-                    onClick={() => setColumnCount(1)}
-                  >
-                    1
-                  </button>
-
-                  <button
-                    type="button"
-                    className={`desktop-app-column-button ${
-                      columnCount === 2 ? "active" : ""
-                    }`}
-                    onClick={() => setColumnCount(2)}
-                  >
-                    2
-                  </button>
-
-                  <button
-                    type="button"
-                    className={`desktop-app-column-button ${
-                      columnCount === 3 ? "active" : ""
-                    }`}
-                    onClick={() => setColumnCount(3)}
-                  >
-                    3
-                  </button>
-                </div>
-              </div>
-
               <SidebarPusher className="desktop-app-pusher">
                 <SegmentGroup className="desktop-app-segment-group">
                   <SegmentGroup

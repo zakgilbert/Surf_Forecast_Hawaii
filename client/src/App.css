@@ -154,6 +154,48 @@ body,
    Header
 ========================= */
 
+.header-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-columns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.header-icon-button {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.header-icon-button:hover {
+  background: var(--bg);
+}
+
+.header-icon-button.active {
+  background: var(--button-bg);
+  color: var(--button-text);
+  border-color: var(--button-bg);
+}
+
 .app-header {
   position: sticky;
   top: 0;
@@ -237,14 +279,18 @@ body,
 
 .app-header-search {
   margin-left: auto;
-  width: 280px;
-  max-width: 30vw;
-  padding: 8px 12px;
-  border-radius: 8px;
+
+  width: 420px;       
+  max-width: 40vw;    
+
+  padding: 12px 16px; 
+  font-size: 1rem;    
+
+  border-radius: 10px; 
   border: 1px solid var(--border);
+
   background: var(--surface);
   color: var(--text);
-  font-size: 0.9rem;
 }
 
 .app-header-search::placeholder {
