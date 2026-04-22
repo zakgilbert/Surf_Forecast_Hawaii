@@ -52,10 +52,12 @@ function App() {
           )}
 
           <div className="app-header-text">
-            <h1 className="app-title">Surf Forecast Hawaii</h1>
-            <p className="app-description">
-              Surf Forecast Hawaii is a one-page dashboard to compare Hawaii surf forecasts, buoys, tides, and charts all at once.
-            </p>
+            <h1
+              className="app-title"
+              title="Surf Forecast Hawaii is a one-page dashboard to compare Hawaii surf forecasts, buoys, tides, and charts all at once."
+            >
+              Surf Forecast Hawaii
+            </h1>
           </div>
 
           {!isUserOnMobile && (

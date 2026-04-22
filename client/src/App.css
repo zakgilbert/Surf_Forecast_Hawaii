@@ -1638,3 +1638,7 @@ body,
 .desktop-app-preset-option:hover {
   background: rgba(255, 255, 255, 0.08);
 }
+
+.app-title {
+  cursor: help;
+}
