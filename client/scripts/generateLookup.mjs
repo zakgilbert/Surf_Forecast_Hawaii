@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const constantsPath = path.resolve(__dirname, "../src/constants.js");
+const contentDataPath = path.resolve(__dirname, "../src/contentData.js");
 const outputPath = path.resolve(__dirname, "../src/generatedLookup.js");
 
 const toKey = (value) =>
@@ -27,7 +27,7 @@ const extractContentData = (source) => {
 
   if (start === -1) {
     throw new Error(
-      "Could not find `export const CONTENT_DATA =` in constants.js",
+      "Could not find `export const CONTENT_DATA =` in contentData.js",
     );
   }
 
@@ -92,7 +92,7 @@ const extractContentData = (source) => {
 };
 
 const loadContentData = () => {
-  const source = fs.readFileSync(constantsPath, "utf8");
+  const source = fs.readFileSync(contentDataPath, "utf8");
   const arrayLiteral = extractContentData(source);
 
   const sandbox = {};
