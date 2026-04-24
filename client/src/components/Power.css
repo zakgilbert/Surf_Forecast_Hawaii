@@ -9,7 +9,7 @@
 }
 
 .power-mobile-chart-wrap {
-  touch-action: none;
+  height: var(--dashboard-chart-height, 260px);
 }
 
 .power-mobile-tooltip-wrap {
@@ -61,4 +61,14 @@
 
 .power-container .ui.message .header {
   color: var(--text) !important;
+}
+
+/* ==========================
+   Power Chart Sizing
+=========================== */
+
+.power-chart-wrap {
+  width: 100%;
+  height: var(--dashboard-chart-height, 260px);
+  min-height: 0;
 }

@@ -183,7 +183,7 @@ const Power = ({ id }) => {
   if (!isMobile) {
     return (
       <Container textAlign="center" className="power-container">
-        <ResponsiveContainer width="100%" height={CHART_HEIGHT_NUM}>
+        <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={series}
             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -250,7 +250,7 @@ const Power = ({ id }) => {
   return (
     <Container textAlign="center" className="power-container">
       <div className="power-mobile-chart-wrap">
-        <ResponsiveContainer width="100%" height={260}>
+        <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={series}
             margin={{ top: 10, right: 10, left: 0, bottom: 0 }}

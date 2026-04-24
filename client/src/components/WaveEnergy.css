@@ -19,9 +19,10 @@
 }
 
 .wave-energy-chart-wrap {
-  flex: 1 1 auto;
+  flex: 0 0 var(--dashboard-chart-height, 260px);
   width: 100%;
-  min-height: 220px;
+  height: var(--dashboard-chart-height, 260px);
+  min-height: 0;
 }
 
 .wave-energy-direction-cell {

@@ -4,6 +4,13 @@
   background-color: var(--bg);
   color: var(--text);
   min-height: 0;
+  --dashboard-chart-height: 260px;
+  --dashboard-tide-height: 372px;
+}
+
+.desktop-app-columns-3 {
+  --dashboard-chart-height: 190px;
+  --dashboard-tide-height: 230px;
 }
 
 .desktop-app-content-shell,
@@ -280,4 +287,79 @@
 .desktop-app .ui.divider {
   border-top-color: var(--border) !important;
   border-bottom-color: transparent !important;
+}
+
+/* =========================
+   3 Column Compact Mode
+========================= */
+
+.desktop-app-columns-3 .desktop-app-card-content {
+  padding: 0.45rem !important;
+}
+
+.desktop-app-columns-3 .desktop-app .ui.card .header,
+.desktop-app-columns-3 .ui.card .header {
+  font-size: 0.86rem !important;
+  line-height: 1.1 !important;
+}
+
+.desktop-app-columns-3 .desktop-app .ui.card .meta,
+.desktop-app-columns-3 .ui.card .meta {
+  font-size: 0.72rem !important;
+  line-height: 1.1 !important;
+  margin-bottom: 4px !important;
+}
+
+.desktop-app-columns-3 .station-input-section-title {
+  font-size: 0.82rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.desktop-app-columns-3 .station-input-segment,
+.desktop-app-columns-3 .station-input-segment.ui.segment {
+  padding: 0.35rem !important;
+}
+
+.desktop-app-columns-3 .station-input-kv-label {
+  font-size: 10px;
+  line-height: 1.05;
+}
+
+.desktop-app-columns-3 .station-input-kv-value {
+  font-size: 11px;
+  line-height: 1.05;
+}
+
+.desktop-app-columns-3 .station-input-kv-row {
+  padding: 1px 0;
+}
+
+.desktop-app-columns-3 .wave-energy-timestamp {
+  font-size: 0.78rem;
+  margin-bottom: 0.25rem;
+}
+
+.desktop-app-columns-3 .wave-energy-chart-wrap {
+  min-height: 180px;
+}
+
+.desktop-app-columns-3 .buoy-tabs-desktop-cell,
+.desktop-app-columns-3 .buoy-tabs-metric-col-cell,
+.desktop-app-columns-3 .buoy-tabs-metric-col-header {
+  font-size: 10px;
+  padding: 2px 4px !important;
+}
+
+.desktop-app-columns-3 .station-input-desktop-wrap {
+  padding-top: 4px;
+}
+
+.desktop-app-columns-3 .ui.table {
+  font-size: 0.75rem !important;
+}
+
+.desktop-app-columns-3 .ui.table th,
+.desktop-app-columns-3 .ui.table td {
+  padding: 2px 4px !important;
+  line-height: 1.1 !important;
 }

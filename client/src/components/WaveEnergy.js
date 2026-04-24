@@ -84,7 +84,7 @@ const WaveEnergy = ({ id }) => {
       <p className="wave-energy-timestamp">{formatDate(firstPoint.dataTime)}</p>
 
       <div className="wave-energy-chart-wrap">
-        <ResponsiveContainer width="100%" height={260}>
+        <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
             margin={{ top: 20, right: 30, left: 0, bottom: 15 }}

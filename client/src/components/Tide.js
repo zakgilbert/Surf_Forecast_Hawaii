@@ -79,7 +79,7 @@ const Tide = ({ id, beginDate, timeZone }) => {
   if (!isMobile) {
     return (
       <Container textAlign="center" className="tide-container">
-        <ResponsiveContainer width="100%" height={372}>
+        <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={flattenedData}
             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}

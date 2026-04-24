@@ -88,7 +88,7 @@ function DesktopApp({
 
   return (
     <div
-      className={`desktop-app ${
+      className={`desktop-app desktop-app-columns-${columnCount} ${
         sidebarOpen ? "desktop-app-sidebar-open" : "desktop-app-sidebar-closed"
       }`}
     >
