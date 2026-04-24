@@ -1,0 +1,50 @@
+/* =========================
+   Forecast
+========================= */
+
+.forecast {
+  text-align: left;
+  color: var(--text);
+}
+
+.forecast-desktop {
+  max-height: var(--forecast-max-height);
+  height: 700px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  padding: 8px;
+  background-color: var(--surface);
+  color: var(--text);
+}
+
+.forecast-mobile {
+  padding: 8px 10px;
+  background-color: transparent;
+  color: var(--text);
+}
+
+.forecast-pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text);
+}
+
+.forecast-pre-desktop {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.forecast-pre-mobile {
+  font-family:
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+  font-size: 12px;
+  line-height: 1.3;
+}

@@ -10,6 +10,7 @@ import {
   Label,
 } from "semantic-ui-react";
 import { handleGridCall, groupedData } from "../utility";
+import "./MobileApp.css";
 
 function MobileApp() {
   const [mode, setMode] = useState("select");
@@ -21,9 +22,9 @@ function MobileApp() {
   const flatItems = useMemo(
     () =>
       categories.flatMap((cat) =>
-        (groupedData[cat] || []).map((item) => ({ ...item, _cat: cat }))
+        (groupedData[cat] || []).map((item) => ({ ...item, _cat: cat })),
       ),
-    [categories]
+    [categories],
   );
 
   const isSelected = (id) => selectedItems.some((i) => i.id === id);

@@ -2,9 +2,10 @@ import React, { useState, useMemo } from "react";
 import { Table, Popup, Tab } from "semantic-ui-react";
 import { formatDate } from "../utility";
 import ArrowIndicator from "./ArrowIndicator";
-import { BUOY_TAB_CHART_HEIGHT, BUOY_TAB_CHART_WIDTH } from "../constants";
+import { BUOY_TAB_CHART_HEIGHT } from "../constants";
 import { isMobile } from "react-device-detect";
 import { formatDayTime, formatTime, parseDateSafe } from "../utility";
+import "./BuoyTabs.css";
 import {
   LineChart,
   Line,
@@ -31,17 +32,20 @@ const BuoyTabs = ({ data }) => {
 
   const getChartData = (yKey) => {
     if (!data || !data.cols || !data.rows) return [];
+
     const yIndex = data.cols.findIndex((c) => c.value === yKey);
     if (timeIndex === -1 || yIndex === -1) return [];
 
-    return data.rows.map((row) => {
-      const d = parseDateSafe(row[timeIndex]);
-      return {
-        ts: d ? d.getTime() : null,
-        timeStr: formatDate(row[timeIndex]),
-        [yKey]: Number(row[yIndex]),
-      };
-    });
+    return data.rows
+      .map((row) => {
+        const d = parseDateSafe(row[timeIndex]);
+        return {
+          ts: d ? d.getTime() : null,
+          timeStr: formatDate(row[timeIndex]),
+          [yKey]: Number(row[yIndex]),
+        };
+      })
+      .filter((row) => row.ts !== null && !Number.isNaN(row[yKey]));
   };
 
   const DesktopTable = (
@@ -65,6 +69,7 @@ const BuoyTabs = ({ data }) => {
             ))}
           </Table.Row>
         </Table.Header>
+
         <Table.Body>
           {data.rows.map((row, rowIndex) => (
             <Table.Row key={rowIndex}>
@@ -112,15 +117,18 @@ const BuoyTabs = ({ data }) => {
             ))}
           </Table.Row>
         </Table.Header>
+
         <Table.Body>
           {data.rows.map((row, rIdx) => (
             <Table.Row key={rIdx}>
               <Table.Cell className="buoy-tabs-sticky-col">
                 {formatTime(row[timeIndex])}
               </Table.Cell>
+
               {mobileCols.map((col) => {
                 const val = row[col.idx];
                 const isDir = col.value === "MWD";
+
                 return (
                   <Table.Cell
                     key={col.value + col.idx}
@@ -159,7 +167,6 @@ const BuoyTabs = ({ data }) => {
             tick={{ fontSize: 11 }}
             tickFormatter={(v) => formatDayTime(v)}
           />
-          <Tooltip labelFormatter={(v) => formatDayTime(v)} />
           <YAxis tick={{ fontSize: 11 }} />
           <Tooltip labelFormatter={(v) => formatDayTime(v)} />
           <Line type="monotone" dataKey="SwH" stroke="#8884d8" dot={false} />
@@ -168,23 +175,18 @@ const BuoyTabs = ({ data }) => {
     </div>
   ) : (
     <div className="buoy-tabs-chart-desktop-wrap">
-      <LineChart
-        width={BUOY_TAB_CHART_WIDTH}
-        height={BUOY_TAB_CHART_HEIGHT}
-        data={getChartData("SwH")}
-        margin={{ top: 20, right: 30, left: 20, bottom: 0 }}
-      >
-        <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-        <XAxis
-          dataKey="ts"
-          tickFormatter={(v) => formatDayTime(v)}
-          textAnchor="end"
-        />
-        <Tooltip labelFormatter={(v) => formatDayTime(v)} />
-        <YAxis />
-        <Tooltip />
-        <Line type="monotone" dataKey="SwH" stroke="#8884d8" />
-      </LineChart>
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart
+          data={getChartData("SwH")}
+          margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
+        >
+          <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+          <XAxis dataKey="ts" tickFormatter={(v) => formatDayTime(v)} />
+          <YAxis />
+          <Tooltip labelFormatter={(v) => formatDayTime(v)} />
+          <Line type="monotone" dataKey="SwH" stroke="#8884d8" dot={false} />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   );
 
@@ -210,18 +212,18 @@ const BuoyTabs = ({ data }) => {
     </div>
   ) : (
     <div className="buoy-tabs-chart-desktop-wrap">
-      <LineChart
-        width={BUOY_TAB_CHART_WIDTH}
-        height={BUOY_TAB_CHART_HEIGHT}
-        data={getChartData("SwP")}
-        margin={{ top: 10, right: 15, left: 15, bottom: 0 }}
-      >
-        <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
-        <XAxis dataKey="ts" textAnchor="front" tickSize={6} />
-        <YAxis domain={[3, "auto"]} />
-        <Tooltip />
-        <Line type="monotone" dataKey="SwP" stroke="#82ca9d" />
-      </LineChart>
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart
+          data={getChartData("SwP")}
+          margin={{ top: 10, right: 15, left: 10, bottom: 10 }}
+        >
+          <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
+          <XAxis dataKey="ts" tickFormatter={(v) => formatDayTime(v)} />
+          <YAxis domain={[3, "auto"]} />
+          <Tooltip labelFormatter={(v) => formatDayTime(v)} />
+          <Line type="monotone" dataKey="SwP" stroke="#82ca9d" dot={false} />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   );
 
@@ -250,6 +252,7 @@ const BuoyTabs = ({ data }) => {
 
   return (
     <Tab
+      buoy-tabs-chart-desktop-wrap
       panes={panes}
       onTabChange={(e, { activeIndex }) =>
         setActiveTab(panes[activeIndex].menuItem.toLowerCase())

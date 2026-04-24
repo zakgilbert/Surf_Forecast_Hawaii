@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "./ImageLoop.css";
 
 const HurricaneImage = ({ id, width, height }) => {
   const [image, setImage] = useState(null);

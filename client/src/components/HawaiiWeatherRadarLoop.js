@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "./ImageLoop.css";
 
 const HawaiiWeatherRadarLoop = ({ id }) => {
   const [image, setImage] = useState(null);

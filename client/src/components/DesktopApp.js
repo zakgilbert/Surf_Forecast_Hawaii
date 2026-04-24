@@ -14,12 +14,12 @@ import {
   Card,
   CardContent,
   CardHeader,
-  CardDescription,
   CardMeta,
 } from "semantic-ui-react";
 import PresetSelector from "./PresetSelector";
 import { PRESET_DEFINITIONS } from "../presetDefinitions.js";
 import { CONTENT_DATA } from "../contentData.js";
+import "./DesktopApp.css";
 
 function DesktopApp({
   sidebarOpen,
@@ -152,14 +152,14 @@ function DesktopApp({
         {hasResults && (
           <div className="desktop-app-content-shell">
             <div className="desktop-app-content-wrap">
-              <SidebarPusher className="desktop-app-pusher">
+              <div className="desktop-app-pusher">
                 <SegmentGroup className="desktop-app-segment-group">
                   <SegmentGroup
                     horizontal
                     className="desktop-app-segment-group-horizontal"
                   >
                     <Divider />
-                    <Segment placeholder className="desktop-app-main-segment">
+                    <Segment className="desktop-app-main-segment">
                       <Grid stackable doubling columns={columnCount}>
                         {renderData.map((item) => (
                           <GridColumn
@@ -179,9 +179,9 @@ function DesktopApp({
                               <CardContent className="desktop-app-card-content">
                                 <CardHeader>{item.header}</CardHeader>
                                 <CardMeta>{item.meta}</CardMeta>
-                                <CardDescription className="desktop-app-card-description">
+                                <div className="desktop-app-card-description">
                                   {handleGridCall(item)}
-                                </CardDescription>
+                                </div>
                               </CardContent>
                             </Card>
                           </GridColumn>
@@ -190,7 +190,7 @@ function DesktopApp({
                     </Segment>
                   </SegmentGroup>
                 </SegmentGroup>
-              </SidebarPusher>
+              </div>
             </div>
           </div>
         )}

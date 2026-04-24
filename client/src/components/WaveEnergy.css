@@ -1,0 +1,57 @@
+/* ======================
+    Wave Energy
+====================== */
+
+.wave-energy-container {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: flex !important;
+  flex-direction: column;
+  color: var(--text);
+}
+
+.wave-energy-timestamp {
+  flex: 0 0 auto;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.wave-energy-chart-wrap {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 220px;
+}
+
+.wave-energy-direction-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.wave-energy-tooltip-table {
+  width: auto !important;
+  min-width: 220px;
+}
+
+.wave-energy-tooltip-table.ui.table {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow) !important;
+  margin: 0 !important;
+}
+
+.wave-energy-tooltip-table.ui.table td,
+.wave-energy-tooltip-table.ui.table th {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+.wave-energy-tooltip-label,
+.wave-energy-tooltip-value {
+  padding: 4px !important;
+}

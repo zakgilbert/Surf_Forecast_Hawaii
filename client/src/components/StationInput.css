@@ -1,0 +1,154 @@
+/* ==========================
+  Station Input
+=========================== */
+
+.station-input-mobile-wrap,
+.station-input-desktop-wrap {
+  background-color: var(--bg);
+  color: var(--text);
+  padding-top: 10px;
+}
+
+.station-input-mobile-wrap {
+  padding: 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.station-input-desktop-wrap {
+  height: 100%;
+  display: block;
+  min-height: 0;
+  overflow: visible;
+}
+
+.station-input-segment,
+.station-input-segment.ui.segment {
+  padding: 0.5rem !important;
+  background-color: var(--surface) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow) !important;
+
+  display: block !important;
+  min-height: 0;
+  overflow: visible;
+}
+
+.station-input-section-title {
+  margin: 0 0 0.4rem !important;
+  text-align: center;
+  color: var(--text) !important;
+  line-height: 1.2;
+}
+
+.station-input-kv-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 2px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.station-input-kv-label {
+  font-size: 11px;
+  color: var(--muted-text);
+  padding-right: 6px;
+  line-height: 1.15;
+}
+
+.station-input-kv-value {
+  font-size: 13px;
+  font-weight: 600;
+  justify-self: end;
+  color: var(--text);
+  line-height: 1.15;
+}
+
+.station-input-tabs-mobile {
+  padding: 0.4rem !important;
+  overflow-y: visible;
+  max-height: unset;
+}
+
+.station-input-tabs-desktop {
+  padding: 0.4rem !important;
+  display: block;
+  overflow: visible;
+}
+.station-input-desktop-wrap .ui.tab.active {
+  display: flex !important;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.station-input-desktop-wrap .ui.tab.active > * {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.station-input-tabs-column-desktop {
+  min-height: 0;
+  overflow: visible;
+}
+
+.station-input-bottom-spacer {
+  height: 20px;
+}
+
+.station-input-mobile-wrap .ui.divider,
+.station-input-desktop-wrap .ui.divider {
+  border-top: 1px solid var(--border) !important;
+  border-bottom: 0 !important;
+}
+
+.station-input-desktop-wrap .ui.tabular.menu {
+  flex: 0 0 auto;
+}
+
+.station-input-desktop-wrap .ui.tab {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.station-input-segment .ui.header,
+.station-input-desktop-wrap .ui.header,
+.station-input-mobile-wrap .ui.header {
+  color: var(--text) !important;
+}
+
+.station-input-desktop-wrap .ui.table,
+.station-input-mobile-wrap .ui.table {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+.station-input-desktop-wrap .ui.table th,
+.station-input-desktop-wrap .ui.table td,
+.station-input-mobile-wrap .ui.table th,
+.station-input-mobile-wrap .ui.table td {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+.station-input-desktop-wrap .ui.tabular.menu .item,
+.station-input-mobile-wrap .ui.tabular.menu .item {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+  padding: 0.55rem 0.75rem !important;
+  font-size: 0.88rem !important;
+  line-height: 1.2 !important;
+}
+
+.station-input-desktop-wrap .ui.tabular.menu .active.item,
+.station-input-mobile-wrap .ui.tabular.menu .active.item {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}

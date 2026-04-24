@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import "./StationInput.css";
 import {
   Grid,
   GridColumn,
@@ -112,11 +113,7 @@ const StationInput = ({ id }) => {
   if (error) {
     return (
       <Segment className="station-input-segment">
-        <Message
-          negative
-          header={`Buoy ${id} unavailable`}
-          content={error}
-        />
+        <Message negative header={`Buoy ${id} unavailable`} content={error} />
       </Segment>
     );
   }
@@ -136,9 +133,7 @@ const StationInput = ({ id }) => {
   const SummarySection = () => (
     <Segment className="station-input-segment">
       <Header as="h4" className="station-input-section-title">
-        {isMobile
-          ? formatDate(data.rows[0][0])
-          : formatDate(data.rows[0][0])}
+        {isMobile ? formatDate(data.rows[0][0]) : formatDate(data.rows[0][0])}
       </Header>
       <div className="station-input-kv-list">
         {summaryFields.map((row, i) => (
@@ -198,7 +193,7 @@ const StationInput = ({ id }) => {
 
   return (
     <div className="station-input-desktop-wrap">
-      <Grid container stackable columns={2} divided>
+      <Grid stackable columns={2} divided>
         <GridRow>
           <GridColumn width={5}>
             <SummarySection />

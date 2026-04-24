@@ -1,0 +1,26 @@
+/* ArrowIndicator */
+
+.arrow-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow-rotate {
+  display: inline-flex;
+  transform: rotate(var(--rotation));
+  transition: transform 0.2s ease;
+}
+
+.arrow-svg {
+  width: 18px;
+  height: 18px;
+}
+
+.arrow-head {
+  fill: var(--text);
+}
+
+.arrow-body {
+  fill: var(--text);
+}

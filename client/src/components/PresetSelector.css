@@ -1,0 +1,85 @@
+/*======================
+   Preset Selector
+======================*/
+
+.desktop-app-preset-wrap {
+  padding: 0 0 6px 0;
+  margin: 0 0 4px 0;
+}
+
+.desktop-app-preset-container {
+  position: relative;
+}
+
+.desktop-app-preset-selector {
+  width: calc(100% - 8px);
+  margin: 0 4px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  line-height: 1.2;
+}
+
+.desktop-app-preset-selector:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.desktop-app-preset-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.desktop-app-preset-text {
+  flex: 1;
+  font-weight: 500;
+  text-align: left;
+}
+
+.desktop-app-preset-chevron {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.desktop-app-preset-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 4px;
+  right: 4px;
+  margin-top: 6px;
+  border-radius: 12px;
+  background: #1e1e1e;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.desktop-app-preset-option {
+  width: 100%;
+  padding: 9px 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #fff;
+  background: transparent;
+  border: none;
+  text-align: left;
+  transition: background 0.15s ease;
+  line-height: 1.2;
+}
+
+.desktop-app-preset-option:hover {
+  background: rgba(255, 255, 255, 0.08);
+}

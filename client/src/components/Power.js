@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Container, Message } from "semantic-ui-react";
+import "./Power.css";
 import {
   LineChart,
   Line,
@@ -40,7 +41,7 @@ const Power = ({ id }) => {
 
         if (!res.ok) {
           throw new Error(
-            `Power data unavailable for buoy ${id} (${res.status})`
+            `Power data unavailable for buoy ${id} (${res.status})`,
           );
         }
 
@@ -87,7 +88,7 @@ const Power = ({ id }) => {
         ...pt,
         value: Number(pt?.value),
       })),
-    [data]
+    [data],
   );
 
   const CustomTooltip = ({ active = true, payload = [], label }) => {

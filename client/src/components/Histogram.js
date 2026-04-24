@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./Histogram.css";
 import {
   BarChart,
   Bar,
@@ -36,7 +37,7 @@ const Histogram = ({ id }) => {
 
         const maxBin = parsed.reduce(
           (max, bin) => (bin.count > max.count ? bin : max),
-          parsed[0]
+          parsed[0],
         );
 
         setHistogramData(parsed);
@@ -82,9 +83,7 @@ const Histogram = ({ id }) => {
           Largest wave: {stats.largest} ft
         </span>
         <br />
-        <span className="histogram-stats-secondary">
-          T@Hmax: {stats.tHmax}
-        </span>
+        <span className="histogram-stats-secondary">T@Hmax: {stats.tHmax}</span>
         &nbsp;&nbsp;
         <span className="histogram-stats-secondary">
           Htenth: {stats.hTenth}

@@ -1,0 +1,64 @@
+/*==============================
+   Power
+==============================*/
+.power-container {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  color: var(--text);
+}
+
+.power-mobile-chart-wrap {
+  touch-action: none;
+}
+
+.power-mobile-tooltip-wrap {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.power-tooltip {
+  background-color: var(--surface);
+  color: var(--text);
+  padding: 12px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  box-shadow: var(--shadow);
+  width: 300px;
+  max-width: 92vw;
+  text-align: left;
+  line-height: 1.25;
+}
+
+.power-tooltip-title {
+  margin: 0;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.power-tooltip-row {
+  margin: 5px 0 0;
+  color: var(--text);
+}
+
+.power-tooltip-row-spaced {
+  margin: 4px 0 7px;
+}
+
+.power-tooltip-nested-chart {
+  width: 100%;
+  height: 150px;
+}
+
+.power-container .ui.message {
+  background-color: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+.power-container .ui.message .header {
+  color: var(--text) !important;
+}

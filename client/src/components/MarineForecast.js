@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { CHART_HEIGHT_STR } from "../constants";
 import { isMobile } from "react-device-detect";
+import "./MarineForecast.css";
 
 const MarineForecast = ({ id }) => {
   const [data, setData] = useState(null);

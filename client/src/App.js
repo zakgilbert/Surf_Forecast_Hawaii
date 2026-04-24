@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { isMobile } from "./utility";
 import { DaysProvider } from "./components/DaysContext";
 
+import "./App.css";
+
 import MobileApp from "./components/MobileApp";
 import DesktopApp from "./components/DesktopApp";
 

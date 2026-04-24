@@ -1,0 +1,283 @@
+/* DesktopApp */
+
+.desktop-app {
+  background-color: var(--bg);
+  color: var(--text);
+  min-height: 0;
+}
+
+.desktop-app-content-shell,
+.desktop-app-content-wrap,
+.desktop-app-pusher,
+.desktop-app-segment-group,
+.desktop-app-segment-group-horizontal,
+.desktop-app-main-segment.ui.segment {
+  min-height: 0;
+  display: flex !important;
+  flex-direction: column;
+}
+
+.desktop-app-sidebar.ui.sidebar,
+.desktop-app-sidebar.ui.visible.left.sidebar {
+  top: var(--app-header-height) !important;
+  height: calc(100vh - var(--app-header-height)) !important;
+}
+
+.desktop-app-sidebar {
+  width: 280px !important;
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-right: 1px solid var(--border) !important;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.06) !important;
+}
+
+.desktop-app-sidebar-section {
+  min-height: calc(100vh - var(--app-header-height));
+  padding: 12px 10px 20px;
+  overflow-y: auto;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.desktop-app-group {
+  margin: 0 0 14px 0;
+  text-align: left;
+  color: var(--text);
+}
+
+.desktop-app-group-title {
+  margin: 12px 0 8px 0;
+  padding: 0 6px 3px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted-text);
+  border-bottom: 1px solid var(--border);
+  line-height: 1.2;
+}
+
+.desktop-app-list {
+  margin-top: 0.2rem !important;
+}
+
+.desktop-app-list-item {
+  margin: 0 !important;
+  text-align: left;
+}
+
+.desktop-app-list-button {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  padding: 6px 8px;
+  line-height: 1.15;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.desktop-app-list-button:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--link);
+}
+
+.desktop-app-empty-search {
+  margin: 0.8rem 0 0 8px;
+  color: var(--muted-text);
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.desktop-app-content-shell {
+  position: relative;
+}
+
+.desktop-app-refresh-button {
+  position: absolute !important;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+}
+
+.desktop-app-content-wrap {
+  padding: 1rem 1.25rem 1.25rem;
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.desktop-app-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-right: 60px;
+}
+
+.desktop-app-column-picker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 5px 7px;
+  box-shadow: var(--shadow);
+}
+
+.desktop-app-column-label {
+  font-size: 0.85rem;
+  color: var(--muted-text);
+  margin-right: 2px;
+}
+
+.desktop-app-column-button {
+  min-width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9rem;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.desktop-app-column-button:hover {
+  background: var(--bg);
+}
+
+.desktop-app-column-button.active {
+  background: var(--button-bg);
+  color: var(--button-text);
+  border-color: var(--button-bg);
+}
+
+.desktop-app-pusher {
+  background: transparent !important;
+  margin-left: 280px;
+  width: calc(100% - 280px);
+}
+
+.desktop-app-segment-group,
+.desktop-app-segment-group-horizontal {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.desktop-app-main-segment.ui.segment {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.desktop-app-main-segment.ui.segment > .ui.grid {
+  align-items: stretch;
+}
+
+.desktop-app-main-segment.ui.segment > .ui.grid > .column {
+  display: flex !important;
+  min-height: 0;
+}
+
+.desktop-app-card.ui.card {
+  width: 100% !important;
+  aspect-ratio: 1 / 1;
+  min-height: 0;
+  display: flex !important;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--surface) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+.desktop-app-card-content {
+  flex: 1 1 auto;
+  display: flex !important;
+  flex-direction: column;
+  background-color: var(--surface);
+  color: var(--text);
+  padding: 0.75rem !important;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.desktop-app-card-description {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: block;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.desktop-app-card-description::-webkit-scrollbar {
+  width: 8px;
+}
+
+.desktop-app-card-description::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+
+.desktop-app-card-description::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.desktop-app .ui.card > .content,
+.desktop-app .ui.cards > .card > .content {
+  background-color: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+.desktop-app .ui.card .header {
+  color: var(--text) !important;
+  font-size: 1rem !important;
+  line-height: 1.15 !important;
+  font-weight: 700 !important;
+  margin-bottom: 2px !important;
+}
+
+.desktop-app .ui.card .meta {
+  color: var(--text) !important;
+  font-size: 0.82rem !important;
+  line-height: 1.15 !important;
+  opacity: 0.9;
+  margin-top: 0 !important;
+  margin-bottom: 6px !important;
+}
+
+.desktop-app .ui.card .description {
+  color: var(--text) !important;
+}
+
+.desktop-app .ui.menu,
+.desktop-app .ui.vertical.menu {
+  background-color: var(--surface) !important;
+  border-color: var(--border) !important;
+}
+
+.desktop-app .ui.list > .item,
+.desktop-app .ui.list .list > .item {
+  color: var(--text) !important;
+}
+
+.desktop-app .ui.divider {
+  border-top-color: var(--border) !important;
+  border-bottom-color: transparent !important;
+}

@@ -1,5 +1,6 @@
 import React from "react";
 import { Container, Header } from "semantic-ui-react";
+import "./PowerGraph.css";
 import {
   LineChart,
   Line,
@@ -26,12 +27,9 @@ const PowerGraph = () => (
       Monthly Data Overview
     </Header>
 
-    <div className="power-graph-chart-wrap">
-      <ResponsiveContainer width="100%" height={400}>
-        <LineChart
-          data={data}
-          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-        >
+    <div className="chart-fill-wrap">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
           <YAxis />

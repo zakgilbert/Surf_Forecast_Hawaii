@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./PresetSelector.css";
 
 function PresetSelector({ presets, selectedPreset, onSelectPreset }) {
   const [presetOpen, setPresetOpen] = useState(false);

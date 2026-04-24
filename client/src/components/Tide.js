@@ -1,6 +1,7 @@
 /**
  * Tide.js
  */
+import "./Tide.css";
 import React, { useState, useEffect, useMemo } from "react";
 import { Container, Table, Input, Label } from "semantic-ui-react";
 import {

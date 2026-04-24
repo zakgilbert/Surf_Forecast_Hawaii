@@ -1,3 +1,5 @@
+import "./ArrowIndicator.js";
+
 const ArrowIndicator = ({ direction }) => {
   const oppositeDirection = (direction + 180) % 360;
 

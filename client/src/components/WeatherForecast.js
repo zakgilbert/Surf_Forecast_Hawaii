@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./MarineForecast.css";
 import { CHART_HEIGHT_STR } from "../constants";
 import { isMobile } from "react-device-detect";
 
