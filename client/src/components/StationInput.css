@@ -77,17 +77,6 @@
   display: block;
   overflow: visible;
 }
-.station-input-desktop-wrap .ui.tab.active {
-  display: flex !important;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
-}
-
-.station-input-desktop-wrap .ui.tab.active > * {
-  flex: 1 1 auto;
-  min-height: 0;
-}
 
 .station-input-tabs-column-desktop {
   min-height: 0;
@@ -151,4 +140,52 @@
   background: var(--bg) !important;
   color: var(--text) !important;
   border-color: var(--border) !important;
+}
+
+/* ==========================
+  Desktop Card Layout
+=========================== */
+
+.station-input-desktop-wrap {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.55rem;
+  overflow: hidden;
+}
+
+.station-input-top-layout {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.station-input-summary-slot,
+.station-input-chart-slot,
+.station-input-details-slot {
+  min-width: 0;
+}
+
+.station-input-summary-slot .station-input-segment,
+.station-input-chart-slot .station-input-segment,
+.station-input-details-slot .station-input-segment {
+  margin: 0 !important;
+}
+
+.station-input-chart-slot .station-input-segment {
+  min-height: 285px;
+}
+
+.station-input-details-slot {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.station-input-details-slot .station-input-segment {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
 }

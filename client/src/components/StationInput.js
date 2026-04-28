@@ -193,22 +193,15 @@ const StationInput = ({ id }) => {
 
   return (
     <div className="station-input-desktop-wrap">
-      <Grid stackable columns={2} divided>
-        <GridRow>
-          <GridColumn width={5}>
-            <SummarySection />
-          </GridColumn>
-          <GridColumn width={11}>{chart}</GridColumn>
-        </GridRow>
-      </Grid>
-      <Divider />
-      <Grid>
-        <Grid.Row>
-          <Grid.Column width={16} className="station-input-tabs-column-desktop">
-            {tabs}
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
+      <div className="station-input-top-layout">
+        <div className="station-input-summary-slot">
+          <SummarySection />
+        </div>
+
+        <div className="station-input-chart-slot">{chart}</div>
+      </div>
+
+      <div className="station-input-details-slot">{tabs}</div>
     </div>
   );
 };
