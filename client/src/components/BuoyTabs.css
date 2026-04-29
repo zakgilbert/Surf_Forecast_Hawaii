@@ -87,3 +87,36 @@
   min-height: 240px;
   overflow: hidden;
 }
+.buoy-tabs-root {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex !important;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.buoy-tabs-root > .ui.attached.tabular.menu {
+  flex: 0 0 auto;
+}
+
+.buoy-tabs-root > .ui.segment.active.tab {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column;
+}
+
+.buoy-tabs-root .buoy-tabs-pane {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden !important;
+}
+
+.buoy-tabs-root .buoy-tabs-desktop-table-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 0;
+  overflow-y: auto;
+  overflow-x: auto;
+}

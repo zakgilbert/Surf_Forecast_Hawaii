@@ -1,25 +1,20 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "./StationInput.css";
-import {
-  Grid,
-  GridColumn,
-  GridRow,
-  Segment,
-  Popup,
-  Header,
-  Divider,
-  Message,
-} from "semantic-ui-react";
+import { Segment, Popup, Header, Divider, Message } from "semantic-ui-react";
 import { isMobile } from "react-device-detect";
 import WaveEnergy from "./WaveEnergy";
+import PowerGraph from "./PowerGraph";
 import ArrowIndicator from "./ArrowIndicator";
 import BuoyTabs from "./BuoyTabs";
-import { formatDate, formatDateTime } from "../utility";
+import Power from "./Power";
+import { formatDate } from "../utility";
 
 const StationInput = ({ id }) => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [mainView, setMainView] = useState("buoy");
+  const [chartView, setChartView] = useState("spectrum");
 
   useEffect(() => {
     let alive = true;
@@ -41,31 +36,17 @@ const StationInput = ({ id }) => {
 
         const d = await res.json();
 
-        if (
-          !d ||
-          !d.cols ||
-          !d.rows ||
-          !Array.isArray(d.rows) ||
-          d.rows.length === 0
-        ) {
+        if (!d?.cols || !Array.isArray(d.rows) || d.rows.length === 0) {
           throw new Error(`No data available for buoy ${id}`);
         }
 
-        if (alive) {
-          setData(d);
-        }
+        if (alive) setData(d);
       } catch (err) {
         if (err.name === "AbortError") return;
-
         console.error(`Error loading buoy ${id}:`, err);
-
-        if (alive) {
-          setError(err.message || `Failed to load buoy ${id}`);
-        }
+        if (alive) setError(err.message || `Failed to load buoy ${id}`);
       } finally {
-        if (alive) {
-          setLoading(false);
-        }
+        if (alive) setLoading(false);
       }
     };
 
@@ -77,7 +58,7 @@ const StationInput = ({ id }) => {
     };
   }, [id]);
 
-  const ready = !!(data && data.cols && data.rows && data.rows.length > 0);
+  const ready = !!(data?.cols && data?.rows?.length);
 
   const summaryFields = useMemo(() => {
     if (!ready) return [];
@@ -131,10 +112,11 @@ const StationInput = ({ id }) => {
   }
 
   const SummarySection = () => (
-    <Segment className="station-input-segment">
+    <Segment className="station-input-segment station-input-summary-segment">
       <Header as="h4" className="station-input-section-title">
-        {isMobile ? formatDate(data.rows[0][0]) : formatDate(data.rows[0][0])}
+        {formatDate(data.rows[0][0])}
       </Header>
+
       <div className="station-input-kv-list">
         {summaryFields.map((row, i) => (
           <div key={i} className="station-input-kv-row">
@@ -156,21 +138,32 @@ const StationInput = ({ id }) => {
     </Segment>
   );
 
-  const chart = (
-    <Segment className="station-input-segment">
+  const buoyMap = (
+    <Segment className="station-input-segment station-input-map-segment">
       <Header as="h4" className="station-input-section-title">
-        Wave Energy
+        Buoy Location
       </Header>
-      <WaveEnergy id={id} />
+
+      <iframe
+        title={`Buoy ${id} Location`}
+        className="station-input-map"
+        src={`https://www.google.com/maps?q=${encodeURIComponent(
+          `Buoy Station ${id}`
+        )}&output=embed`}
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+      />
     </Segment>
   );
 
-  const tabs = (
-    <Segment
-      className={`station-input-segment ${
-        isMobile ? "station-input-tabs-mobile" : "station-input-tabs-desktop"
-      }`}
-    >
+  const chartContent =
+    chartView === "spectrum" ? <WaveEnergy id={id} /> : <Power id={id} />;
+
+  const chartTitle =
+    chartView === "spectrum" ? "Wave Energy" : "Wave Energy Over Time";
+
+  const details = (
+    <Segment className="station-input-segment station-input-details-panel">
       <Header as="h4" className="station-input-section-title">
         Buoy Details
       </Header>
@@ -181,11 +174,17 @@ const StationInput = ({ id }) => {
   if (isMobile) {
     return (
       <div className="station-input-mobile-wrap">
+        {buoyMap}
         <SummarySection />
         <Divider />
-        {chart}
+        <Segment className="station-input-segment">
+          <Header as="h4" className="station-input-section-title">
+            Wave Energy
+          </Header>
+          <WaveEnergy id={id} />
+        </Segment>
         <Divider />
-        {tabs}
+        {details}
         <div className="station-input-bottom-spacer" />
       </div>
     );
@@ -193,15 +192,67 @@ const StationInput = ({ id }) => {
 
   return (
     <div className="station-input-desktop-wrap">
-      <div className="station-input-top-layout">
-        <div className="station-input-summary-slot">
-          <SummarySection />
-        </div>
+      <div className="station-input-card-header">
+        <button
+          type="button"
+          className={`station-input-view-button ${
+            mainView === "buoy" ? "active" : ""
+          }`}
+          onClick={() => setMainView("buoy")}
+        >
+          Buoy
+        </button>
 
-        <div className="station-input-chart-slot">{chart}</div>
+        <button
+          type="button"
+          className={`station-input-view-button ${
+            mainView === "details" ? "active" : ""
+          }`}
+          onClick={() => setMainView("details")}
+        >
+          Buoy Details
+        </button>
       </div>
 
-      <div className="station-input-details-slot">{tabs}</div>
+      {mainView === "details" ? (
+        <div className="station-input-details-full">{details}</div>
+      ) : (
+        <>
+          <div className="station-input-top-layout">
+            {buoyMap}
+            <SummarySection />
+          </div>
+
+          <div className="station-input-chart-toggle-row">
+            <button
+              type="button"
+              className={`station-input-chart-button ${
+                chartView === "spectrum" ? "active" : ""
+              }`}
+              onClick={() => setChartView("spectrum")}
+            >
+              Wave Energy
+            </button>
+
+            <button
+              type="button"
+              className={`station-input-chart-button ${
+                chartView === "power" ? "active" : ""
+              }`}
+              onClick={() => setChartView("power")}
+            >
+              Wave Energy Over Time
+            </button>
+          </div>
+
+          <Segment className="station-input-segment station-input-chart-panel">
+            <Header as="h4" className="station-input-section-title">
+              {chartTitle}
+            </Header>
+            <div className="station-input-chart-fill">{chartContent}</div>
+          </Segment>
+        </>
+      )}
     </div>
   );
 };

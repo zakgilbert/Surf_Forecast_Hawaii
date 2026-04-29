@@ -6,7 +6,6 @@
 .station-input-desktop-wrap {
   background-color: var(--bg);
   color: var(--text);
-  padding-top: 10px;
 }
 
 .station-input-mobile-wrap {
@@ -18,90 +17,237 @@
 
 .station-input-desktop-wrap {
   height: 100%;
-  display: block;
   min-height: 0;
-  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  overflow: hidden;
 }
+
+/* ==========================
+  Shared Segment Styling
+=========================== */
 
 .station-input-segment,
 .station-input-segment.ui.segment {
-  padding: 0.5rem !important;
+  margin: 0 !important;
+  padding: 0.45rem !important;
   background-color: var(--surface) !important;
   color: var(--text) !important;
   border: 1px solid var(--border) !important;
   box-shadow: var(--shadow) !important;
-
-  display: block !important;
   min-height: 0;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .station-input-section-title {
-  margin: 0 0 0.4rem !important;
+  margin: 0 0 0.3rem !important;
   text-align: center;
   color: var(--text) !important;
-  line-height: 1.2;
+  line-height: 1.1;
+}
+
+/* ==========================
+  Top Main Tabs
+=========================== */
+
+.station-input-card-header {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 0;
+  margin: 0 !important;
+  border-bottom: 1px solid var(--border);
+}
+
+.station-input-view-button {
+  flex: 1 1 0;
+  background: transparent;
+  color: var(--muted-text);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  padding: 0.35rem 0.55rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.station-input-view-button:hover {
+  color: var(--text);
+}
+
+.station-input-view-button.active {
+  color: var(--text);
+  border-bottom-color: var(--text);
+}
+
+/* ==========================
+  Top Two-Column Layout
+=========================== */
+
+.station-input-top-layout {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  min-height: 0;
+}
+
+.station-input-map-segment,
+.station-input-summary-segment {
+  min-width: 0;
+}
+
+.station-input-map {
+  width: 100%;
+  height: 95px;
+  border: 0;
+  border-radius: 6px;
+  filter: grayscale(1) invert(0.9) contrast(0.9);
 }
 
 .station-input-kv-row {
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
-  padding: 2px 0;
+  padding: 1px 0;
   border-bottom: 1px solid var(--border);
 }
 
 .station-input-kv-label {
-  font-size: 11px;
+  font-size: 10.5px;
   color: var(--muted-text);
   padding-right: 6px;
-  line-height: 1.15;
+  line-height: 1.1;
 }
 
 .station-input-kv-value {
-  font-size: 13px;
+  font-size: 11.5px;
   font-weight: 600;
   justify-self: end;
   color: var(--text);
-  line-height: 1.15;
+  line-height: 1.1;
 }
 
-.station-input-tabs-mobile {
-  padding: 0.4rem !important;
-  overflow-y: visible;
-  max-height: unset;
-}
+/* ==========================
+  Chart Toggle
+=========================== */
 
-.station-input-tabs-desktop {
-  padding: 0.4rem !important;
-  display: block;
-  overflow: visible;
-}
-
-.station-input-tabs-column-desktop {
-  min-height: 0;
-  overflow: visible;
-}
-
-.station-input-bottom-spacer {
-  height: 20px;
-}
-
-.station-input-mobile-wrap .ui.divider,
-.station-input-desktop-wrap .ui.divider {
-  border-top: 1px solid var(--border) !important;
-  border-bottom: 0 !important;
-}
-
-.station-input-desktop-wrap .ui.tabular.menu {
+.station-input-chart-toggle-row {
   flex: 0 0 auto;
+  display: flex;
+  gap: 0.4rem;
+  justify-content: center;
 }
 
-.station-input-desktop-wrap .ui.tab {
+.station-input-chart-button {
+  background: transparent;
+  color: var(--muted-text);
+  border: 0;
+  border-bottom: 1px solid transparent;
+  padding: 0.2rem 0.45rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.station-input-chart-button:hover {
+  color: var(--text);
+}
+
+.station-input-chart-button.active {
+  color: var(--text);
+  border-bottom-color: var(--text);
+}
+
+/* ==========================
+  Chart Area
+=========================== */
+
+.station-input-chart-panel {
+  flex: 1 1 auto;
+  height: 0;
+  min-height: 260px;
+  display: flex !important;
+  flex-direction: column;
+  overflow: hidden !important;
+}
+
+.station-input-chart-fill {
+  flex: 1 1 auto;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.station-input-chart-fill > * {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ==========================
+  Details View
+=========================== */
+
+.station-input-details-full {
   flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;
 }
+
+.station-input-details-panel {
+  height: 100%;
+  min-height: 0;
+  display: flex !important;
+  flex-direction: column;
+  overflow: hidden !important;
+}
+
+.station-input-details-panel > .ui.header {
+  flex: 0 0 auto;
+}
+
+/* Semantic UI Tab menu inside BuoyTabs */
+.station-input-details-panel .ui.attached.tabular.menu,
+.station-input-details-panel .ui.tabular.menu {
+  flex: 0 0 auto;
+  margin-bottom: 0 !important;
+}
+
+/* Active tab content container */
+.station-input-details-panel .ui.segment.active.tab {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column;
+}
+
+/* BuoyTabs inner pane */
+.station-input-details-panel .buoy-tabs-pane,
+.station-input-details-panel .buoy-tabs-pane.ui.segment {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column;
+}
+
+/* Actual scroll container */
+.station-input-details-panel .buoy-tabs-desktop-table-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+/* ==========================
+  Semantic UI Dark Overrides
+=========================== */
 
 .station-input-segment .ui.header,
 .station-input-desktop-wrap .ui.header,
@@ -130,9 +276,9 @@
   background: var(--surface) !important;
   color: var(--text) !important;
   border-color: var(--border) !important;
-  padding: 0.55rem 0.75rem !important;
-  font-size: 0.88rem !important;
-  line-height: 1.2 !important;
+  padding: 0.45rem 0.65rem !important;
+  font-size: 0.82rem !important;
+  line-height: 1.1 !important;
 }
 
 .station-input-desktop-wrap .ui.tabular.menu .active.item,
@@ -142,50 +288,12 @@
   border-color: var(--border) !important;
 }
 
-/* ==========================
-  Desktop Card Layout
-=========================== */
-
-.station-input-desktop-wrap {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: 0.55rem;
-  overflow: hidden;
+.station-input-mobile-wrap .ui.divider,
+.station-input-desktop-wrap .ui.divider {
+  border-top: 1px solid var(--border) !important;
+  border-bottom: 0 !important;
 }
 
-.station-input-top-layout {
-  display: grid;
-  grid-template-columns: 170px minmax(0, 1fr);
-  gap: 0.75rem;
-  align-items: start;
-}
-
-.station-input-summary-slot,
-.station-input-chart-slot,
-.station-input-details-slot {
-  min-width: 0;
-}
-
-.station-input-summary-slot .station-input-segment,
-.station-input-chart-slot .station-input-segment,
-.station-input-details-slot .station-input-segment {
-  margin: 0 !important;
-}
-
-.station-input-chart-slot .station-input-segment {
-  min-height: 285px;
-}
-
-.station-input-details-slot {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.station-input-details-slot .station-input-segment {
-  height: 100%;
-  min-height: 0;
-  overflow: hidden;
+.station-input-bottom-spacer {
+  height: 20px;
 }

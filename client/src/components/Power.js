@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { Container, Message } from "semantic-ui-react";
+import { Message } from "semantic-ui-react";
 import "./Power.css";
 import {
   LineChart,
@@ -8,11 +8,9 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 import moment from "moment";
-import { CHART_HEIGHT_NUM } from "../constants";
 import { isMobile } from "react-device-detect";
 
 const Power = ({ id }) => {
@@ -40,13 +38,11 @@ const Power = ({ id }) => {
         });
 
         if (!res.ok) {
-          throw new Error(
-            `Power data unavailable for buoy ${id} (${res.status})`,
-          );
+          throw new Error(`Power data unavailable for buoy ${id} (${res.status})`);
         }
 
-        const d = await res.json();
-        const safeData = Array.isArray(d) ? d : [];
+        const responseData = await res.json();
+        const safeData = Array.isArray(responseData) ? responseData : [];
 
         if (!safeData.length) {
           throw new Error(`No power data available for buoy ${id}`);
@@ -82,17 +78,17 @@ const Power = ({ id }) => {
     };
   }, [id]);
 
-  const series = useMemo(
-    () =>
-      (data || []).map((pt) => ({
+  const series = useMemo(() => {
+    return (data || [])
+      .map((pt) => ({
         ...pt,
         value: Number(pt?.value),
-      })),
-    [data],
-  );
+      }))
+      .filter((pt) => Number.isFinite(pt.value));
+  }, [data]);
 
   const CustomTooltip = ({ active = true, payload = [], label }) => {
-    if (!active || !payload || !payload.length) return null;
+    if (!active || !payload.length) return null;
 
     const selectedPoint = payload[0]?.payload || {};
     const nested = Array.isArray(selectedPoint.values)
@@ -122,16 +118,24 @@ const Power = ({ id }) => {
         {nested.length > 0 && (
           <div className="power-tooltip-nested-chart">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={nested}>
+              <LineChart data={nested} margin={{ top: 8, right: 8, left: 0, bottom: 8 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical horizontal />
                 <XAxis
                   dataKey="frequency"
-                  label={{ value: "Frequency (Hz)", dy: 12 }}
                   tick={{ fontSize: 10 }}
+                  label={{
+                    value: "Frequency (Hz)",
+                    position: "insideBottom",
+                    offset: -4,
+                  }}
                 />
                 <YAxis
-                  label={{ value: "m²/Hz", angle: -90 }}
                   tick={{ fontSize: 10 }}
+                  label={{
+                    value: "m²/Hz",
+                    angle: -90,
+                    position: "insideLeft",
+                  }}
                 />
                 <Line
                   type="monotone"
@@ -150,78 +154,39 @@ const Power = ({ id }) => {
 
   if (loading) {
     return (
-      <Container textAlign="center" className="power-container">
+      <div className="power-container">
         <Message info content={`Loading power data for buoy ${id}...`} />
-      </Container>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Container textAlign="center" className="power-container">
+      <div className="power-container">
         <Message
           warning
           header={`Buoy ${id} power data unavailable`}
           content={error}
         />
-      </Container>
+      </div>
     );
   }
 
-  if (!series || series.length === 0) {
+  if (!series.length) {
     return (
-      <Container textAlign="center" className="power-container">
+      <div className="power-container">
         <Message
           warning
           header={`Buoy ${id} has no power data`}
           content="This buoy may be offline or temporarily unavailable."
         />
-      </Container>
-    );
-  }
-
-  if (!isMobile) {
-    return (
-      <Container textAlign="center" className="power-container">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={series}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" vertical horizontal />
-            <XAxis
-              dataKey="dataTime"
-              tickFormatter={(t) =>
-                moment(t, "YYYY-MM-DD HH:mm").format("MMM D, h:mm A")
-              }
-            />
-            <YAxis
-              label={{
-                value: "m²/Hz",
-                angle: -90,
-                position: "insideLeft",
-                style: { textAnchor: "middle" },
-              }}
-            />
-            <Tooltip
-              content={<CustomTooltip />}
-              cursor={{ stroke: "#9ca3af", strokeDasharray: "5 5" }}
-            />
-            <Legend />
-            <Line
-              type="monotone"
-              dataKey="value"
-              stroke="#8884d8"
-              activeDot={{ r: 8 }}
-              dot
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </Container>
+      </div>
     );
   }
 
   const handleMouseMove = (state) => {
+    if (!isMobile) return;
+
     if (hideTimerRef.current) {
       clearTimeout(hideTimerRef.current);
       hideTimerRef.current = null;
@@ -230,7 +195,7 @@ const Power = ({ id }) => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
 
     rafRef.current = requestAnimationFrame(() => {
-      if (state && state.activePayload && state.activePayload.length) {
+      if (state?.activePayload?.length) {
         setActivePoint({
           label: state.activeLabel,
           payload: state.activePayload[0].payload,
@@ -240,6 +205,8 @@ const Power = ({ id }) => {
   };
 
   const handleMouseLeave = () => {
+    if (!isMobile) return;
+
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
 
     hideTimerRef.current = setTimeout(() => {
@@ -248,63 +215,75 @@ const Power = ({ id }) => {
   };
 
   return (
-    <Container textAlign="center" className="power-container">
-      <div className="power-mobile-chart-wrap">
+    <div className="power-container">
+      <div className="power-chart-wrap">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={series}
-            margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+            margin={
+              isMobile
+                ? { top: 10, right: 10, left: 0, bottom: 12 }
+                : { top: 10, right: 18, left: 12, bottom: 28 }
+            }
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
           >
             <CartesianGrid strokeDasharray="3 3" vertical horizontal />
+
             <XAxis
               dataKey="dataTime"
-              tick={{ fontSize: 11 }}
-              tickCount={6}
+              tick={{ fontSize: isMobile ? 11 : 10 }}
+              tickCount={isMobile ? 6 : 5}
               interval="preserveStartEnd"
               tickFormatter={(t) =>
-                moment(t, "YYYY-MM-DD HH:mm").format("MMM D, h a")
+                moment(t, "YYYY-MM-DD HH:mm").format(
+                  isMobile ? "MMM D, h a" : "MMM D"
+                )
               }
             />
+
             <YAxis
-              tick={{ fontSize: 11 }}
+              width={42}
+              tick={{ fontSize: isMobile ? 11 : 10 }}
               label={{
                 value: "m²/Hz",
                 angle: -90,
                 position: "insideLeft",
+                offset: 0,
                 style: { textAnchor: "middle" },
               }}
             />
+
             <Tooltip
-              content={() => null}
+              content={isMobile ? () => null : <CustomTooltip />}
               cursor={{ stroke: "#9ca3af", strokeDasharray: "5 5" }}
-              wrapperStyle={{ display: "none" }}
+              wrapperStyle={isMobile ? { display: "none" } : undefined}
               allowEscapeViewBox={{ x: true, y: true }}
             />
+
             <Line
               type="monotone"
               dataKey="value"
               stroke="#8884d8"
               strokeWidth={2}
-              dot={{ r: 3 }}
-              activeDot={{ r: 6 }}
+              dot={{ r: isMobile ? 3 : 2 }}
+              activeDot={{ r: isMobile ? 6 : 5 }}
               isAnimationActive={false}
             />
           </LineChart>
         </ResponsiveContainer>
       </div>
 
-      {activePoint && (
+      {isMobile && activePoint && (
         <div className="power-mobile-tooltip-wrap">
           <CustomTooltip
-            active={true}
+            active
             payload={[{ payload: activePoint.payload }]}
             label={activePoint.label}
           />
         </div>
       )}
-    </Container>
+    </div>
   );
 };
 

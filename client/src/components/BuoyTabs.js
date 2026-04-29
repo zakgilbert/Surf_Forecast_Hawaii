@@ -250,15 +250,15 @@ const BuoyTabs = ({ data }) => {
     },
   ];
 
-  return (
-    <Tab
-      buoy-tabs-chart-desktop-wrap
-      panes={panes}
-      onTabChange={(e, { activeIndex }) =>
-        setActiveTab(panes[activeIndex].menuItem.toLowerCase())
-      }
-    />
-  );
+return (
+  <Tab
+    className="buoy-tabs-root"
+    panes={panes}
+    onTabChange={(e, { activeIndex }) =>
+      setActiveTab(panes[activeIndex].menuItem.toLowerCase())
+    }
+  />
+);
 };
 
 export default BuoyTabs;

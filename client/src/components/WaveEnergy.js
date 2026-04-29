@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./WaveEnergy.css";
-import { Container, Table } from "semantic-ui-react";
+import { Table } from "semantic-ui-react";
 import ArrowIndicator from "./ArrowIndicator";
 import { formatDateTime, formatDate } from "../utility";
 import {
@@ -80,29 +80,35 @@ const WaveEnergy = ({ id }) => {
   }
 
   return (
-    <Container textAlign="center" className="wave-energy-container">
+    <div className="wave-energy-container">
       <p className="wave-energy-timestamp">{formatDate(firstPoint.dataTime)}</p>
 
       <div className="wave-energy-chart-wrap">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
-            margin={{ top: 20, right: 30, left: 0, bottom: 15 }}
+            margin={{ top: 10, right: 18, left: 12, bottom: 28 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
+
             <XAxis
               dataKey="frequency"
+              tick={{ fontSize: 11 }}
               label={{
                 value: "Frequency (Hz)",
                 position: "insideBottom",
-                offset: -10,
+                offset: -18,
               }}
             />
+
             <YAxis
+              width={42}
+              tick={{ fontSize: 11 }}
               label={{
                 value: "m^2/Hz",
                 angle: -90,
                 position: "insideLeft",
+                offset: 0,
               }}
             />
             <Tooltip content={<CustomTooltip />} />
@@ -116,7 +122,7 @@ const WaveEnergy = ({ id }) => {
           </LineChart>
         </ResponsiveContainer>
       </div>
-    </Container>
+    </div>
   );
 };
 
