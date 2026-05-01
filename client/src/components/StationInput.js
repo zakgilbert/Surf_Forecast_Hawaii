@@ -5,6 +5,7 @@ import { isMobile } from "react-device-detect";
 import WaveEnergy from "./WaveEnergy";
 import PowerGraph from "./PowerGraph";
 import ArrowIndicator from "./ArrowIndicator";
+import useBuoyCoordinates from "./BuoyCoordinates";
 import BuoyTabs from "./BuoyTabs";
 import Power from "./Power";
 import { formatDate } from "../utility";
@@ -15,6 +16,9 @@ const StationInput = ({ id }) => {
   const [loading, setLoading] = useState(true);
   const [mainView, setMainView] = useState("buoy");
   const [chartView, setChartView] = useState("spectrum");
+  
+  const buoyCoordinates = useBuoyCoordinates(id);
+
 
   useEffect(() => {
     let alive = true;
@@ -138,6 +142,13 @@ const StationInput = ({ id }) => {
     </Segment>
   );
 
+  const mapSrc =
+    buoyCoordinates?.lat != null && buoyCoordinates?.lon != null
+      ? `https://www.google.com/maps?q=${buoyCoordinates.lat},${buoyCoordinates.lon}&z=6&output=embed`
+      : `https://www.google.com/maps?q=${encodeURIComponent(
+          `Buoy Station ${id}`,
+        )}&output=embed`;
+
   const buoyMap = (
     <Segment className="station-input-segment station-input-map-segment">
       <Header as="h4" className="station-input-section-title">
@@ -147,9 +158,7 @@ const StationInput = ({ id }) => {
       <iframe
         title={`Buoy ${id} Location`}
         className="station-input-map"
-        src={`https://www.google.com/maps?q=${encodeURIComponent(
-          `Buoy Station ${id}`
-        )}&output=embed`}
+        src={mapSrc}
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
       />

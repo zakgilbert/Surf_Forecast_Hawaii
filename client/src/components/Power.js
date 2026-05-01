@@ -19,6 +19,7 @@ const Power = ({ id }) => {
   const [loading, setLoading] = useState(true);
 
   const [activePoint, setActivePoint] = useState(null);
+  const [desktopPoint, setDesktopPoint] = useState(null);
   const hideTimerRef = useRef(null);
   const rafRef = useRef(null);
 
@@ -38,7 +39,9 @@ const Power = ({ id }) => {
         });
 
         if (!res.ok) {
-          throw new Error(`Power data unavailable for buoy ${id} (${res.status})`);
+          throw new Error(
+            `Power data unavailable for buoy ${id} (${res.status})`,
+          );
         }
 
         const responseData = await res.json();
@@ -118,7 +121,10 @@ const Power = ({ id }) => {
         {nested.length > 0 && (
           <div className="power-tooltip-nested-chart">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={nested} margin={{ top: 8, right: 8, left: 0, bottom: 8 }}>
+              <LineChart
+                data={nested}
+                margin={{ top: 8, right: 8, left: 0, bottom: 8 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" vertical horizontal />
                 <XAxis
                   dataKey="frequency"
@@ -185,33 +191,36 @@ const Power = ({ id }) => {
   }
 
   const handleMouseMove = (state) => {
-    if (!isMobile) return;
+    if (state?.activePayload?.length) {
+      const point = {
+        label: state.activeLabel,
+        payload: state.activePayload[0].payload,
+      };
 
-    if (hideTimerRef.current) {
-      clearTimeout(hideTimerRef.current);
-      hideTimerRef.current = null;
-    }
+      if (isMobile) {
+        if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
 
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
 
-    rafRef.current = requestAnimationFrame(() => {
-      if (state?.activePayload?.length) {
-        setActivePoint({
-          label: state.activeLabel,
-          payload: state.activePayload[0].payload,
+        rafRef.current = requestAnimationFrame(() => {
+          setActivePoint(point);
         });
+      } else {
+        setDesktopPoint(point);
       }
-    });
+    }
   };
 
   const handleMouseLeave = () => {
-    if (!isMobile) return;
+    if (isMobile) {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
 
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-
-    hideTimerRef.current = setTimeout(() => {
-      setActivePoint(null);
-    }, 150);
+      hideTimerRef.current = setTimeout(() => {
+        setActivePoint(null);
+      }, 150);
+    } else {
+      setDesktopPoint(null);
+    }
   };
 
   return (
@@ -237,7 +246,7 @@ const Power = ({ id }) => {
               interval="preserveStartEnd"
               tickFormatter={(t) =>
                 moment(t, "YYYY-MM-DD HH:mm").format(
-                  isMobile ? "MMM D, h a" : "MMM D"
+                  isMobile ? "MMM D, h a" : "MMM D",
                 )
               }
             />
@@ -280,6 +289,15 @@ const Power = ({ id }) => {
             active
             payload={[{ payload: activePoint.payload }]}
             label={activePoint.label}
+          />
+        </div>
+      )}
+      {!isMobile && desktopPoint && (
+        <div className="power-top-tooltip">
+          <CustomTooltip
+            active
+            payload={[{ payload: desktopPoint.payload }]}
+            label={desktopPoint.label}
           />
         </div>
       )}

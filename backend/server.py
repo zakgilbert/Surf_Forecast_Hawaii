@@ -10,6 +10,7 @@ from histogram import *
 from hurricane import *
 from hawaii_weather_radar_loop import *
 from weather_forecast import *
+from buoy_coordinates import *
 import argparse
 
 app = Flask(__name__)
@@ -56,6 +57,10 @@ def hawaiiWeatherRadarLoop(id):
 @api.route('/weather-forecast')
 def weathterForecast():
     return getWeatherForecast()
+
+@api.route('/buoy-coordinates/<string:id>')
+def buoyCoordinates(id):
+    return get_buoy_coordinates(id)
 
 app.register_blueprint(api)
 
